@@ -1,5 +1,8 @@
 # Модуль для взаимодействия с API
 
+[![Build Status](https://ci.iptv2022.com/app/rest/builds/buildType(id:Android_root_ApiModule_ApiModuleMasterBranch)/statusIcon)](https://ci.iptv2022.com/viewType.html?buildTypeId=Android_root_ApiModule_ApiModuleMasterBranch&guest=1)
+[![Build Status](https://ci.iptv2022.com/app/rest/builds/buildType(id:Android_root_ApiModule_ApiModulePullRequests)/statusIcon)](https://ci.iptv2022.com/viewType.html?buildTypeId=Android_root_ApiModule_ApiModulePullRequests&guest=1)
+
 ## Присоединение к модулю
 
 ### 0. Клонировать репозиторий при помощи git submodule
