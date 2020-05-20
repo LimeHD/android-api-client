@@ -82,28 +82,43 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
         //Интерфейс для получения отправленного запроса у пинга
         limeApiClient.setRequestPingCallBack(new LimeApiClient.RequestCallBack() {
             @Override
-            public void callBackRequest(String request) {
+            public void callBackUrlRequest(String request) {
                 Log.e(LIME_LOG, request);
-                printCurl(getResources().getString(R.string.curl_request_2) + request + "'");
                 printUrlRequest(request);
+            }
+
+            @Override
+            public void callBackCurlRequest(String request) {
+                Log.e(LIME_LOG, request);
+                printCurl(request);
             }
         });
         //Интерфейс для получения отправленного запроса у телепередачи
         limeApiClient.setRequestBroadCastCallBack(new LimeApiClient.RequestCallBack() {
             @Override
-            public void callBackRequest(String request) {
+            public void callBackUrlRequest(String request) {
                 Log.e(LIME_LOG, request);
-                printCurl(getResources().getString(R.string.curl_request_1) + request + "'");
                 printUrlRequest(request);
+            }
+
+            @Override
+            public void callBackCurlRequest(String request) {
+                Log.e(LIME_LOG, request);
+                printCurl(request);
             }
         });
         //Интерфейс для получения отправленного запроса у списка каналов
         limeApiClient.setRequestChannelList(new LimeApiClient.RequestCallBack() {
             @Override
-            public void callBackRequest(String request) {
+            public void callBackUrlRequest(String request) {
                 Log.e(LIME_LOG, request);
-                printCurl(getResources().getString(R.string.curl_request_1) + request + "'");
                 printUrlRequest(request);
+            }
+
+            @Override
+            public void callBackCurlRequest(String request) {
+                Log.e(LIME_LOG, request);
+                printCurl(request);
             }
         });
     }

@@ -7,6 +7,7 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.LimeUri;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
@@ -24,7 +25,14 @@ public class ChannelListDownloading {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                OkHttpClient client = new OkHttpClient();
+                LimeCurlBuilder.Builder limeCurlBuilder = new LimeCurlBuilder().setLogCurlInterface(new LimeCurlBuilder.LogCurlInterface() {
+                    @Override
+                    public void logCurl(String message) {
+                        if (callBackRequestChannelListInterface != null)
+                            callBackRequestChannelListInterface.callBackCurlRequestChannelList(message);
+                    }
+                });
+                OkHttpClient client = new OkHttpClient(limeCurlBuilder);
                 Request request = new Request.Builder()
                         .url(LimeUri.getUriChannelList(scheme, api_root, endpoint_channels))
                         .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE()).build();
@@ -47,7 +55,7 @@ public class ChannelListDownloading {
             }
         }).start();
         if (callBackRequestChannelListInterface != null)
-            callBackRequestChannelListInterface.callBackRequestChannelList(LimeUri.getUriChannelList(scheme, api_root, endpoint_channels));
+            callBackRequestChannelListInterface.callBackUrlRequestChannelList(LimeUri.getUriChannelList(scheme, api_root, endpoint_channels));
     }
 
     public interface CallBackDownloadChannelListInterface {
@@ -57,7 +65,9 @@ public class ChannelListDownloading {
     }
 
     public interface CallBackRequestChannelListInterface {
-        void callBackRequestChannelList(String request);
+        void callBackUrlRequestChannelList(String request);
+
+        void callBackCurlRequestChannelList(String request);
     }
 
     private CallBackDownloadChannelListInterface callBackDownloadChannelListInterface;

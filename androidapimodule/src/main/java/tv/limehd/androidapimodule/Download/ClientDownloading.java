@@ -27,9 +27,15 @@ public class ClientDownloading {
         });
         channelListDownloading.setCallBackRequestChannelListInterface(new ChannelListDownloading.CallBackRequestChannelListInterface() {
             @Override
-            public void callBackRequestChannelList(String request) {
+            public void callBackUrlRequestChannelList(String request) {
                 if (callBackRequestInterface != null)
-                    callBackRequestInterface.callBackRequest(request);
+                    callBackRequestInterface.callBackUrlRequest(request);
+            }
+
+            @Override
+            public void callBackCurlRequestChannelList(String request) {
+                if (callBackRequestInterface != null)
+                    callBackRequestInterface.callBackCurlRequest(request);
             }
         });
         channelListDownloading.loadingRequestChannelList(scheme, api_root, endpoint_channels);
@@ -51,11 +57,17 @@ public class ClientDownloading {
                     callBackDownloadInterface.callBackDownloadedError(error_message);
             }
         });
-        broadcastDownloading.setCallBackRequestBroadCastInterface(new BroadcastDownloading.CallBackRequestBroadCastInterface() {
+        broadcastDownloading.setCallBackUrlRequestBroadCastInterface(new BroadcastDownloading.CallBackRequestBroadCastInterface() {
             @Override
-            public void callBackRequestBroadCast(String request) {
+            public void callBackUrlRequestBroadCast(String request) {
                 if (callBackRequestInterface != null)
-                    callBackRequestInterface.callBackRequest(request);
+                    callBackRequestInterface.callBackUrlRequest(request);
+            }
+
+            @Override
+            public void callBackCUrlRequestBroadCast(String request) {
+                if (callBackRequestInterface != null)
+                    callBackRequestInterface.callBackCurlRequest(request);
             }
         });
         broadcastDownloading.loadingRequestBroadCast(scheme, api_root, endpoint_broadcast, channel_id, before_date, after_date, time_zone);
@@ -78,9 +90,15 @@ public class ClientDownloading {
         });
         pingApi.setCallBackPingRequestInterface(new PingApi.CallBackPingRequestInterface() {
             @Override
-            public void callBackRequest(String request) {
+            public void callBackUrlRequest(String request) {
                 if (callBackRequestInterface != null)
-                    callBackRequestInterface.callBackRequest(request);
+                    callBackRequestInterface.callBackUrlRequest(request);
+            }
+
+            @Override
+            public void callBackCurlRequest(String request) {
+                if (callBackRequestInterface != null)
+                    callBackRequestInterface.callBackCurlRequest(request);
             }
         });
         pingApi.pingApiRequest(scheme, api_root, endpoint_ping);
@@ -93,7 +111,9 @@ public class ClientDownloading {
     }
 
     public interface CallBackRequestInterface {
-        void callBackRequest(String request);
+        void callBackUrlRequest(String request);
+
+        void callBackCurlRequest(String request);
     }
 
 

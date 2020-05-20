@@ -30,9 +30,15 @@ public class LimeApiClient {
             });
             clientDownloading.setCallBackRequestInterface(new ClientDownloading.CallBackRequestInterface() {
                 @Override
-                public void callBackRequest(String request) {
+                public void callBackUrlRequest(String request) {
                     if (requestChannelList != null)
-                        requestChannelList.callBackRequest(request);
+                        requestChannelList.callBackUrlRequest(request);
+                }
+
+                @Override
+                public void callBackCurlRequest(String request) {
+                    if (requestChannelList != null)
+                        requestChannelList.callBackCurlRequest(request);
                 }
             });
             clientDownloading.downloadChannelList(scheme, api_root, endpoint_channels);
@@ -72,9 +78,15 @@ public class LimeApiClient {
             });
             clientDownloading.setCallBackRequestInterface(new ClientDownloading.CallBackRequestInterface() {
                 @Override
-                public void callBackRequest(String request) {
+                public void callBackUrlRequest(String request) {
                     if (requestBroadCastCallBack != null)
-                        requestBroadCastCallBack.callBackRequest(request);
+                        requestBroadCastCallBack.callBackUrlRequest(request);
+                }
+
+                @Override
+                public void callBackCurlRequest(String request) {
+                    if (requestBroadCastCallBack != null)
+                        requestBroadCastCallBack.callBackCurlRequest(request);
                 }
             });
             clientDownloading.downloadBroadCast(scheme, api_root, endpoint_broadcast, channel_id, before_date, after_date, time_zone);
@@ -113,9 +125,15 @@ public class LimeApiClient {
             });
             clientDownloading.setCallBackRequestInterface(new ClientDownloading.CallBackRequestInterface() {
                 @Override
-                public void callBackRequest(String request) {
+                public void callBackUrlRequest(String request) {
                     if (requestPingCallBack != null)
-                        requestPingCallBack.callBackRequest(request);
+                        requestPingCallBack.callBackUrlRequest(request);
+                }
+
+                @Override
+                public void callBackCurlRequest(String request) {
+                    if (requestPingCallBack != null)
+                        requestPingCallBack.callBackCurlRequest(request);
                 }
             });
             clientDownloading.dowloadPing(scheme, api_root, endpoint_ping);
@@ -137,7 +155,9 @@ public class LimeApiClient {
 
     //region RequestCallBack
     public interface RequestCallBack {
-        void callBackRequest(String request);
+        void callBackUrlRequest(String request);
+
+        void callBackCurlRequest(String request);
     }
 
     private RequestCallBack requestBroadCastCallBack;

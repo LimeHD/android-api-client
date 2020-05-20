@@ -9,6 +9,7 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.LimeUri;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
@@ -25,7 +26,14 @@ public class BroadcastDownloading {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                OkHttpClient client = new OkHttpClient();
+                LimeCurlBuilder.Builder limeCurlBuilder = new LimeCurlBuilder().setLogCurlInterface(new LimeCurlBuilder.LogCurlInterface() {
+                    @Override
+                    public void logCurl(String message) {
+                        if (callBackRequestBroadCastInterface != null)
+                            callBackRequestBroadCastInterface.callBackCUrlRequestBroadCast(message);
+                    }
+                });
+                OkHttpClient client = new OkHttpClient(limeCurlBuilder);
                 Request request = new Request.Builder()
                         .url(LimeUri.getUriBroadcast(scheme, api_root, endpoint_broadcast, channel_id
                                 , before_date, after_date, time_zone))
@@ -49,7 +57,7 @@ public class BroadcastDownloading {
             }
         }).start();
         if (callBackRequestBroadCastInterface != null)
-            callBackRequestBroadCastInterface.callBackRequestBroadCast(LimeUri.getUriBroadcast(scheme, api_root, endpoint_broadcast, channel_id
+            callBackRequestBroadCastInterface.callBackUrlRequestBroadCast(LimeUri.getUriBroadcast(scheme, api_root, endpoint_broadcast, channel_id
                     , before_date, after_date, time_zone));
     }
 
@@ -61,7 +69,9 @@ public class BroadcastDownloading {
     }
 
     public interface CallBackRequestBroadCastInterface {
-        void callBackRequestBroadCast(String request);
+        void callBackUrlRequestBroadCast(String request);
+
+        void callBackCUrlRequestBroadCast(String request);
     }
 
     private CallBackDownloadBroadCastInterface callBackDownloadBroadCastInterface;
@@ -71,7 +81,7 @@ public class BroadcastDownloading {
         this.callBackDownloadBroadCastInterface = callBackDownloadBroadCastInterface;
     }
 
-    public void setCallBackRequestBroadCastInterface(CallBackRequestBroadCastInterface callBackRequestBroadCastInterface) {
+    public void setCallBackUrlRequestBroadCastInterface(CallBackRequestBroadCastInterface callBackRequestBroadCastInterface) {
         this.callBackRequestBroadCastInterface = callBackRequestBroadCastInterface;
     }
 }

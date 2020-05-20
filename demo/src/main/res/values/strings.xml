@@ -6,9 +6,6 @@
     <string name="curl_was_copied">curl was copied</string>
     <string name="url_request_was_copied">url request was copied</string>
 
-    <string name="curl_request_1">curl -X GET --header \'Accept: application/vnd.api+json\' \'</string>
-    <string name="curl_request_2">curl -X GET --header \'Accept: application/json\' \'</string>
-
     <string name="answer">Answer</string>
     <string name="curl">Curl</string>
     <string name="url_request">Url Request</string>

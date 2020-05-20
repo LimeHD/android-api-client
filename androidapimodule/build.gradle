@@ -36,6 +36,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.12.8'
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.github.mrmike:ok2curl:0.6.0'
 }
 repositories {
     mavenCentral()

@@ -8,6 +8,7 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.LimeUri;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
@@ -22,7 +23,14 @@ public class PingApi {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                OkHttpClient client = new OkHttpClient();
+                LimeCurlBuilder.Builder limeCurlBuilder = new LimeCurlBuilder().setLogCurlInterface(new LimeCurlBuilder.LogCurlInterface() {
+                    @Override
+                    public void logCurl(String message) {
+                        if (callBackPingRequestInterface != null)
+                            callBackPingRequestInterface.callBackCurlRequest(message);
+                    }
+                });
+                OkHttpClient client = new OkHttpClient(limeCurlBuilder);
                 Request request = new Request.Builder()
                         .url(LimeUri.getUriChannelList(scheme, api_root, endpoint_ping))
                         .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE()).build();
@@ -45,7 +53,7 @@ public class PingApi {
             }
         }).start();
         if (callBackPingRequestInterface != null)
-            callBackPingRequestInterface.callBackRequest(LimeUri.getUriChannelList(scheme, api_root, endpoint_ping));
+            callBackPingRequestInterface.callBackUrlRequest(LimeUri.getUriChannelList(scheme, api_root, endpoint_ping));
     }
 
     public interface CallBackPingInterface {
@@ -55,7 +63,8 @@ public class PingApi {
     }
 
     public interface CallBackPingRequestInterface {
-        void callBackRequest(String request);
+        void callBackUrlRequest(String request);
+        void callBackCurlRequest(String request);
     }
 
     private CallBackPingInterface callBackPingInterface;
