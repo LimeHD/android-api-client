@@ -31,13 +31,14 @@ import tv.limehd.androidapimodule.LimeApiClient;
 ### Инициализация `LimeApiClient`
 ```java
 String api_root = API_ROOT;
-LimeApiClient limeApiClient = new LimeApiClient(api_root);
+String package_name = getPackageName();
+LimeApiClient limeApiClient = new LimeApiClient(api_root, scheme, package_name);
 ApiValues apiValues = new ApiValues();
 ```
 ### Получение списка каналов
 Пример запроса
 ``` java
-limeApiClient.downloadChannelList(apiValues.getSCHEME_HTTP(), apiValues.getURL_CHANNELS_GRECE_PATH());
+limeApiClient.downloadChannelList();
 limeApiClient.setDownloadChannelListCallBack(new LimeApiClient.DownloadChannelListCallBack() {
     @Override
     public void downloadChannelListSuccess(String response) {
@@ -51,15 +52,15 @@ limeApiClient.setDownloadChannelListCallBack(new LimeApiClient.DownloadChannelLi
 });
 ```
 ### Настройка дат для получения программы передач
-``` js
+``` java
 String before_date = LimeRFC.timeStampToRFC(before_date_timestamp);
 String after_date = LimeRFC.timeStampToRFC(after_date_timestamp);
 ```
 ### Получения программы передач
 Пример запроса
 ``` java
-limeApiClient.downloadBroadcast(apiValues.getSCHEME_HTTP(), apiValues.getURL_BROADCAST_PATH()
-                ,"105", before_date, after_date, "Asia/Kolkata");
+String example_channel_id = "105";
+limeApiClient.downloadBroadcast(example_channel_id, before_date, after_date, "Asia/Kolkata");
 limeApiClient.setDownloadBroadCastCallBack(new LimeApiClient.DownloadBroadCastCallBack() {
     @Override
     public void downloadBroadCastSuccess(String response) {
@@ -71,3 +72,21 @@ limeApiClient.setDownloadBroadCastCallBack(new LimeApiClient.DownloadBroadCastCa
 	// ошибка
     }
 });
+```
+
+### Пинг
+Пример запроса
+``` java
+limeApiClient.downloadPing();
+limeApiClient.setDownloadPingCallBack(new LimeApiClient.DownloadPingCallBack() {
+     @Override
+     public void downloadPingSuccess(String response) {
+         // ответ
+     }
+
+     @Override
+     public void downloadPingError(String message) {
+	 // ошика
+     }
+});
+```
