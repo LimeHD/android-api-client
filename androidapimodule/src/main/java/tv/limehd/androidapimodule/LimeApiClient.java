@@ -1,48 +1,84 @@
 package tv.limehd.androidapimodule;
 
 import tv.limehd.androidapimodule.Download.ClientDownloading;
+import tv.limehd.androidapimodule.Values.ApiValues;
 
 public class LimeApiClient {
 
     private String api_root;
+    private String application_id;
+    private String scheme;
+    private ApiValues apiValues;
 
+    @Deprecated
     public LimeApiClient(String apiRoot) {
+        apiValues = new ApiValues();
         this.api_root = apiRoot;
+        this.scheme = apiValues.getSCHEME_HTTP();
+
+    }
+
+    public LimeApiClient(String api_root, String scheme, String application_id) {
+        apiValues = new ApiValues();
+        this.api_root = api_root;
+        this.scheme = scheme;
+        this.application_id = application_id;
     }
 
     /*Download channel List*/
     //region Download channel List
+    @Deprecated //this method has removed on next version
     public void downloadChannelList(String scheme, String endpoint_channels) {
         if (api_root != null) {
-            ClientDownloading clientDownloading = new ClientDownloading();
-            clientDownloading.setCallBackDownloadInterface(new ClientDownloading.CallBackDownloadInterface() {
-                @Override
-                public void callBackDownloadedSuccess(String response) {
-                    if (downloadChannelListCallBack != null)
-                        downloadChannelListCallBack.downloadChannelListSuccess(response);
-                }
-
-                @Override
-                public void callBackDownloadedError(String error_message) {
-                    if (downloadChannelListCallBack != null)
-                        downloadChannelListCallBack.downloadChannelListError(error_message);
-                }
-            });
-            clientDownloading.setCallBackRequestInterface(new ClientDownloading.CallBackRequestInterface() {
-                @Override
-                public void callBackUrlRequest(String request) {
-                    if (requestChannelList != null)
-                        requestChannelList.callBackUrlRequest(request);
-                }
-
-                @Override
-                public void callBackCurlRequest(String request) {
-                    if (requestChannelList != null)
-                        requestChannelList.callBackCurlRequest(request);
-                }
-            });
-            clientDownloading.downloadChannelList(scheme, api_root, endpoint_channels);
+            ClientDownloading clientDownloading = initializeDownloadChannelList();
+            downloadChannelList(clientDownloading, scheme, endpoint_channels);
         }
+    }
+
+    public void downloadChannelList() {
+        if (api_root != null) {
+            ClientDownloading clientDownloading = initializeDownloadChannelList();
+            downloadChannelList(clientDownloading);
+        }
+    }
+
+    private ClientDownloading initializeDownloadChannelList() {
+        ClientDownloading clientDownloading = new ClientDownloading();
+        clientDownloading.setCallBackDownloadInterface(new ClientDownloading.CallBackDownloadInterface() {
+            @Override
+            public void callBackDownloadedSuccess(String response) {
+                if (downloadChannelListCallBack != null)
+                    downloadChannelListCallBack.downloadChannelListSuccess(response);
+            }
+
+            @Override
+            public void callBackDownloadedError(String error_message) {
+                if (downloadChannelListCallBack != null)
+                    downloadChannelListCallBack.downloadChannelListError(error_message);
+            }
+        });
+        clientDownloading.setCallBackRequestInterface(new ClientDownloading.CallBackRequestInterface() {
+            @Override
+            public void callBackUrlRequest(String request) {
+                if (requestChannelList != null)
+                    requestChannelList.callBackUrlRequest(request);
+            }
+
+            @Override
+            public void callBackCurlRequest(String request) {
+                if (requestChannelList != null)
+                    requestChannelList.callBackCurlRequest(request);
+            }
+        });
+        return clientDownloading;
+    }
+
+    private void downloadChannelList(ClientDownloading clientDownloading, String scheme, String endpoint_channels) {
+        clientDownloading.downloadChannelList(scheme, api_root, endpoint_channels);
+    }
+
+    private void downloadChannelList(ClientDownloading clientDownloading) {
+        clientDownloading.downloadChannelList(scheme, api_root, apiValues.getURL_CHANNELS_GRECE_PATH());
     }
 
     public interface DownloadChannelListCallBack {
@@ -60,37 +96,58 @@ public class LimeApiClient {
 
     /*Download broadcast*/
     //region DownloadBroadcast
+    @Deprecated //this method has removed on next version
     public void downloadBroadcast(String scheme, String endpoint_broadcast, String channel_id, String before_date, String after_date, String time_zone) {
         if (api_root != null) {
-            ClientDownloading clientDownloading = new ClientDownloading();
-            clientDownloading.setCallBackDownloadInterface(new ClientDownloading.CallBackDownloadInterface() {
-                @Override
-                public void callBackDownloadedSuccess(String response) {
-                    if (downloadBroadCastCallBack != null)
-                        downloadBroadCastCallBack.downloadBroadCastSuccess(response);
-                }
-
-                @Override
-                public void callBackDownloadedError(String error_message) {
-                    if (downloadBroadCastCallBack != null)
-                        downloadBroadCastCallBack.downloadBroadCastError(error_message);
-                }
-            });
-            clientDownloading.setCallBackRequestInterface(new ClientDownloading.CallBackRequestInterface() {
-                @Override
-                public void callBackUrlRequest(String request) {
-                    if (requestBroadCastCallBack != null)
-                        requestBroadCastCallBack.callBackUrlRequest(request);
-                }
-
-                @Override
-                public void callBackCurlRequest(String request) {
-                    if (requestBroadCastCallBack != null)
-                        requestBroadCastCallBack.callBackCurlRequest(request);
-                }
-            });
-            clientDownloading.downloadBroadCast(scheme, api_root, endpoint_broadcast, channel_id, before_date, after_date, time_zone);
+            ClientDownloading clientDownloading = initializeDownloadBroadcast();
+            downloadBroadcast(clientDownloading, scheme, endpoint_broadcast, channel_id, before_date, after_date, time_zone);
         }
+    }
+
+    public void downloadBroadcast(String channel_id, String before_date, String after_date, String time_zone) {
+        if (api_root != null) {
+            ClientDownloading clientDownloading = initializeDownloadBroadcast();
+            downloadBroadcast(clientDownloading, channel_id, before_date, after_date, time_zone);
+        }
+    }
+
+    private ClientDownloading initializeDownloadBroadcast() {
+        ClientDownloading clientDownloading = new ClientDownloading();
+        clientDownloading.setCallBackDownloadInterface(new ClientDownloading.CallBackDownloadInterface() {
+            @Override
+            public void callBackDownloadedSuccess(String response) {
+                if (downloadBroadCastCallBack != null)
+                    downloadBroadCastCallBack.downloadBroadCastSuccess(response);
+            }
+
+            @Override
+            public void callBackDownloadedError(String error_message) {
+                if (downloadBroadCastCallBack != null)
+                    downloadBroadCastCallBack.downloadBroadCastError(error_message);
+            }
+        });
+        clientDownloading.setCallBackRequestInterface(new ClientDownloading.CallBackRequestInterface() {
+            @Override
+            public void callBackUrlRequest(String request) {
+                if (requestBroadCastCallBack != null)
+                    requestBroadCastCallBack.callBackUrlRequest(request);
+            }
+
+            @Override
+            public void callBackCurlRequest(String request) {
+                if (requestBroadCastCallBack != null)
+                    requestBroadCastCallBack.callBackCurlRequest(request);
+            }
+        });
+        return clientDownloading;
+    }
+
+    private void downloadBroadcast(ClientDownloading clientDownloading, String scheme, String endpoint_broadcast, String channel_id, String before_date, String after_date, String time_zone) {
+        clientDownloading.downloadBroadCast(scheme, api_root, endpoint_broadcast, channel_id, before_date, after_date, time_zone);
+    }
+
+    private void downloadBroadcast(ClientDownloading clientDownloading, String channel_id, String before_date, String after_date, String time_zone) {
+        clientDownloading.downloadBroadCast(scheme, api_root, apiValues.getURL_BROADCAST_PATH(), channel_id, before_date, after_date, time_zone);
     }
 
     public interface DownloadBroadCastCallBack {
@@ -107,37 +164,58 @@ public class LimeApiClient {
     //endregion
 
     //region Download ping
+    @Deprecated //this method has removed on next version
     public void downloadPing(String scheme, String endpoint_ping) {
         if (api_root != null) {
-            ClientDownloading clientDownloading = new ClientDownloading();
-            clientDownloading.setCallBackDownloadInterface(new ClientDownloading.CallBackDownloadInterface() {
-                @Override
-                public void callBackDownloadedSuccess(String response) {
-                    if (downloadPingCallBack != null)
-                        downloadPingCallBack.downloadPingSuccess(response);
-                }
-
-                @Override
-                public void callBackDownloadedError(String error_message) {
-                    if (downloadPingCallBack != null)
-                        downloadPingCallBack.downloadPingError(error_message);
-                }
-            });
-            clientDownloading.setCallBackRequestInterface(new ClientDownloading.CallBackRequestInterface() {
-                @Override
-                public void callBackUrlRequest(String request) {
-                    if (requestPingCallBack != null)
-                        requestPingCallBack.callBackUrlRequest(request);
-                }
-
-                @Override
-                public void callBackCurlRequest(String request) {
-                    if (requestPingCallBack != null)
-                        requestPingCallBack.callBackCurlRequest(request);
-                }
-            });
-            clientDownloading.dowloadPing(scheme, api_root, endpoint_ping);
+            ClientDownloading clientDownloading = initializeDownloadPing();
+            downloadPing(clientDownloading, scheme, endpoint_ping);
         }
+    }
+
+    public void downloadPing() {
+        if (api_root != null) {
+            ClientDownloading clientDownloading = initializeDownloadPing();
+            downloadPing(clientDownloading);
+        }
+    }
+
+    private ClientDownloading initializeDownloadPing() {
+        ClientDownloading clientDownloading = new ClientDownloading();
+        clientDownloading.setCallBackDownloadInterface(new ClientDownloading.CallBackDownloadInterface() {
+            @Override
+            public void callBackDownloadedSuccess(String response) {
+                if (downloadPingCallBack != null)
+                    downloadPingCallBack.downloadPingSuccess(response);
+            }
+
+            @Override
+            public void callBackDownloadedError(String error_message) {
+                if (downloadPingCallBack != null)
+                    downloadPingCallBack.downloadPingError(error_message);
+            }
+        });
+        clientDownloading.setCallBackRequestInterface(new ClientDownloading.CallBackRequestInterface() {
+            @Override
+            public void callBackUrlRequest(String request) {
+                if (requestPingCallBack != null)
+                    requestPingCallBack.callBackUrlRequest(request);
+            }
+
+            @Override
+            public void callBackCurlRequest(String request) {
+                if (requestPingCallBack != null)
+                    requestPingCallBack.callBackCurlRequest(request);
+            }
+        });
+        return clientDownloading;
+    }
+
+    private void downloadPing(ClientDownloading clientDownloading, String scheme, String endpoint_ping) {
+        clientDownloading.dowloadPing(scheme, api_root, endpoint_ping);
+    }
+
+    private void downloadPing(ClientDownloading clientDownloading) {
+        clientDownloading.dowloadPing(scheme, api_root, apiValues.getURL_PING_PATH());
     }
 
     public interface DownloadPingCallBack {
