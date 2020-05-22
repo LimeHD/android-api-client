@@ -44,6 +44,8 @@ public class PingDownloading {
                     @Override
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                         if (!response.isSuccessful()) {
+                            if (callBackPingInterface != null)
+                                callBackPingInterface.callBackError(("Unexpected code " + response));
                             throw new IOException("Unexpected code " + response);
                         }
                         if (callBackPingInterface != null)

@@ -46,6 +46,8 @@ public class ChannelListDownloading {
                     @Override
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                         if (!response.isSuccessful()) {
+                            if (callBackDownloadChannelListInterface != null)
+                                callBackDownloadChannelListInterface.callBackDownloadedChannelListError(("Unexpected code " + response));
                             throw new IOException("Unexpected code " + response);
                         }
                         if (callBackDownloadChannelListInterface != null)

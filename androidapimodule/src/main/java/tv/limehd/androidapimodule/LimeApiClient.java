@@ -197,7 +197,7 @@ public class LimeApiClient {
     public void downloadSession() {
         if (api_root != null) {
             ClientDownloading clientDownloading = initializeDownloadSession();
-            downloadPing(clientDownloading);
+            downloadSession(clientDownloading);
         }
     }
 
@@ -233,7 +233,7 @@ public class LimeApiClient {
     }
 
     private void downloadSession(ClientDownloading clientDownloading) {
-        clientDownloading.downloadPing(scheme, api_root, apiValues.getURL_SESSION_PATH(), application_id, x_access_token);
+        clientDownloading.downloadSession(scheme, api_root, apiValues.getURL_SESSION_PATH(), application_id, x_access_token);
     }
 
     public interface DownloadSessionCallBack {

@@ -12,4 +12,6 @@ class ApiValues{
     val URL_BROADCAST_PATH = "v1/broadcasts"
     val URL_PING_PATH = "v1/ping"
     val URL_SESSION_PATH = "v1/session"
+
+    val APP_ID_KEY = "app_id"
 }

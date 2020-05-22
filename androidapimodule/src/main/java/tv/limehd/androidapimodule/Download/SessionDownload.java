@@ -1,10 +1,10 @@
 package tv.limehd.androidapimodule.Download;
 
 import java.io.IOException;
-
 import androidx.annotation.NonNull;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -19,7 +19,7 @@ public class SessionDownload {
         apiValues = new ApiValues();
     }
 
-    public void sessionDownloadRequest(final String scheme, final String api_root, final String endpoint_session, String application_id, final String x_access_token) {
+    public void sessionDownloadRequest(final String scheme, final String api_root, final String endpoint_session, final String application_id, final String x_access_token) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -31,9 +31,17 @@ public class SessionDownload {
                     }
                 });
                 OkHttpClient client = new OkHttpClient(limeCurlBuilder);
-                Request request = new Request.Builder()
-                        .url(LimeUri.getUriSession(scheme, api_root, endpoint_session))
-                        .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE()).addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token).build();
+
+                FormBody.Builder formBodyBuilder = new FormBody.Builder();
+                formBodyBuilder.add(apiValues.getAPP_ID_KEY(), application_id);
+                FormBody formBody = formBodyBuilder.build();
+
+
+                Request.Builder builder = new Request.Builder().addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE())
+                        .addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token).url(LimeUri.getUriSession(scheme, api_root, endpoint_session));
+                builder.post(formBody);
+                Request request = builder.build();
+
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -44,6 +52,8 @@ public class SessionDownload {
                     @Override
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                         if (!response.isSuccessful()) {
+                            if (callBackSessionInterface != null)
+                                callBackSessionInterface.callBackError(("Unexpected code " + response));
                             throw new IOException("Unexpected code " + response);
                         }
                         if (callBackSessionInterface != null)

@@ -132,6 +132,7 @@ public class ClientDownloading {
                     callBackRequestInterface.callBackCurlRequest(request);
             }
         });
+        sessionDownload.sessionDownloadRequest(scheme, api_root, endpoint_session, application_id, x_access_token);
     }
 
     public interface CallBackDownloadInterface {

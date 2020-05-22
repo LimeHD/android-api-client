@@ -48,6 +48,8 @@ public class BroadcastDownloading {
                     @Override
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                         if (!response.isSuccessful()) {
+                            if (callBackDownloadBroadCastInterface != null)
+                                callBackDownloadBroadCastInterface.callBackDownloadedBroadCastError(("Unexpected code " + response));
                             throw new IOException("Unexpected code " + response);
                         }
                         if (callBackDownloadBroadCastInterface != null)
