@@ -1,16 +1,15 @@
-package tv.limehd.androidapimodule.Download;
+package tv.limehd.androidapimodule.Download.Client;
 
-import tv.limehd.androidapimodule.Values.ApiValues;
+import tv.limehd.androidapimodule.Download.BroadcastDownloading;
+import tv.limehd.androidapimodule.Download.ChannelListDownloading;
+import tv.limehd.androidapimodule.Download.PingDownloading;
 
 public class ClientDownloading {
 
-    private ApiValues apiValues;
-
     public ClientDownloading() {
-        apiValues = new ApiValues();
     }
 
-    public void downloadChannelList(String scheme, String api_root, String endpoint_channels) {
+    public void downloadChannelList(String scheme, String api_root, String endpoint_channels, String application_id, String x_access_token) {
         ChannelListDownloading channelListDownloading = new ChannelListDownloading();
         channelListDownloading.setCallBackDownloadChannelListInterface(new ChannelListDownloading.CallBackDownloadChannelListInterface() {
             @Override
@@ -38,11 +37,11 @@ public class ClientDownloading {
                     callBackRequestInterface.callBackCurlRequest(request);
             }
         });
-        channelListDownloading.loadingRequestChannelList(scheme, api_root, endpoint_channels);
+        channelListDownloading.loadingRequestChannelList(scheme, api_root, endpoint_channels, application_id, x_access_token);
     }
 
     public void downloadBroadCast(String scheme, String api_root, String endpoint_broadcast
-            , String channel_id, String before_date, String after_date, String time_zone) {
+            , String channel_id, String before_date, String after_date, String time_zone, String application_id, String x_access_token) {
         BroadcastDownloading broadcastDownloading = new BroadcastDownloading();
         broadcastDownloading.setCallBackDownloadBroadCastInterface(new BroadcastDownloading.CallBackDownloadBroadCastInterface() {
             @Override
@@ -70,12 +69,12 @@ public class ClientDownloading {
                     callBackRequestInterface.callBackCurlRequest(request);
             }
         });
-        broadcastDownloading.loadingRequestBroadCast(scheme, api_root, endpoint_broadcast, channel_id, before_date, after_date, time_zone);
+        broadcastDownloading.loadingRequestBroadCast(scheme, api_root, endpoint_broadcast, channel_id, before_date, after_date, time_zone, application_id, x_access_token);
     }
 
-    public void dowloadPing(String scheme, String api_root, String endpoint_ping) {
-        PingApi pingApi = new PingApi();
-        pingApi.setCallBackPingInterface(new PingApi.CallBackPingInterface() {
+    public void downloadPing(String scheme, String api_root, String endpoint_ping, String application_id, String x_access_token) {
+        PingDownloading pingDownloading = new PingDownloading();
+        pingDownloading.setCallBackPingInterface(new PingDownloading.CallBackPingInterface() {
             @Override
             public void callBackSuccess(String response) {
                 if (callBackDownloadInterface != null)
@@ -88,7 +87,7 @@ public class ClientDownloading {
                     callBackDownloadInterface.callBackDownloadedError(message);
             }
         });
-        pingApi.setCallBackPingRequestInterface(new PingApi.CallBackPingRequestInterface() {
+        pingDownloading.setCallBackPingRequestInterface(new PingDownloading.CallBackPingRequestInterface() {
             @Override
             public void callBackUrlRequest(String request) {
                 if (callBackRequestInterface != null)
@@ -101,7 +100,7 @@ public class ClientDownloading {
                     callBackRequestInterface.callBackCurlRequest(request);
             }
         });
-        pingApi.pingApiRequest(scheme, api_root, endpoint_ping);
+        pingDownloading.pingApiRequest(scheme, api_root, endpoint_ping, application_id, x_access_token);
     }
 
     public interface CallBackDownloadInterface {

@@ -26,6 +26,7 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
     private LimeApiClient limeApiClient;
     //рут апи
     private String api_root = "api.iptv2021.com";
+    private String x_access_token = "";
     //экземпляр апи значений
     private ApiValues apiValues;
     //для примера ид телеканала с телепрограммой
@@ -135,8 +136,7 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
         apiValues = new ApiValues();
 
         //инициализация апи клиента
-        //limeApiClient = new LimeApiClient(api_root);
-        limeApiClient = new LimeApiClient(api_root, apiValues.getSCHEME_HTTP(), getPackageName());
+        limeApiClient = new LimeApiClient(api_root, apiValues.getSCHEME_HTTP(), getPackageName(), x_access_token);
 
 
         limeApiClient.setDownloadChannelListCallBack(this);
@@ -156,14 +156,12 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
             @Override
             public void onClickPing() {
                 //запрос пинга
-                //limeApiClient.downloadPing(apiValues.getSCHEME_HTTP(), apiValues.getURL_PING_PATH());
                 limeApiClient.downloadPing();
             }
 
             @Override
             public void onClickDownloadBroadcast() {
                 //запрос списка телепередач для телеканала
-                //limeApiClient.downloadBroadcast(apiValues.getSCHEME_HTTP(), apiValues.getURL_BROADCAST_PATH(), example_channel_id, LimeRFC.timeStampToRFC(before_date), LimeRFC.timeStampToRFC(after_date), example_time_zone);
                 limeApiClient.downloadBroadcast(example_channel_id, LimeRFC.timeStampToRFC(before_date), LimeRFC.timeStampToRFC(after_date), example_time_zone);
 
             }
@@ -171,7 +169,6 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
             @Override
             public void onClickDownloadChannelList() {
                 //запрос списка телеканалов
-                //limeApiClient.downloadChannelList(apiValues.getSCHEME_HTTP(), apiValues.getURL_CHANNELS_GRECE_PATH());
                 limeApiClient.downloadChannelList();
             }
         });

@@ -22,7 +22,7 @@ public class BroadcastDownloading {
     }
 
     public void loadingRequestBroadCast(final String scheme, final String api_root, final String endpoint_broadcast
-            , final String channel_id, final String before_date, final String after_date, final String time_zone) {
+            , final String channel_id, final String before_date, final String after_date, final String time_zone, String application_id, final String x_access_token) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -37,7 +37,7 @@ public class BroadcastDownloading {
                 Request request = new Request.Builder()
                         .url(LimeUri.getUriBroadcast(scheme, api_root, endpoint_broadcast, channel_id
                                 , before_date, after_date, time_zone))
-                        .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE()).build();
+                        .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE()).addHeader(apiValues.getACCEPT_KEY(), x_access_token).build();
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {

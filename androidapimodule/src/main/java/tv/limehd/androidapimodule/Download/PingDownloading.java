@@ -12,14 +12,14 @@ import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.LimeUri;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
-public class PingApi {
+public class PingDownloading {
     private ApiValues apiValues;
 
-    public PingApi() {
+    public PingDownloading() {
         apiValues = new ApiValues();
     }
 
-    public void pingApiRequest(final String scheme, final String api_root, final String endpoint_ping) {
+    public void pingApiRequest(final String scheme, final String api_root, final String endpoint_ping, String application_id, final String x_access_token) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -33,7 +33,7 @@ public class PingApi {
                 OkHttpClient client = new OkHttpClient(limeCurlBuilder);
                 Request request = new Request.Builder()
                         .url(LimeUri.getUriChannelList(scheme, api_root, endpoint_ping))
-                        .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE()).build();
+                        .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE()).addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token).build();
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {

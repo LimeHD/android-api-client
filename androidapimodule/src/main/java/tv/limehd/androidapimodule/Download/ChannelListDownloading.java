@@ -21,7 +21,7 @@ public class ChannelListDownloading {
         apiValues = new ApiValues();
     }
 
-    public void loadingRequestChannelList(final String scheme, final String api_root, final String endpoint_channels) {
+    public void loadingRequestChannelList(final String scheme, final String api_root, final String endpoint_channels, String application_id, final String x_access_token) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -35,7 +35,7 @@ public class ChannelListDownloading {
                 OkHttpClient client = new OkHttpClient(limeCurlBuilder);
                 Request request = new Request.Builder()
                         .url(LimeUri.getUriChannelList(scheme, api_root, endpoint_channels))
-                        .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE()).build();
+                        .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE()).addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token).build();
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {

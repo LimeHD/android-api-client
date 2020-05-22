@@ -1,6 +1,6 @@
 package tv.limehd.androidapimodule;
 
-import tv.limehd.androidapimodule.Download.ClientDownloading;
+import tv.limehd.androidapimodule.Download.Client.ClientDownloading;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
 public class LimeApiClient {
@@ -9,20 +9,14 @@ public class LimeApiClient {
     private String application_id;
     private String scheme;
     private ApiValues apiValues;
+    private String x_access_token;
 
-    @Deprecated
-    public LimeApiClient(String apiRoot) {
-        apiValues = new ApiValues();
-        this.api_root = apiRoot;
-        this.scheme = apiValues.getSCHEME_HTTP();
-
-    }
-
-    public LimeApiClient(String api_root, String scheme, String application_id) {
+    public LimeApiClient(String api_root, String scheme, String application_id, String x_access_token) {
         apiValues = new ApiValues();
         this.api_root = api_root;
         this.scheme = scheme;
         this.application_id = application_id;
+        this.x_access_token = x_access_token;
     }
 
     /*Download channel List*/
@@ -67,7 +61,7 @@ public class LimeApiClient {
     }
 
     private void downloadChannelList(ClientDownloading clientDownloading) {
-        clientDownloading.downloadChannelList(scheme, api_root, apiValues.getURL_CHANNELS_GRECE_PATH());
+        clientDownloading.downloadChannelList(scheme, api_root, apiValues.getURL_CHANNELS_GRECE_PATH(), application_id, x_access_token);
     }
 
     public interface DownloadChannelListCallBack {
@@ -125,7 +119,7 @@ public class LimeApiClient {
     }
 
     private void downloadBroadcast(ClientDownloading clientDownloading, String channel_id, String before_date, String after_date, String time_zone) {
-        clientDownloading.downloadBroadCast(scheme, api_root, apiValues.getURL_BROADCAST_PATH(), channel_id, before_date, after_date, time_zone);
+        clientDownloading.downloadBroadCast(scheme, api_root, apiValues.getURL_BROADCAST_PATH(), channel_id, before_date, after_date, time_zone, application_id, x_access_token);
     }
 
     public interface DownloadBroadCastCallBack {
@@ -182,7 +176,7 @@ public class LimeApiClient {
     }
 
     private void downloadPing(ClientDownloading clientDownloading) {
-        clientDownloading.dowloadPing(scheme, api_root, apiValues.getURL_PING_PATH());
+        clientDownloading.downloadPing(scheme, api_root, apiValues.getURL_PING_PATH(), application_id, x_access_token);
     }
 
     public interface DownloadPingCallBack {
