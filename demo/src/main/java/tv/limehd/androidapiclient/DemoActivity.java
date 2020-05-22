@@ -27,6 +27,7 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
     //рут апи
     private String api_root = "api.iptv2021.com";
     private String x_access_token = "";
+    private String application_id = "";
     //экземпляр апи значений
     private ApiValues apiValues;
     //для примера ид телеканала с телепрограммой
@@ -136,7 +137,7 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
         apiValues = new ApiValues();
 
         //инициализация апи клиента
-        limeApiClient = new LimeApiClient(api_root, apiValues.getSCHEME_HTTP(), getPackageName(), x_access_token);
+        limeApiClient = new LimeApiClient(api_root, apiValues.getSCHEME_HTTP(), application_id, x_access_token);
 
 
         limeApiClient.setDownloadChannelListCallBack(this);

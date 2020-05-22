@@ -192,6 +192,63 @@ public class LimeApiClient {
     }
     //endregion
 
+    //region Download session
+
+    public void downloadSession() {
+        if (api_root != null) {
+            ClientDownloading clientDownloading = initializeDownloadSession();
+            downloadPing(clientDownloading);
+        }
+    }
+
+    private ClientDownloading initializeDownloadSession() {
+        ClientDownloading clientDownloading = new ClientDownloading();
+        clientDownloading.setCallBackDownloadInterface(new ClientDownloading.CallBackDownloadInterface() {
+            @Override
+            public void callBackDownloadedSuccess(String response) {
+                if (downloadSessionCallBack != null)
+                    downloadSessionCallBack.downloadSessionSuccess(response);
+            }
+
+            @Override
+            public void callBackDownloadedError(String error_message) {
+                if (downloadSessionCallBack != null)
+                    downloadSessionCallBack.downloadSessionError(error_message);
+            }
+        });
+        clientDownloading.setCallBackRequestInterface(new ClientDownloading.CallBackRequestInterface() {
+            @Override
+            public void callBackUrlRequest(String request) {
+                if (requestSession != null)
+                    requestSession.callBackUrlRequest(request);
+            }
+
+            @Override
+            public void callBackCurlRequest(String request) {
+                if (requestSession != null)
+                    requestSession.callBackCurlRequest(request);
+            }
+        });
+        return clientDownloading;
+    }
+
+    private void downloadSession(ClientDownloading clientDownloading) {
+        clientDownloading.downloadPing(scheme, api_root, apiValues.getURL_SESSION_PATH(), application_id, x_access_token);
+    }
+
+    public interface DownloadSessionCallBack {
+        void downloadSessionSuccess(String response);
+
+        void downloadSessionError(String message);
+    }
+
+    private DownloadSessionCallBack downloadSessionCallBack;
+
+    public void setDownloadSessionCallBack(DownloadSessionCallBack downloadSessionCallBack) {
+        this.downloadSessionCallBack = downloadSessionCallBack;
+    }
+    //endregion
+
     //region RequestCallBack
     public interface RequestCallBack {
         void callBackUrlRequest(String request);
@@ -202,6 +259,7 @@ public class LimeApiClient {
     private RequestCallBack requestBroadCastCallBack;
     private RequestCallBack requestPingCallBack;
     private RequestCallBack requestChannelList;
+    private RequestCallBack requestSession;
 
     public void setRequestBroadCastCallBack(RequestCallBack requestBroadCastCallBack) {
         this.requestBroadCastCallBack = requestBroadCastCallBack;
@@ -213,6 +271,10 @@ public class LimeApiClient {
 
     public void setRequestChannelList(RequestCallBack requestChannelList) {
         this.requestChannelList = requestChannelList;
+    }
+
+    public void setRequestSession(RequestCallBack requestSession){
+        this.requestSession = requestSession;
     }
     //endregion
 }

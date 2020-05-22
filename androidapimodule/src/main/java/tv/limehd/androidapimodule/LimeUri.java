@@ -28,6 +28,20 @@ public class LimeUri {
                 .appendQueryParameter(FINISH_AT, after_date).build().toString();
     }
 
+    public static String getUriSession(String scheme, String api_root, String endpoint_session){
+        return new Uri.Builder()
+                .scheme(scheme)
+                .authority(api_root)
+                .appendEncodedPath(endpoint_session).build().toString();
+    }
+
+    public static String getUriPing(String scheme, String api_root, String endpoint_ping) {
+        return new Uri.Builder()
+                .scheme(scheme)
+                .authority(api_root)
+                .appendEncodedPath(endpoint_ping).build().toString();
+    }
+
     public static String getUriTranslation(String scheme, String api_root, String url_streaming
             , String translation_id, String redirect_path) {
         return new Uri.Builder()

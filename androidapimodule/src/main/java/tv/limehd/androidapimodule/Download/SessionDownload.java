@@ -12,33 +12,33 @@ import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.LimeUri;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
-public class PingDownloading {
+public class SessionDownload {
     private ApiValues apiValues;
 
-    public PingDownloading() {
+    public SessionDownload() {
         apiValues = new ApiValues();
     }
 
-    public void pingDownloadRequest(final String scheme, final String api_root, final String endpoint_ping, String application_id, final String x_access_token) {
+    public void sessionDownloadRequest(final String scheme, final String api_root, final String endpoint_session, String application_id, final String x_access_token) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 LimeCurlBuilder.Builder limeCurlBuilder = new LimeCurlBuilder().setLogCurlInterface(new LimeCurlBuilder.LogCurlInterface() {
                     @Override
                     public void logCurl(String message) {
-                        if (callBackPingRequestInterface != null)
-                            callBackPingRequestInterface.callBackCurlRequest(message);
+                        if (callBackSessionRequestInterface != null)
+                            callBackSessionRequestInterface.callBackCurlRequest(message);
                     }
                 });
                 OkHttpClient client = new OkHttpClient(limeCurlBuilder);
                 Request request = new Request.Builder()
-                        .url(LimeUri.getUriPing(scheme, api_root, endpoint_ping))
+                        .url(LimeUri.getUriSession(scheme, api_root, endpoint_session))
                         .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE()).addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token).build();
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                        if (callBackPingInterface != null)
-                            callBackPingInterface.callBackError(e.getMessage());
+                        if (callBackSessionInterface != null)
+                            callBackSessionInterface.callBackError(e.getMessage());
                     }
 
                     @Override
@@ -46,35 +46,35 @@ public class PingDownloading {
                         if (!response.isSuccessful()) {
                             throw new IOException("Unexpected code " + response);
                         }
-                        if (callBackPingInterface != null)
-                            callBackPingInterface.callBackSuccess(response.body().string());
+                        if (callBackSessionInterface != null)
+                            callBackSessionInterface.callBackSuccess(response.body().string());
                     }
                 });
             }
         }).start();
-        if (callBackPingRequestInterface != null)
-            callBackPingRequestInterface.callBackUrlRequest(LimeUri.getUriPing(scheme, api_root, endpoint_ping));
+        if (callBackSessionRequestInterface != null)
+            callBackSessionRequestInterface.callBackUrlRequest(LimeUri.getUriSession(scheme, api_root, endpoint_session));
     }
 
-    public interface CallBackPingInterface {
+    public interface CallBackSessionInterface {
         void callBackSuccess(String response);
 
         void callBackError(String message);
     }
 
-    public interface CallBackPingRequestInterface {
+    public interface CallBackSessionRequestInterface {
         void callBackUrlRequest(String request);
         void callBackCurlRequest(String request);
     }
 
-    private CallBackPingInterface callBackPingInterface;
-    private CallBackPingRequestInterface callBackPingRequestInterface;
+    private CallBackSessionInterface callBackSessionInterface;
+    private CallBackSessionRequestInterface callBackSessionRequestInterface;
 
-    public void setCallBackPingInterface(CallBackPingInterface callBackPingInterface) {
-        this.callBackPingInterface = callBackPingInterface;
+    public void setCallBackSessionInterface(CallBackSessionInterface callBackSessionInterface) {
+        this.callBackSessionInterface = callBackSessionInterface;
     }
 
-    public void setCallBackPingRequestInterface(CallBackPingRequestInterface callBackPingRequestInterface) {
-        this.callBackPingRequestInterface = callBackPingRequestInterface;
+    public void setCallBackSessionRequestInterface(CallBackSessionRequestInterface callBackSessionRequestInterface) {
+        this.callBackSessionRequestInterface = callBackSessionRequestInterface;
     }
 }

@@ -3,6 +3,7 @@ package tv.limehd.androidapimodule.Download.Client;
 import tv.limehd.androidapimodule.Download.BroadcastDownloading;
 import tv.limehd.androidapimodule.Download.ChannelListDownloading;
 import tv.limehd.androidapimodule.Download.PingDownloading;
+import tv.limehd.androidapimodule.Download.SessionDownload;
 
 public class ClientDownloading {
 
@@ -100,7 +101,37 @@ public class ClientDownloading {
                     callBackRequestInterface.callBackCurlRequest(request);
             }
         });
-        pingDownloading.pingApiRequest(scheme, api_root, endpoint_ping, application_id, x_access_token);
+        pingDownloading.pingDownloadRequest(scheme, api_root, endpoint_ping, application_id, x_access_token);
+    }
+
+    public void downloadSession(String scheme, String api_root, String endpoint_session, String application_id, String x_access_token){
+        SessionDownload sessionDownload = new SessionDownload();
+        sessionDownload.setCallBackSessionInterface(new SessionDownload.CallBackSessionInterface() {
+            @Override
+            public void callBackSuccess(String response) {
+                if (callBackDownloadInterface != null)
+                    callBackDownloadInterface.callBackDownloadedSuccess(response);
+            }
+
+            @Override
+            public void callBackError(String message) {
+                if (callBackDownloadInterface != null)
+                    callBackDownloadInterface.callBackDownloadedError(message);
+            }
+        });
+        sessionDownload.setCallBackSessionRequestInterface(new SessionDownload.CallBackSessionRequestInterface() {
+            @Override
+            public void callBackUrlRequest(String request) {
+                if (callBackRequestInterface != null)
+                    callBackRequestInterface.callBackUrlRequest(request);
+            }
+
+            @Override
+            public void callBackCurlRequest(String request) {
+                if (callBackRequestInterface != null)
+                    callBackRequestInterface.callBackCurlRequest(request);
+            }
+        });
     }
 
     public interface CallBackDownloadInterface {
