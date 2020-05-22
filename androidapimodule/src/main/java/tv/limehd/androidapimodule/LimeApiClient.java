@@ -27,13 +27,6 @@ public class LimeApiClient {
 
     /*Download channel List*/
     //region Download channel List
-    @Deprecated //this method has removed on next version
-    public void downloadChannelList(String scheme, String endpoint_channels) {
-        if (api_root != null) {
-            ClientDownloading clientDownloading = initializeDownloadChannelList();
-            downloadChannelList(clientDownloading, scheme, endpoint_channels);
-        }
-    }
 
     public void downloadChannelList() {
         if (api_root != null) {
@@ -73,10 +66,6 @@ public class LimeApiClient {
         return clientDownloading;
     }
 
-    private void downloadChannelList(ClientDownloading clientDownloading, String scheme, String endpoint_channels) {
-        clientDownloading.downloadChannelList(scheme, api_root, endpoint_channels);
-    }
-
     private void downloadChannelList(ClientDownloading clientDownloading) {
         clientDownloading.downloadChannelList(scheme, api_root, apiValues.getURL_CHANNELS_GRECE_PATH());
     }
@@ -96,13 +85,6 @@ public class LimeApiClient {
 
     /*Download broadcast*/
     //region DownloadBroadcast
-    @Deprecated //this method has removed on next version
-    public void downloadBroadcast(String scheme, String endpoint_broadcast, String channel_id, String before_date, String after_date, String time_zone) {
-        if (api_root != null) {
-            ClientDownloading clientDownloading = initializeDownloadBroadcast();
-            downloadBroadcast(clientDownloading, scheme, endpoint_broadcast, channel_id, before_date, after_date, time_zone);
-        }
-    }
 
     public void downloadBroadcast(String channel_id, String before_date, String after_date, String time_zone) {
         if (api_root != null) {
@@ -142,10 +124,6 @@ public class LimeApiClient {
         return clientDownloading;
     }
 
-    private void downloadBroadcast(ClientDownloading clientDownloading, String scheme, String endpoint_broadcast, String channel_id, String before_date, String after_date, String time_zone) {
-        clientDownloading.downloadBroadCast(scheme, api_root, endpoint_broadcast, channel_id, before_date, after_date, time_zone);
-    }
-
     private void downloadBroadcast(ClientDownloading clientDownloading, String channel_id, String before_date, String after_date, String time_zone) {
         clientDownloading.downloadBroadCast(scheme, api_root, apiValues.getURL_BROADCAST_PATH(), channel_id, before_date, after_date, time_zone);
     }
@@ -164,13 +142,6 @@ public class LimeApiClient {
     //endregion
 
     //region Download ping
-    @Deprecated //this method has removed on next version
-    public void downloadPing(String scheme, String endpoint_ping) {
-        if (api_root != null) {
-            ClientDownloading clientDownloading = initializeDownloadPing();
-            downloadPing(clientDownloading, scheme, endpoint_ping);
-        }
-    }
 
     public void downloadPing() {
         if (api_root != null) {
@@ -208,10 +179,6 @@ public class LimeApiClient {
             }
         });
         return clientDownloading;
-    }
-
-    private void downloadPing(ClientDownloading clientDownloading, String scheme, String endpoint_ping) {
-        clientDownloading.dowloadPing(scheme, api_root, endpoint_ping);
     }
 
     private void downloadPing(ClientDownloading clientDownloading) {
