@@ -32,7 +32,8 @@ import tv.limehd.androidapimodule.LimeApiClient;
 ```java
 String api_root = API_ROOT;
 String package_name = getPackageName();
-LimeApiClient limeApiClient = new LimeApiClient(api_root, scheme, package_name);
+String example_x_access_token = "example_x_access_token";
+LimeApiClient limeApiClient = new LimeApiClient(api_root, scheme, package_name, example_x_access_token);
 ApiValues apiValues = new ApiValues();
 ```
 ### Получение списка каналов
@@ -71,6 +72,23 @@ limeApiClient.setDownloadBroadCastCallBack(new LimeApiClient.DownloadBroadCastCa
     public void downloadBroadCastError(String message) {
 	// ошибка
     }
+});
+```
+
+### Запрос сессии
+Пример запроса
+``` java
+limeApiClient.downloadSession();
+limeApiClient.setDownloadSessionCallBack(new LimeApiClient.DownloadSessionCallBack() {
+     @Override
+     public void downloadSessionSuccess(String response) {
+         // ответ
+     }
+
+     @Override
+     public void downloadSessionError(String message) {
+	 // ошика
+     }
 });
 ```
 
