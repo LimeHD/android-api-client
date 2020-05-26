@@ -61,7 +61,10 @@ String after_date = LimeRFC.timeStampToRFC(after_date_timestamp);
 Пример запроса
 ``` java
 String example_channel_id = "105";
-limeApiClient.downloadBroadcast(example_channel_id, before_date, after_date, "Asia/Kolkata");
+//Тайм зона в формате UTC offset
+String example_time_zone = "UTC+03:00";
+
+limeApiClient.downloadBroadcast(example_channel_id, before_date, after_date, example_time_zone);
 limeApiClient.setDownloadBroadCastCallBack(new LimeApiClient.DownloadBroadCastCallBack() {
     @Override
     public void downloadBroadCastSuccess(String response) {
