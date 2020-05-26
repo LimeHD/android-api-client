@@ -4,80 +4,16 @@
     android:layout_height="match_parent"
     android:id="@+id/root">
 
-    <RelativeLayout
-        android:id="@+id/helloLimeApi"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#CCCCCC">
-        <TextView
-            android:layout_margin="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/hello_lime_api"
-            android:textSize="15sp"
-            />
-    </RelativeLayout>
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_below="@id/helloLimeApi"
-        android:layout_above="@+id/logs"
-        android:id="@+id/recyclerView"
+        android:layout_above="@+id/recyclerViewLogs"
+        android:id="@+id/recyclerViewButtons"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFFFF" />
-    <RelativeLayout
-        android:id="@+id/logs"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewLogs"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="400dp">
-        <TextView
-            android:layout_centerHorizontal="true"
-            android:id="@+id/answer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/answer"
-            android:textIsSelectable="true"/>
-        <EditText
-            android:id="@+id/textAnswer"
-            android:layout_below="@+id/answer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/answer"
-            android:lines="4"
-            android:cursorVisible="false"
-            android:editable="false"/>
-        <TextView
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/textAnswer"
-            android:id="@+id/curl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/curl"
-            android:textIsSelectable="true"/>
-        <EditText
-            android:id="@+id/textCurl"
-            android:layout_below="@+id/textAnswer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/curl"
-            android:lines="4"
-            android:cursorVisible="false"
-            android:editable="false"/>
-        <TextView
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/textCurl"
-            android:id="@+id/url"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/url_request"
-            android:textIsSelectable="true"/>
-        <EditText
-            android:id="@+id/textUrl"
-            android:layout_below="@+id/url"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/url_request"
-            android:lines="4"
-            android:cursorVisible="false"
-            android:editable="false"/>
-    </RelativeLayout>/
+    </androidx.recyclerview.widget.RecyclerView>/
 </RelativeLayout>

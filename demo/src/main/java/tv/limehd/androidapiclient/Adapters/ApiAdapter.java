@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,16 +21,15 @@ public class ApiAdapter extends RecyclerView.Adapter<ApiAdapter.ViewHolder> {
         functionNames = new String[]{
                 context.getResources().getString(R.string.button_ping),
                 context.getResources().getString(R.string.button_download_channel_list),
-                context.getResources().getString(R.string.button_download_broadcast)
+                context.getResources().getString(R.string.button_download_broadcast),
+                context.getResources().getString(R.string.button_download_sessions),
         };
-
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View rootButtonItemView = layoutInflater.inflate(R.layout.item_recycler_button, parent, false);
-        return new ViewHolder(rootButtonItemView);
+        return new ViewHolder(layoutInflater.inflate(R.layout.item_recycler_button, parent, false));
     }
 
     @Override
@@ -49,16 +49,18 @@ public class ApiAdapter extends RecyclerView.Adapter<ApiAdapter.ViewHolder> {
                         case 2:
                             apiAdapterInterface.onClickDownloadBroadcast();
                             break;
+                        case 3:
+                            apiAdapterInterface.onClickDownloadSessions();
+                            break;
                     }
                 }
             }
         });
-
     }
 
     @Override
     public int getItemCount() {
-        return 3;
+        return functionNames.length;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -66,7 +68,7 @@ public class ApiAdapter extends RecyclerView.Adapter<ApiAdapter.ViewHolder> {
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            button = itemView.findViewById(R.id.button);
+            button = itemView.findViewById(R.id.button_save_data);
         }
     }
 
@@ -82,5 +84,7 @@ public class ApiAdapter extends RecyclerView.Adapter<ApiAdapter.ViewHolder> {
         void onClickDownloadBroadcast();
 
         void onClickDownloadChannelList();
+
+        void onClickDownloadSessions();
     }
 }
