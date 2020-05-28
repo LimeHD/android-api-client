@@ -19,6 +19,13 @@ public class LimeApiClient {
         this.x_access_token = x_access_token;
     }
 
+    public void updateLimeApiClientData(String api_root, String scheme, String application_id, String x_access_token) {
+        this.api_root = api_root;
+        this.scheme = scheme;
+        this.application_id = application_id;
+        this.x_access_token = x_access_token;
+    }
+
     /*Download channel List*/
     //region Download channel List
 
@@ -273,7 +280,7 @@ public class LimeApiClient {
         this.requestChannelList = requestChannelList;
     }
 
-    public void setRequestSession(RequestCallBack requestSession){
+    public void setRequestSession(RequestCallBack requestSession) {
         this.requestSession = requestSession;
     }
     //endregion
