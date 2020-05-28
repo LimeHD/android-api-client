@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="10dp">
     <Button
-        android:id="@+id/button"
+        android:id="@+id/button_save_data"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:text="Button"

@@ -2,10 +2,6 @@
     <string name="app_name">Android Api Client</string>
     <string name="hello_lime_api">Hello lime api</string>
 
-    <string name="answer_was_copied">answer was copied</string>
-    <string name="curl_was_copied">curl was copied</string>
-    <string name="url_request_was_copied">url request was copied</string>
-
     <string name="answer">Answer</string>
     <string name="curl">Curl</string>
     <string name="url_request">Url Request</string>
@@ -13,4 +9,9 @@
     <string name="button_ping">Ping</string>
     <string name="button_download_channel_list">Download Channel List</string>
     <string name="button_download_broadcast">Download Broadcast</string>
+    <string name="api_root">api root</string>
+    <string name="x_access_token">x access token</string>
+    <string name="application_id">application id</string>
+    <string name="button_download_sessions">Download Sessions</string>
+
 </resources>

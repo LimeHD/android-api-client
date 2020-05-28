@@ -1,31 +1,27 @@
 package tv.limehd.androidapiclient;
 
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import tv.limehd.androidapiclient.Adapters.ApiAdapter;
+import tv.limehd.androidapiclient.Adapters.LogsAdapter;
 import tv.limehd.androidapimodule.LimeApiClient;
 import tv.limehd.androidapimodule.LimeRFC;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
-public class DemoActivity extends Activity implements LimeApiClient.DownloadChannelListCallBack, LimeApiClient.DownloadBroadCastCallBack, LimeApiClient.DownloadPingCallBack {
+public class DemoActivity extends Activity implements LimeApiClient.DownloadChannelListCallBack, LimeApiClient.DownloadBroadCastCallBack, LimeApiClient.DownloadPingCallBack,
+        LimeApiClient.DownloadSessionCallBack {
 
     private String LIME_LOG = "limeapilog";
     //экземпляр апи клиента для запросов
     private LimeApiClient limeApiClient;
     //рут апи
-    private String api_root = "api.iptv2021.com";
+    private String api_root = "";
     private String x_access_token = "";
     private String application_id = "";
     //экземпляр апи значений
@@ -37,47 +33,15 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
     //для примера тайм зона в формате UTC offset
     private String example_time_zone = "UTC+03:00";
 
-    private RecyclerView recyclerView;
-    private EditText answerTextView;
-    private EditText curlTextView;
-    private EditText urlTextView;
+    private RecyclerView recyclerButtons;
+    private RecyclerView recyclerLogs;
+    ApiAdapter apiAdapter;
+    LogsAdapter logsAdapter;
 
 
     private void findViewId() {
-        answerTextView = findViewById(R.id.textAnswer);
-        curlTextView = findViewById(R.id.textCurl);
-        urlTextView = findViewById(R.id.textUrl);
-        recyclerView = findViewById(R.id.recyclerView);
-    }
-
-    private void setOnClickListener() {
-        answerTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ClipboardManager clipboard = (ClipboardManager) getApplication().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("", answerTextView.getText().toString());
-                clipboard.setPrimaryClip(clip);
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.answer_was_copied), Toast.LENGTH_SHORT).show();
-            }
-        });
-        curlTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ClipboardManager clipboard = (ClipboardManager) getApplication().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("", curlTextView.getText().toString());
-                clipboard.setPrimaryClip(clip);
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.curl_was_copied), Toast.LENGTH_SHORT).show();
-            }
-        });
-        urlTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ClipboardManager clipboard = (ClipboardManager) getApplication().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("", urlTextView.getText().toString());
-                clipboard.setPrimaryClip(clip);
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.url_request_was_copied), Toast.LENGTH_SHORT).show();
-            }
-        });
+        recyclerButtons = findViewById(R.id.recyclerViewButtons);
+        recyclerLogs = findViewById(R.id.recyclerViewLogs);
     }
 
     private void setCallBackRequests() {
@@ -123,6 +87,39 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
                 printCurl(request);
             }
         });
+        limeApiClient.setRequestSession(new LimeApiClient.RequestCallBack() {
+            @Override
+            public void callBackUrlRequest(String request) {
+                Log.e(LIME_LOG, request);
+                printUrlRequest(request);
+            }
+
+            @Override
+            public void callBackCurlRequest(String request) {
+                Log.e(LIME_LOG, request);
+                printCurl(request);
+            }
+        });
+    }
+
+    void initializationLimeApiClient() {
+        limeApiClient = new LimeApiClient(api_root, apiValues.getSCHEME_HTTP(), application_id, x_access_token);
+        limeApiClient.setDownloadChannelListCallBack(this);
+        limeApiClient.setDownloadBroadCastCallBack(this);
+        limeApiClient.setDownloadPingCallBack(this);
+        limeApiClient.setDownloadSessionCallBack(this);
+    }
+
+    void loadDataFromLogsAdapter() {
+        if (logsAdapter != null) {
+            api_root = logsAdapter.getApiRoot();
+            application_id = logsAdapter.getApplicationId();
+            x_access_token = logsAdapter.getXAccessToken();
+        }
+        limeApiClient.updateLimeApiClientData(api_root, apiValues.getSCHEME_HTTP(), application_id, x_access_token);
+        SettingsManager.setApiRoot(getApplicationContext(), api_root);
+        SettingsManager.setXAccessToken(getApplicationContext(), x_access_token);
+        SettingsManager.setApplicationId(getApplicationContext(), application_id);
     }
 
     @Override
@@ -131,18 +128,15 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
         setContentView(R.layout.activity_demo);
 
         findViewId();
-        setOnClickListener();
 
         //инициализация апи значений
         apiValues = new ApiValues();
 
+        //получение сохраненных данных
+
+
         //инициализация апи клиента
-        limeApiClient = new LimeApiClient(api_root, apiValues.getSCHEME_HTTP(), application_id, x_access_token);
-
-
-        limeApiClient.setDownloadChannelListCallBack(this);
-        limeApiClient.setDownloadBroadCastCallBack(this);
-        limeApiClient.setDownloadPingCallBack(this);
+        initializationLimeApiClient();
 
         setCallBackRequests();
 
@@ -151,37 +145,54 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
         final long before_date = current_time_stamp - five_days_stamp;//левая граница - 5 дней
         final long after_date = current_time_stamp + five_days_stamp;//правая граница + 5 дней
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        ApiAdapter apiAdapter = new ApiAdapter(getApplicationContext());
+        apiAdapter = new ApiAdapter(getApplicationContext());
         apiAdapter.setApiAdapterInterface(new ApiAdapter.ApiAdapterInterface() {
             @Override
             public void onClickPing() {
+                loadDataFromLogsAdapter();
                 //запрос пинга
                 limeApiClient.downloadPing();
             }
 
             @Override
             public void onClickDownloadBroadcast() {
+                loadDataFromLogsAdapter();
                 //запрос списка телепередач для телеканала
                 limeApiClient.downloadBroadcast(example_channel_id, LimeRFC.timeStampToRFC(before_date), LimeRFC.timeStampToRFC(after_date), example_time_zone);
-
             }
 
             @Override
             public void onClickDownloadChannelList() {
+                loadDataFromLogsAdapter();
                 //запрос списка телеканалов
                 limeApiClient.downloadChannelList();
             }
+
+            @Override
+            public void onClickDownloadSessions() {
+                loadDataFromLogsAdapter();
+                //Запрос создания сессии
+                limeApiClient.downloadSession();
+            }
         });
-        recyclerView.setAdapter(apiAdapter);
+
+        logsAdapter = new LogsAdapter(getApplicationContext());
+
+        recyclerButtons.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        recyclerLogs.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+        recyclerButtons.setAdapter(apiAdapter);
+        recyclerLogs.setAdapter(logsAdapter);
     }
 
     private void printAnswer(final String message) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (answerTextView != null)
-                    answerTextView.setText(message);
+                if (logsAdapter != null) {
+                    logsAdapter.setAnswer(message);
+                    logsAdapter.notifyDataSetChanged();
+                }
             }
         });
     }
@@ -190,8 +201,9 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (curlTextView != null) {
-                    curlTextView.setText(request);
+                if (logsAdapter != null) {
+                    logsAdapter.setCurl(request);
+                    logsAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -201,13 +213,15 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (curlTextView != null) {
-                    urlTextView.setText(request);
+                if (logsAdapter != null) {
+                    logsAdapter.setUrl(request);
+                    logsAdapter.notifyDataSetChanged();
                 }
             }
         });
     }
 
+    //region CallBack From LimeApiClient
     @Override
     public void downloadChannelListSuccess(String response) {
         Log.e(LIME_LOG, response);
@@ -222,6 +236,12 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
 
     @Override
     public void downloadPingSuccess(String response) {
+        Log.e(LIME_LOG, response);
+        printAnswer(response);
+    }
+
+    @Override
+    public void downloadSessionSuccess(String response) {
         Log.e(LIME_LOG, response);
         printAnswer(response);
     }
@@ -243,4 +263,11 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
         Log.e(LIME_LOG, message);
         printAnswer(message);
     }
+
+    @Override
+    public void downloadSessionError(String message) {
+        Log.e(LIME_LOG, message);
+        printAnswer(message);
+    }
+    //endregion
 }
