@@ -11,7 +11,7 @@ class ApiValues{
     val URL_REDIRECT_PATH = "redirect"
     val URL_BROADCAST_PATH = "v1/broadcasts"
     val URL_PING_PATH = "v1/ping"
-    val URL_SESSION_PATH = "v1/session"
+    val URL_SESSION_PATH = "v1/sessions"
 
     val APP_ID_KEY = "app_id"
     val SESSION_ID_KEY = "session_id"
