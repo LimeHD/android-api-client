@@ -37,7 +37,7 @@ public class BroadcastDownloading {
                 Request request = new Request.Builder()
                         .url(LimeUri.getUriBroadcast(scheme, api_root, endpoint_broadcast, channel_id
                                 , before_date, after_date, time_zone))
-                        .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE()).addHeader(apiValues.getACCEPT_KEY(), x_access_token).build();
+                        .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE()).addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token).build();
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {
