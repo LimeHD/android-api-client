@@ -14,4 +14,9 @@ class ApiValues{
     val URL_SESSION_PATH = "v1/session"
 
     val APP_ID_KEY = "app_id"
+    val SESSION_ID_KEY = "session_id"
+    val CURRENT_TIME_KEY = "current_time"
+    val STREAM_ENDPOINT_KEY = "stream_endpoint"
+    val CHANNEL_GROUP_KEY = "default_channel_group_id"
+    val SETTINGS_KEY = "settings"
 }
