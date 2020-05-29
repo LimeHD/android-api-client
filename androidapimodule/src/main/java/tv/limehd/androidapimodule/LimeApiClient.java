@@ -29,10 +29,10 @@ public class LimeApiClient {
     /*Download channel List*/
     //region Download channel List
 
-    public void downloadChannelList() {
+    public void downloadChannelList(String channel_group_id) {
         if (api_root != null) {
             ClientDownloading clientDownloading = initializeDownloadChannelList();
-            downloadChannelList(clientDownloading);
+            downloadChannelList(clientDownloading, channel_group_id);
         }
     }
 
@@ -67,8 +67,8 @@ public class LimeApiClient {
         return clientDownloading;
     }
 
-    private void downloadChannelList(ClientDownloading clientDownloading) {
-        clientDownloading.downloadChannelList(scheme, api_root, apiValues.getURL_CHANNELS_GRECE_PATH(), application_id, x_access_token);
+    private void downloadChannelList(ClientDownloading clientDownloading, String channel_group_id) {
+        clientDownloading.downloadChannelList(scheme, api_root, apiValues.getURL_CHANNELS_BY_GROUP(), application_id, x_access_token, channel_group_id);
     }
 
     public interface DownloadChannelListCallBack {

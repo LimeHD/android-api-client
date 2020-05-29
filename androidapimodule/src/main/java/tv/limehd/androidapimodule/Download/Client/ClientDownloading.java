@@ -10,7 +10,7 @@ public class ClientDownloading {
     public ClientDownloading() {
     }
 
-    public void downloadChannelList(String scheme, String api_root, String endpoint_channels, String application_id, String x_access_token) {
+    public void downloadChannelList(String scheme, String api_root, String endpoint_channels, String application_id, String x_access_token, String channel_group_id) {
         ChannelListDownloading channelListDownloading = new ChannelListDownloading();
         channelListDownloading.setCallBackDownloadChannelListInterface(new ChannelListDownloading.CallBackDownloadChannelListInterface() {
             @Override
@@ -38,7 +38,7 @@ public class ClientDownloading {
                     callBackRequestInterface.callBackCurlRequest(request);
             }
         });
-        channelListDownloading.loadingRequestChannelList(scheme, api_root, endpoint_channels, application_id, x_access_token);
+        channelListDownloading.loadingRequestChannelList(scheme, api_root, endpoint_channels, application_id, x_access_token, channel_group_id);
     }
 
     public void downloadBroadCast(String scheme, String api_root, String endpoint_broadcast

@@ -10,11 +10,12 @@ public class LimeUri {
     private static String START_AT = "start_at";
     private static String FINISH_AT = "finish_at";
 
-    public static String getUriChannelList(String scheme, String api_root, String endpoint_channels) {
+    public static String getUriChannelList(String scheme, String api_root, String endpoint_channels, String channel_group_id) {
         return new Uri.Builder()
                 .scheme(scheme)
                 .authority(api_root)
-                .appendEncodedPath(endpoint_channels).build().toString();
+                .appendEncodedPath(endpoint_channels)
+                .appendEncodedPath(channel_group_id).build().toString();
     }
 
     public static String getUriBroadcast(String scheme, String api_root, String endpoint_broadcast

@@ -6,7 +6,7 @@ class ApiValues{
     val ACCEPT_VALUE = "application/json"
     val SCHEME_HTTP = "http"
     val SCHEME_HTTPS = "https"
-    val URL_CHANNELS_GRECE_PATH = "v1/channels/greece"
+    val URL_CHANNELS_BY_GROUP = "v1/channels/by_group"
     val URL_STREAMINGS_PATH = "v1/streams"
     val URL_REDIRECT_PATH = "redirect"
     val URL_BROADCAST_PATH = "v1/broadcasts"

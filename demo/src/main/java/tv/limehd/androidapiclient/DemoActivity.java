@@ -165,7 +165,7 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
             public void onClickDownloadChannelList() {
                 loadDataFromLogsAdapter();
                 //запрос списка телеканалов
-                limeApiClient.downloadChannelList();
+                limeApiClient.downloadChannelList("1");
             }
 
             @Override
