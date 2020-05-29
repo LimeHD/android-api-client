@@ -9,6 +9,7 @@ public class LimeUri {
     private static String TIME_ZONE = "time_zone";
     private static String START_AT = "start_at";
     private static String FINISH_AT = "finish_at";
+    private static String STREAM_URL = "${stream_id}";
 
     public static String getUriChannelList(String scheme, String api_root, String endpoint_channels, String channel_group_id) {
         return new Uri.Builder()
@@ -29,7 +30,7 @@ public class LimeUri {
                 .appendQueryParameter(FINISH_AT, after_date).build().toString();
     }
 
-    public static String getUriSession(String scheme, String api_root, String endpoint_session){
+    public static String getUriSession(String scheme, String api_root, String endpoint_session) {
         return new Uri.Builder()
                 .scheme(scheme)
                 .authority(api_root)
@@ -43,14 +44,8 @@ public class LimeUri {
                 .appendEncodedPath(endpoint_ping).build().toString();
     }
 
-    public static String getUriTranslation(String scheme, String api_root, String url_streaming
-            , String translation_id, String redirect_path) {
-        return new Uri.Builder()
-                .scheme(scheme)
-                .authority(api_root)
-                .appendEncodedPath(url_streaming)
-                .appendEncodedPath(translation_id)
-                .appendEncodedPath(redirect_path).build().toString();
+    public static String getUriTranslation(String stream_url, String channel_id) {
+        return stream_url.replace(STREAM_URL, channel_id);
     }
 
 }
