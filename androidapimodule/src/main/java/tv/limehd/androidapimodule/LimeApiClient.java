@@ -10,20 +10,27 @@ public class LimeApiClient {
     private String scheme;
     private ApiValues apiValues;
     private String x_access_token;
+    private String locale;
 
-    public LimeApiClient(String api_root, String scheme, String application_id, String x_access_token) {
+    public LimeApiClient(String api_root, String scheme, String application_id, String x_access_token, String locale) {
         apiValues = new ApiValues();
         this.api_root = api_root;
         this.scheme = scheme;
         this.application_id = application_id;
         this.x_access_token = x_access_token;
+        this.locale = locale;
     }
 
-    public void updateLimeApiClientData(String api_root, String scheme, String application_id, String x_access_token) {
+    public void updateLimeApiClientData(String api_root, String scheme, String application_id, String x_access_token, String locale) {
         this.api_root = api_root;
         this.scheme = scheme;
         this.application_id = application_id;
         this.x_access_token = x_access_token;
+        this.locale = locale;
+    }
+
+    public void upDateLocale(String locale){
+        this.locale = locale;
     }
 
     /*Download channel List*/
@@ -68,7 +75,7 @@ public class LimeApiClient {
     }
 
     private void downloadChannelList(ClientDownloading clientDownloading, String channel_group_id) {
-        clientDownloading.downloadChannelList(scheme, api_root, apiValues.getURL_CHANNELS_BY_GROUP(), application_id, x_access_token, channel_group_id);
+        clientDownloading.downloadChannelList(scheme, api_root, apiValues.getURL_CHANNELS_BY_GROUP(), application_id, x_access_token, channel_group_id, locale);
     }
 
     public interface DownloadChannelListCallBack {
@@ -126,7 +133,7 @@ public class LimeApiClient {
     }
 
     private void downloadBroadcast(ClientDownloading clientDownloading, String channel_id, String before_date, String after_date, String time_zone) {
-        clientDownloading.downloadBroadCast(scheme, api_root, apiValues.getURL_BROADCAST_PATH(), channel_id, before_date, after_date, time_zone, application_id, x_access_token);
+        clientDownloading.downloadBroadCast(scheme, api_root, apiValues.getURL_BROADCAST_PATH(), channel_id, before_date, after_date, time_zone, application_id, x_access_token, locale);
     }
 
     public interface DownloadBroadCastCallBack {

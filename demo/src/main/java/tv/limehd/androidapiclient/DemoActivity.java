@@ -103,7 +103,8 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
     }
 
     void initializationLimeApiClient() {
-        limeApiClient = new LimeApiClient(api_root, apiValues.getSCHEME_HTTP(), application_id, x_access_token);
+        limeApiClient = new LimeApiClient(api_root, apiValues.getSCHEME_HTTPS(), application_id, x_access_token,
+                getResources().getConfiguration().locale.getLanguage());
         limeApiClient.setDownloadChannelListCallBack(this);
         limeApiClient.setDownloadBroadCastCallBack(this);
         limeApiClient.setDownloadPingCallBack(this);
@@ -116,7 +117,8 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
             application_id = logsAdapter.getApplicationId();
             x_access_token = logsAdapter.getXAccessToken();
         }
-        limeApiClient.updateLimeApiClientData(api_root, apiValues.getSCHEME_HTTP(), application_id, x_access_token);
+        limeApiClient.updateLimeApiClientData(api_root, apiValues.getSCHEME_HTTPS(), application_id, x_access_token
+                , getResources().getConfiguration().locale.getLanguage());
         SettingsManager.setApiRoot(getApplicationContext(), api_root);
         SettingsManager.setXAccessToken(getApplicationContext(), x_access_token);
         SettingsManager.setApplicationId(getApplicationContext(), application_id);

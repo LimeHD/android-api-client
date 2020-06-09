@@ -10,7 +10,7 @@ public class ClientDownloading {
     public ClientDownloading() {
     }
 
-    public void downloadChannelList(String scheme, String api_root, String endpoint_channels, String application_id, String x_access_token, String channel_group_id) {
+    public void downloadChannelList(String scheme, String api_root, String endpoint_channels, String application_id, String x_access_token, String channel_group_id, String locale) {
         ChannelListDownloading channelListDownloading = new ChannelListDownloading();
         channelListDownloading.setCallBackDownloadChannelListInterface(new ChannelListDownloading.CallBackDownloadChannelListInterface() {
             @Override
@@ -38,11 +38,11 @@ public class ClientDownloading {
                     callBackRequestInterface.callBackCurlRequest(request);
             }
         });
-        channelListDownloading.loadingRequestChannelList(scheme, api_root, endpoint_channels, application_id, x_access_token, channel_group_id);
+        channelListDownloading.loadingRequestChannelList(scheme, api_root, endpoint_channels, application_id, x_access_token, channel_group_id, locale);
     }
 
     public void downloadBroadCast(String scheme, String api_root, String endpoint_broadcast
-            , String channel_id, String before_date, String after_date, String time_zone, String application_id, String x_access_token) {
+            , String channel_id, String before_date, String after_date, String time_zone, String application_id, String x_access_token, String locale) {
         BroadcastDownloading broadcastDownloading = new BroadcastDownloading();
         broadcastDownloading.setCallBackDownloadBroadCastInterface(new BroadcastDownloading.CallBackDownloadBroadCastInterface() {
             @Override
@@ -70,7 +70,7 @@ public class ClientDownloading {
                     callBackRequestInterface.callBackCurlRequest(request);
             }
         });
-        broadcastDownloading.loadingRequestBroadCast(scheme, api_root, endpoint_broadcast, channel_id, before_date, after_date, time_zone, application_id, x_access_token);
+        broadcastDownloading.loadingRequestBroadCast(scheme, api_root, endpoint_broadcast, channel_id, before_date, after_date, time_zone, application_id, x_access_token, locale);
     }
 
     public void downloadPing(String scheme, String api_root, String endpoint_ping, String application_id, String x_access_token) {
