@@ -301,7 +301,7 @@ public class LimeApiClient {
     }
 
     public static String getVersionName(Context context) {
-            return "0.2.6";
+        return "0.2.6";
     }
     //end region
 }
