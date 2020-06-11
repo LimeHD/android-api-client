@@ -1,5 +1,8 @@
 package tv.limehd.androidapimodule;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+
 import tv.limehd.androidapimodule.Download.Client.ClientDownloading;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
@@ -291,4 +294,24 @@ public class LimeApiClient {
         this.requestSession = requestSession;
     }
     //endregion
+
+    //get version name and code api client
+    public static int getVersionCode(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (Exception e) {
+            return 8;
+        }
+    }
+
+    public static String getVersionName(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionName;
+        } catch (Exception e) {
+            return "0.2.5";
+        }
+    }
+    //end region
 }
