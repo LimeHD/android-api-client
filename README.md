@@ -28,14 +28,26 @@ implementation project(':androidapimodule')
 ``` java
 import tv.limehd.androidapimodule.LimeApiClient;
 ```
+### Получение версии модуля
+```java
+String versionCode = LimeApiClient.getVersionCode(context);
+String versionName = LimeApiClient.getVersionName(context);
+```
+
 ### Инициализация `LimeApiClient`
 ```java
 String api_root = API_ROOT;
 String package_name = getPackageName();
 String example_x_access_token = "example_x_access_token";
-LimeApiClient limeApiClient = new LimeApiClient(api_root, scheme, package_name, example_x_access_token);
+String locale = getResources().getConfiguration().locale.getLanguage();
+LimeApiClient limeApiClient = new LimeApiClient(api_root, scheme, package_name, example_x_access_token, locale);
 ApiValues apiValues = new ApiValues();
 ```
+Если требуется обновить локаль:
+``` java
+limeApiClient.upDateLocale(locale);
+```
+
 ### Получение списка каналов
 Пример запроса
 ``` java
