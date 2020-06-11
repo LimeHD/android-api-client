@@ -28,6 +28,12 @@ implementation project(':androidapimodule')
 ``` java
 import tv.limehd.androidapimodule.LimeApiClient;
 ```
+### Получение версии модуля
+```java
+String versionCode = LimeApiClient.getVersionCode(context);
+String versionName = LimeApiClient.getVersionName(context);
+```
+
 ### Инициализация `LimeApiClient`
 ```java
 String api_root = API_ROOT;
