@@ -297,21 +297,11 @@ public class LimeApiClient {
 
     //get version name and code api client
     public static int getVersionCode(Context context) {
-        try {
-            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return packageInfo.versionCode;
-        } catch (Exception e) {
-            return 8;
-        }
+            return 9;
     }
 
     public static String getVersionName(Context context) {
-        try {
-            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return packageInfo.versionName;
-        } catch (Exception e) {
-            return "0.2.5";
-        }
+            return "0.2.6";
     }
     //end region
 }
