@@ -1,7 +1,6 @@
 package tv.limehd.androidapimodule;
 
 import android.content.Context;
-import android.content.pm.PackageInfo;
 
 import tv.limehd.androidapimodule.Download.Client.ClientDownloading;
 import tv.limehd.androidapimodule.Values.ApiValues;
@@ -30,6 +29,10 @@ public class LimeApiClient {
         this.application_id = application_id;
         this.x_access_token = x_access_token;
         this.locale = locale;
+    }
+
+    public void updateApiRoot(String api_root){
+        this.api_root = api_root;
     }
 
     public void upDateLocale(String locale){
@@ -297,11 +300,11 @@ public class LimeApiClient {
 
     //get version name and code api client
     public static int getVersionCode(Context context) {
-            return 9;
+            return 10;
     }
 
     public static String getVersionName(Context context) {
-        return "0.2.6";
+        return "0.2.7";
     }
     //end region
 }
