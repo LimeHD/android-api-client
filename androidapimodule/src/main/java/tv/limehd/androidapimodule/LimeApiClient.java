@@ -13,6 +13,7 @@ public class LimeApiClient {
     private ApiValues apiValues;
     private String x_access_token;
     private String locale;
+    private String x_test_ip;
 
     public LimeApiClient(String api_root, String scheme, String application_id, String x_access_token, String locale) {
         apiValues = new ApiValues();
@@ -21,6 +22,7 @@ public class LimeApiClient {
         this.application_id = application_id;
         this.x_access_token = x_access_token;
         this.locale = locale;
+        x_test_ip = null;
     }
 
     public void updateLimeApiClientData(String api_root, String scheme, String application_id, String x_access_token, String locale) {
@@ -29,6 +31,11 @@ public class LimeApiClient {
         this.application_id = application_id;
         this.x_access_token = x_access_token;
         this.locale = locale;
+        x_test_ip = null;
+    }
+
+    public void setXTestIp(String x_test_ip){
+        this.x_test_ip = x_test_ip;
     }
 
     public void updateApiRoot(String api_root){
@@ -81,7 +88,7 @@ public class LimeApiClient {
     }
 
     private void downloadChannelList(ClientDownloading clientDownloading, String channel_group_id) {
-        clientDownloading.downloadChannelList(scheme, api_root, apiValues.getURL_CHANNELS_BY_GROUP(), application_id, x_access_token, channel_group_id, locale);
+        clientDownloading.downloadChannelList(scheme, api_root, apiValues.getURL_CHANNELS_BY_GROUP(), application_id, x_access_token, channel_group_id, locale, x_test_ip);
     }
 
     public interface DownloadChannelListCallBack {
@@ -139,7 +146,7 @@ public class LimeApiClient {
     }
 
     private void downloadBroadcast(ClientDownloading clientDownloading, String channel_id, String before_date, String after_date, String time_zone) {
-        clientDownloading.downloadBroadCast(scheme, api_root, apiValues.getURL_BROADCAST_PATH(), channel_id, before_date, after_date, time_zone, application_id, x_access_token, locale);
+        clientDownloading.downloadBroadCast(scheme, api_root, apiValues.getURL_BROADCAST_PATH(), channel_id, before_date, after_date, time_zone, application_id, x_access_token, locale, x_test_ip);
     }
 
     public interface DownloadBroadCastCallBack {
@@ -196,7 +203,7 @@ public class LimeApiClient {
     }
 
     private void downloadPing(ClientDownloading clientDownloading) {
-        clientDownloading.downloadPing(scheme, api_root, apiValues.getURL_PING_PATH(), application_id, x_access_token);
+        clientDownloading.downloadPing(scheme, api_root, apiValues.getURL_PING_PATH(), application_id, x_access_token, x_test_ip);
     }
 
     public interface DownloadPingCallBack {
@@ -253,7 +260,7 @@ public class LimeApiClient {
     }
 
     private void downloadSession(ClientDownloading clientDownloading) {
-        clientDownloading.downloadSession(scheme, api_root, apiValues.getURL_SESSION_PATH(), application_id, x_access_token);
+        clientDownloading.downloadSession(scheme, api_root, apiValues.getURL_SESSION_PATH(), application_id, x_access_token, x_test_ip);
     }
 
     public interface DownloadSessionCallBack {
@@ -300,11 +307,11 @@ public class LimeApiClient {
 
     //get version name and code api client
     public static int getVersionCode(Context context) {
-            return 10;
+            return 11;
     }
 
     public static String getVersionName(Context context) {
-        return "0.2.7";
+        return "0.2.8";
     }
     //end region
 }

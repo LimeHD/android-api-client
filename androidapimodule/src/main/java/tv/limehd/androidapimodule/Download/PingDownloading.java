@@ -19,7 +19,7 @@ public class PingDownloading {
         apiValues = new ApiValues();
     }
 
-    public void pingDownloadRequest(final String scheme, final String api_root, final String endpoint_ping, String application_id, final String x_access_token) {
+    public void pingDownloadRequest(final String scheme, final String api_root, final String endpoint_ping, String application_id, final String x_access_token, final String x_test_ip) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -31,9 +31,13 @@ public class PingDownloading {
                     }
                 });
                 OkHttpClient client = new OkHttpClient(limeCurlBuilder);
-                Request request = new Request.Builder()
+                Request.Builder builder = new Request.Builder()
                         .url(LimeUri.getUriPing(scheme, api_root, endpoint_ping))
-                        .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE()).addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token).build();
+                        .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE())
+                        .addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token);
+                if (x_test_ip != null)
+                    builder.addHeader(apiValues.getX_TEXT_IP_KEY(), x_test_ip);
+                Request request = builder.build();
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {

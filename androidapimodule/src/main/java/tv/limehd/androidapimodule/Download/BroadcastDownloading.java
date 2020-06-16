@@ -22,7 +22,7 @@ public class BroadcastDownloading {
     }
 
     public void loadingRequestBroadCast(final String scheme, final String api_root, final String endpoint_broadcast
-            , final String channel_id, final String before_date, final String after_date, final String time_zone, String application_id, final String x_access_token, final String locale) {
+            , final String channel_id, final String before_date, final String after_date, final String time_zone, String application_id, final String x_access_token, final String locale, final String x_test_ip) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -34,10 +34,14 @@ public class BroadcastDownloading {
                     }
                 });
                 OkHttpClient client = new OkHttpClient(limeCurlBuilder);
-                Request request = new Request.Builder()
+                Request.Builder builder = new Request.Builder()
                         .url(LimeUri.getUriBroadcast(scheme, api_root, endpoint_broadcast, channel_id
                                 , before_date, after_date, time_zone, locale))
-                        .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE()).addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token).build();
+                        .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE())
+                        .addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token);
+                if (x_test_ip != null)
+                    builder.addHeader(apiValues.getX_TEXT_IP_KEY(), x_test_ip);
+                Request request = builder.build();
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {

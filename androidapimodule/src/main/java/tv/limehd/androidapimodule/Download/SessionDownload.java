@@ -1,6 +1,7 @@
 package tv.limehd.androidapimodule.Download;
 
 import java.io.IOException;
+
 import androidx.annotation.NonNull;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -19,7 +20,7 @@ public class SessionDownload {
         apiValues = new ApiValues();
     }
 
-    public void sessionDownloadRequest(final String scheme, final String api_root, final String endpoint_session, final String application_id, final String x_access_token) {
+    public void sessionDownloadRequest(final String scheme, final String api_root, final String endpoint_session, final String application_id, final String x_access_token, final String x_test_ip) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -36,9 +37,12 @@ public class SessionDownload {
                 formBodyBuilder.add(apiValues.getAPP_ID_KEY(), application_id);
                 FormBody formBody = formBodyBuilder.build();
 
-
-                Request.Builder builder = new Request.Builder().addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE())
-                        .addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token).url(LimeUri.getUriSession(scheme, api_root, endpoint_session));
+                Request.Builder builder = new Request.Builder()
+                        .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE())
+                        .addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token)
+                        .url(LimeUri.getUriSession(scheme, api_root, endpoint_session));
+                if (x_test_ip != null)
+                    builder.addHeader(apiValues.getX_TEXT_IP_KEY(), x_test_ip);
                 builder.post(formBody);
                 Request request = builder.build();
 
@@ -74,6 +78,7 @@ public class SessionDownload {
 
     public interface CallBackSessionRequestInterface {
         void callBackUrlRequest(String request);
+
         void callBackCurlRequest(String request);
     }
 

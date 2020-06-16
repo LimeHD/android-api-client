@@ -1,6 +1,7 @@
 package tv.limehd.androidapimodule.Values
 
 class ApiValues{
+    val X_TEXT_IP_KEY = "X-Test-Ip"
     val X_ACCESS_TOKEN_KEY = "X-Access-Key"
     val ACCEPT_KEY = "Accept"
     val ACCEPT_VALUE = "application/json"
