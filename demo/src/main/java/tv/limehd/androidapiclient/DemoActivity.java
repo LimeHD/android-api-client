@@ -1,6 +1,7 @@
 package tv.limehd.androidapiclient;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import tv.limehd.androidapiclient.Adapters.ApiAdapter;
 import tv.limehd.androidapiclient.Adapters.LogsAdapter;
 import tv.limehd.androidapimodule.LimeApiClient;
+import tv.limehd.androidapimodule.LimeLocale;
 import tv.limehd.androidapimodule.LimeRFC;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
@@ -103,8 +105,14 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
     }
 
     void initializationLimeApiClient() {
+        String locale = "";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            locale = LimeLocale.getLocaleTag(getResources().getConfiguration().getLocales().get(0));
+        }else{
+            locale = LimeLocale.getLocaleTag(getResources().getConfiguration().locale);
+        }
         limeApiClient = new LimeApiClient(api_root, apiValues.getSCHEME_HTTPS(), application_id, x_access_token,
-                getResources().getConfiguration().locale.getLanguage());
+                locale);
         limeApiClient.setDownloadChannelListCallBack(this);
         limeApiClient.setDownloadBroadCastCallBack(this);
         limeApiClient.setDownloadPingCallBack(this);
@@ -117,8 +125,14 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
             application_id = logsAdapter.getApplicationId();
             x_access_token = logsAdapter.getXAccessToken();
         }
+        String locale = "";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            locale = LimeLocale.getLocaleTag(getResources().getConfiguration().getLocales().get(0));
+        }else{
+            locale = LimeLocale.getLocaleTag(getResources().getConfiguration().locale);
+        }
         limeApiClient.updateLimeApiClientData(api_root, apiValues.getSCHEME_HTTPS(), application_id, x_access_token
-                , getResources().getConfiguration().locale.getLanguage());
+                , locale);
         SettingsManager.setApiRoot(getApplicationContext(), api_root);
         SettingsManager.setXAccessToken(getApplicationContext(), x_access_token);
         SettingsManager.setApplicationId(getApplicationContext(), application_id);
