@@ -14,6 +14,18 @@ public class LimeApiClient {
     private String x_access_token;
     private String locale;
     private String x_test_ip;
+    private boolean use_cache;
+
+    public LimeApiClient(String api_root, String scheme, String application_id, String x_access_token, String locale, boolean use_cache){
+        apiValues = new ApiValues();
+        this.api_root = api_root;
+        this.scheme = scheme;
+        this.application_id = application_id;
+        this.x_access_token = x_access_token;
+        this.locale = locale;
+        x_test_ip = null;
+        this.use_cache = use_cache;
+    }
 
     public LimeApiClient(String api_root, String scheme, String application_id, String x_access_token, String locale) {
         apiValues = new ApiValues();
@@ -23,6 +35,7 @@ public class LimeApiClient {
         this.x_access_token = x_access_token;
         this.locale = locale;
         x_test_ip = null;
+        use_cache = true;
     }
 
     public void updateLimeApiClientData(String api_root, String scheme, String application_id, String x_access_token, String locale) {
@@ -32,6 +45,14 @@ public class LimeApiClient {
         this.x_access_token = x_access_token;
         this.locale = locale;
         x_test_ip = null;
+    }
+
+    public void setUse_cache(boolean use_cache){
+        this.use_cache = use_cache;
+    }
+
+    public boolean getUse_cache(){
+        return use_cache;
     }
 
     public void setXTestIp(String x_test_ip){
@@ -52,7 +73,14 @@ public class LimeApiClient {
     public void downloadChannelList(String channel_group_id) {
         if (api_root != null) {
             ClientDownloading clientDownloading = initializeDownloadChannelList();
-            downloadChannelList(clientDownloading, channel_group_id);
+            downloadChannelList(clientDownloading, channel_group_id, use_cache);
+        }
+    }
+
+    public void downloadChannelList(String channel_group_id, boolean use_cache){
+        if(api_root!=null){
+            ClientDownloading clientDownloading = initializeDownloadChannelList();
+            downloadChannelList(clientDownloading, channel_group_id, use_cache);
         }
     }
 
@@ -87,8 +115,8 @@ public class LimeApiClient {
         return clientDownloading;
     }
 
-    private void downloadChannelList(ClientDownloading clientDownloading, String channel_group_id) {
-        clientDownloading.downloadChannelList(scheme, api_root, apiValues.getURL_CHANNELS_BY_GROUP(), application_id, x_access_token, channel_group_id, locale, x_test_ip);
+    private void downloadChannelList(ClientDownloading clientDownloading, String channel_group_id, boolean use_cache) {
+        clientDownloading.downloadChannelList(scheme, api_root, apiValues.getURL_CHANNELS_BY_GROUP(), application_id, x_access_token, channel_group_id, locale, x_test_ip, use_cache);
     }
 
     public interface DownloadChannelListCallBack {
@@ -110,7 +138,14 @@ public class LimeApiClient {
     public void downloadBroadcast(String channel_id, String before_date, String after_date, String time_zone) {
         if (api_root != null) {
             ClientDownloading clientDownloading = initializeDownloadBroadcast();
-            downloadBroadcast(clientDownloading, channel_id, before_date, after_date, time_zone);
+            downloadBroadcast(clientDownloading, channel_id, before_date, after_date, time_zone, use_cache);
+        }
+    }
+
+    public void downloadBroadcast(String channel_id, String before_date, String after_date, String time_zone, boolean use_cache) {
+        if (api_root != null) {
+            ClientDownloading clientDownloading = initializeDownloadBroadcast();
+            downloadBroadcast(clientDownloading, channel_id, before_date, after_date, time_zone, use_cache);
         }
     }
 
@@ -145,8 +180,9 @@ public class LimeApiClient {
         return clientDownloading;
     }
 
-    private void downloadBroadcast(ClientDownloading clientDownloading, String channel_id, String before_date, String after_date, String time_zone) {
-        clientDownloading.downloadBroadCast(scheme, api_root, apiValues.getURL_BROADCAST_PATH(), channel_id, before_date, after_date, time_zone, application_id, x_access_token, locale, x_test_ip);
+    private void downloadBroadcast(ClientDownloading clientDownloading, String channel_id, String before_date, String after_date, String time_zone, boolean use_cache) {
+        clientDownloading.downloadBroadCast(scheme, api_root, apiValues.getURL_BROADCAST_PATH(), channel_id, before_date, after_date, time_zone, application_id
+                , x_access_token, locale, x_test_ip, use_cache);
     }
 
     public interface DownloadBroadCastCallBack {
@@ -167,7 +203,14 @@ public class LimeApiClient {
     public void downloadPing() {
         if (api_root != null) {
             ClientDownloading clientDownloading = initializeDownloadPing();
-            downloadPing(clientDownloading);
+            downloadPing(clientDownloading, use_cache);
+        }
+    }
+
+    public void downloadPing(boolean use_cache){
+        if(api_root!=null){
+            ClientDownloading clientDownloading = initializeDownloadPing();
+            downloadPing(clientDownloading, use_cache);
         }
     }
 
@@ -202,8 +245,8 @@ public class LimeApiClient {
         return clientDownloading;
     }
 
-    private void downloadPing(ClientDownloading clientDownloading) {
-        clientDownloading.downloadPing(scheme, api_root, apiValues.getURL_PING_PATH(), application_id, x_access_token, x_test_ip);
+    private void downloadPing(ClientDownloading clientDownloading, boolean use_cache) {
+        clientDownloading.downloadPing(scheme, api_root, apiValues.getURL_PING_PATH(), application_id, x_access_token, x_test_ip, use_cache);
     }
 
     public interface DownloadPingCallBack {
@@ -224,7 +267,14 @@ public class LimeApiClient {
     public void downloadSession() {
         if (api_root != null) {
             ClientDownloading clientDownloading = initializeDownloadSession();
-            downloadSession(clientDownloading);
+            downloadSession(clientDownloading, use_cache);
+        }
+    }
+
+    public void downloadSession(boolean use_cache){
+        if (api_root != null) {
+            ClientDownloading clientDownloading = initializeDownloadSession();
+            downloadSession(clientDownloading, use_cache);
         }
     }
 
@@ -259,8 +309,8 @@ public class LimeApiClient {
         return clientDownloading;
     }
 
-    private void downloadSession(ClientDownloading clientDownloading) {
-        clientDownloading.downloadSession(scheme, api_root, apiValues.getURL_SESSION_PATH(), application_id, x_access_token, x_test_ip);
+    private void downloadSession(ClientDownloading clientDownloading, boolean use_cache) {
+        clientDownloading.downloadSession(scheme, api_root, apiValues.getURL_SESSION_PATH(), application_id, x_access_token, x_test_ip, use_cache);
     }
 
     public interface DownloadSessionCallBack {
@@ -307,11 +357,11 @@ public class LimeApiClient {
 
     //get version name and code api client
     public static int getVersionCode(Context context) {
-            return 11;
+            return 13;
     }
 
     public static String getVersionName(Context context) {
-        return "0.2.8";
+        return "0.2.10";
     }
     //end region
 }

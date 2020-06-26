@@ -1,8 +1,11 @@
 package tv.limehd.androidapimodule.Download;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
+
+import okhttp3.CacheControl;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -20,7 +23,8 @@ public class SessionDownload {
         apiValues = new ApiValues();
     }
 
-    public void sessionDownloadRequest(final String scheme, final String api_root, final String endpoint_session, final String application_id, final String x_access_token, final String x_test_ip) {
+    public void sessionDownloadRequest(final String scheme, final String api_root, final String endpoint_session
+            , final String application_id, final String x_access_token, final String x_test_ip, final boolean use_cache) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -43,6 +47,11 @@ public class SessionDownload {
                         .url(LimeUri.getUriSession(scheme, api_root, endpoint_session));
                 if (x_test_ip != null)
                     builder.addHeader(apiValues.getX_TEXT_IP_KEY(), x_test_ip);
+                if (use_cache) {
+                    builder.cacheControl(new CacheControl.Builder().maxAge(0, TimeUnit.SECONDS).build());
+                } else {
+                    builder.cacheControl(new CacheControl.Builder().noCache().build());
+                }
                 builder.post(formBody);
                 Request request = builder.build();
 

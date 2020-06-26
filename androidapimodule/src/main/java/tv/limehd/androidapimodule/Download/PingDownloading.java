@@ -1,8 +1,11 @@
 package tv.limehd.androidapimodule.Download;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
+
+import okhttp3.CacheControl;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -19,7 +22,8 @@ public class PingDownloading {
         apiValues = new ApiValues();
     }
 
-    public void pingDownloadRequest(final String scheme, final String api_root, final String endpoint_ping, String application_id, final String x_access_token, final String x_test_ip) {
+    public void pingDownloadRequest(final String scheme, final String api_root, final String endpoint_ping
+            , String application_id, final String x_access_token, final String x_test_ip,final boolean use_cache) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -37,6 +41,11 @@ public class PingDownloading {
                         .addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token);
                 if (x_test_ip != null)
                     builder.addHeader(apiValues.getX_TEXT_IP_KEY(), x_test_ip);
+                if (use_cache) {
+                    builder.cacheControl(new CacheControl.Builder().maxAge(0, TimeUnit.SECONDS).build());
+                } else {
+                    builder.cacheControl(new CacheControl.Builder().noCache().build());
+                }
                 Request request = builder.build();
                 client.newCall(request).enqueue(new Callback() {
                     @Override
