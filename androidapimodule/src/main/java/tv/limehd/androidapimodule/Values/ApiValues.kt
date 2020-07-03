@@ -20,4 +20,5 @@ class ApiValues{
     val STREAM_ENDPOINT_KEY = "stream_endpoint"
     val CHANNEL_GROUP_KEY = "default_channel_group_id"
     val SETTINGS_KEY = "settings"
+    val ARCHIVE_REDIRECT = "archive_redirect"
 }
