@@ -1,5 +1,7 @@
 package tv.limehd.androidapimodule.Download.Client;
 
+import android.content.Context;
+
 import tv.limehd.androidapimodule.Download.BroadcastDownloading;
 import tv.limehd.androidapimodule.Download.ChannelListDownloading;
 import tv.limehd.androidapimodule.Download.PingDownloading;
@@ -10,9 +12,9 @@ public class ClientDownloading {
     public ClientDownloading() {
     }
 
-    public void downloadChannelList(String scheme, String api_root, String endpoint_channels, String application_id
+    public void downloadChannelList(Context context, String scheme, String api_root, String endpoint_channels, String application_id
             , String x_access_token, String channel_group_id, String locale, String x_test_ip, boolean use_cache) {
-        ChannelListDownloading channelListDownloading = new ChannelListDownloading();
+        ChannelListDownloading channelListDownloading = new ChannelListDownloading(context);
         channelListDownloading.setCallBackDownloadChannelListInterface(new ChannelListDownloading.CallBackDownloadChannelListInterface() {
             @Override
             public void callBackDownloadedChannelListSuccess(String response) {
@@ -43,10 +45,10 @@ public class ClientDownloading {
                 , x_access_token, channel_group_id, locale, x_test_ip, use_cache);
     }
 
-    public void downloadBroadCast(String scheme, String api_root, String endpoint_broadcast
+    public void downloadBroadCast(Context context, String scheme, String api_root, String endpoint_broadcast
             , String channel_id, String before_date, String after_date, String time_zone
             , String application_id, String x_access_token, String locale, String x_test_ip, boolean use_cache) {
-        BroadcastDownloading broadcastDownloading = new BroadcastDownloading();
+        BroadcastDownloading broadcastDownloading = new BroadcastDownloading(context);
         broadcastDownloading.setCallBackDownloadBroadCastInterface(new BroadcastDownloading.CallBackDownloadBroadCastInterface() {
             @Override
             public void callBackDownloadedBroadCastSucces(String response) {
@@ -77,8 +79,8 @@ public class ClientDownloading {
                 , application_id, x_access_token, locale, x_test_ip, use_cache);
     }
 
-    public void downloadPing(String scheme, String api_root, String endpoint_ping, String application_id, String x_access_token, String x_test_ip, boolean use_cache) {
-        PingDownloading pingDownloading = new PingDownloading();
+    public void downloadPing(Context context, String scheme, String api_root, String endpoint_ping, String application_id, String x_access_token, String x_test_ip, boolean use_cache) {
+        PingDownloading pingDownloading = new PingDownloading(context);
         pingDownloading.setCallBackPingInterface(new PingDownloading.CallBackPingInterface() {
             @Override
             public void callBackSuccess(String response) {
@@ -108,9 +110,9 @@ public class ClientDownloading {
         pingDownloading.pingDownloadRequest(scheme, api_root, endpoint_ping, application_id, x_access_token, x_test_ip, use_cache);
     }
 
-    public void downloadSession(String scheme, String api_root, String endpoint_session
+    public void downloadSession(Context context, String scheme, String api_root, String endpoint_session
             , String application_id, String x_access_token, String x_test_ip, boolean use_cache){
-        SessionDownload sessionDownload = new SessionDownload();
+        SessionDownload sessionDownload = new SessionDownload(context);
         sessionDownload.setCallBackSessionInterface(new SessionDownload.CallBackSessionInterface() {
             @Override
             public void callBackSuccess(String response) {
