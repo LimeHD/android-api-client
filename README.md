@@ -40,8 +40,8 @@ String api_root = API_ROOT;
 String package_name = getPackageName();
 String example_x_access_token = "example_x_access_token";
 String locale = getResources().getConfiguration().locale.getLanguage();
-Context context = getActivity().getApplicationContext();
-File fileCacheDir =  getActivity().getCacheDir();
+Context context = getApplicationContext();
+File fileCacheDir = getCacheDir();
 LimeApiClient limeApiClient = new LimeApiClient(context, api_root, scheme, package_name, example_x_access_token, locale, fileCacheDir);
 ApiValues apiValues = new ApiValues();
 ```
