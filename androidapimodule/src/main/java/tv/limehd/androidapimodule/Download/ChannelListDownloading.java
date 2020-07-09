@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import okhttp3.Cache;
 import okhttp3.CacheControl;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -16,21 +17,33 @@ import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.LimeUri;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+
+import static tv.limehd.androidapimodule.LimeApiClient.convertMegaByteToByte;
 
 public class ChannelListDownloading {
 
     private ApiValues apiValues;
     private Context context;
+    private File cacheDir;
 
     public ChannelListDownloading() {
         initialization();
     }
 
-    public ChannelListDownloading(Context context) {
+    public ChannelListDownloading(Context context, File cacheDir) {
         initialization();
         this.context = context;
+        this.cacheDir = cacheDir;
+    }
+
+    private void connectCacheInOkHttpClient(OkHttpClient.Builder okHttpClientBuilder) {
+        if(cacheDir!=null) {
+            Cache cache = new Cache(cacheDir, convertMegaByteToByte(2));
+            okHttpClientBuilder.cache(cache);
+        }
     }
 
     public void loadingRequestChannelList(final String scheme, final String api_root, final String endpoint_channels,
@@ -46,7 +59,7 @@ public class ChannelListDownloading {
                         }
                     }
                 });
-                limeCurlBuilder = LimeApiClient.connectCacheInOkHttpClient(limeCurlBuilder);
+                connectCacheInOkHttpClient(limeCurlBuilder);
 
                 OkHttpClient client = new OkHttpClient(limeCurlBuilder);
                 Request.Builder builder = new Request.Builder()

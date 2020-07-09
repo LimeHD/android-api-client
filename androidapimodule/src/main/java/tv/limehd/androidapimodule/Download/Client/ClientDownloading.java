@@ -2,6 +2,8 @@ package tv.limehd.androidapimodule.Download.Client;
 
 import android.content.Context;
 
+import java.io.File;
+
 import tv.limehd.androidapimodule.Download.BroadcastDownloading;
 import tv.limehd.androidapimodule.Download.ChannelListDownloading;
 import tv.limehd.androidapimodule.Download.PingDownloading;
@@ -13,8 +15,8 @@ public class ClientDownloading {
     }
 
     public void downloadChannelList(Context context, String scheme, String api_root, String endpoint_channels, String application_id
-            , String x_access_token, String channel_group_id, String locale, String x_test_ip, boolean use_cache) {
-        ChannelListDownloading channelListDownloading = new ChannelListDownloading(context);
+            , String x_access_token, String channel_group_id, String locale, String x_test_ip, File cacheDir, boolean use_cache) {
+        ChannelListDownloading channelListDownloading = new ChannelListDownloading(context, cacheDir);
         channelListDownloading.setCallBackDownloadChannelListInterface(new ChannelListDownloading.CallBackDownloadChannelListInterface() {
             @Override
             public void callBackDownloadedChannelListSuccess(String response) {
@@ -79,8 +81,8 @@ public class ClientDownloading {
                 , application_id, x_access_token, locale, x_test_ip, use_cache);
     }
 
-    public void downloadPing(Context context, String scheme, String api_root, String endpoint_ping, String application_id, String x_access_token, String x_test_ip, boolean use_cache) {
-        PingDownloading pingDownloading = new PingDownloading(context);
+    public void downloadPing(Context context, String scheme, String api_root, String endpoint_ping, String application_id, String x_access_token, String x_test_ip, File cacheDir, boolean use_cache) {
+        PingDownloading pingDownloading = new PingDownloading(context, cacheDir);
         pingDownloading.setCallBackPingInterface(new PingDownloading.CallBackPingInterface() {
             @Override
             public void callBackSuccess(String response) {
@@ -111,8 +113,8 @@ public class ClientDownloading {
     }
 
     public void downloadSession(Context context, String scheme, String api_root, String endpoint_session
-            , String application_id, String x_access_token, String x_test_ip, boolean use_cache){
-        SessionDownload sessionDownload = new SessionDownload(context);
+            , String application_id, String x_access_token, String x_test_ip, File cacheDir, boolean use_cache){
+        SessionDownload sessionDownload = new SessionDownload(context, cacheDir);
         sessionDownload.setCallBackSessionInterface(new SessionDownload.CallBackSessionInterface() {
             @Override
             public void callBackSuccess(String response) {

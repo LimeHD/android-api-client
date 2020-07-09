@@ -4,8 +4,6 @@ import android.content.Context;
 
 import java.io.File;
 
-import okhttp3.Cache;
-import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import tv.limehd.androidapimodule.Download.Client.ClientDownloading;
 import tv.limehd.androidapimodule.Values.ApiValues;
@@ -20,7 +18,7 @@ public class LimeApiClient {
     private String locale;
     private String x_test_ip;
     private boolean use_cache;
-    private static File cacheDir;
+    private File cacheDir;
     private static final int defaultMaxAge = 600;
     private Context context;
 
@@ -30,6 +28,10 @@ public class LimeApiClient {
 
     public LimeApiClient(Context context, String api_root, String scheme, String application_id, String x_access_token, String locale, File cacheDir) {
         initialization(context, api_root, scheme, application_id, x_access_token, locale, cacheDir, true);
+    }
+
+    public LimeApiClient(String api_root, String scheme, String application_id, String x_access_token, String locale){
+        initialization(null, api_root, scheme, application_id, x_access_token, locale, null, false);
     }
 
     private void initialization(Context context, String api_root, String scheme, String application_id, String x_access_token, String locale, File cacheDir, boolean use_cache) {
@@ -52,12 +54,6 @@ public class LimeApiClient {
         this.x_access_token = x_access_token;
         this.locale = locale;
         x_test_ip = null;
-    }
-
-    public static OkHttpClient.Builder connectCacheInOkHttpClient(OkHttpClient.Builder okHttpClientBuilder) {
-        Cache cache = new Cache(getCacheDir(), convertMegaByteToByte(2));
-        okHttpClientBuilder.cache(cache);
-        return okHttpClientBuilder;
     }
 
     public static int getMaxCacheFromCacheControl(Response response) {
@@ -139,16 +135,12 @@ public class LimeApiClient {
         return clientDownloading;
     }
 
-    private static File getCacheDir() {
-        return cacheDir;
-    }
-
-    private static long convertMegaByteToByte(int megaByte) {
+    public static long convertMegaByteToByte(int megaByte) {
         return megaByte * 1024 * 1024;
     }
 
     private void downloadChannelList(ClientDownloading clientDownloading, String channel_group_id, boolean use_cache) {
-        clientDownloading.downloadChannelList(context, scheme, api_root, apiValues.getURL_CHANNELS_BY_GROUP(), application_id, x_access_token, channel_group_id, locale, x_test_ip, use_cache);
+        clientDownloading.downloadChannelList(context, scheme, api_root, apiValues.getURL_CHANNELS_BY_GROUP(), application_id, x_access_token, channel_group_id, locale, x_test_ip, cacheDir, use_cache);
     }
 
     public interface DownloadChannelListCallBack {
@@ -278,7 +270,7 @@ public class LimeApiClient {
     }
 
     private void downloadPing(ClientDownloading clientDownloading, boolean use_cache) {
-        clientDownloading.downloadPing(context, scheme, api_root, apiValues.getURL_PING_PATH(), application_id, x_access_token, x_test_ip, use_cache);
+        clientDownloading.downloadPing(context, scheme, api_root, apiValues.getURL_PING_PATH(), application_id, x_access_token, x_test_ip, cacheDir, use_cache);
     }
 
     public interface DownloadPingCallBack {
@@ -342,7 +334,7 @@ public class LimeApiClient {
     }
 
     private void downloadSession(ClientDownloading clientDownloading, boolean use_cache) {
-        clientDownloading.downloadSession(context, scheme, api_root, apiValues.getURL_SESSION_PATH(), application_id, x_access_token, x_test_ip, use_cache);
+        clientDownloading.downloadSession(context, scheme, api_root, apiValues.getURL_SESSION_PATH(), application_id, x_access_token, x_test_ip, cacheDir, use_cache);
     }
 
     public interface DownloadSessionCallBack {
@@ -389,11 +381,11 @@ public class LimeApiClient {
 
     //get version name and code api client
     public static int getVersionCode(Context context) {
-        return 14;
+        return 15;
     }
 
     public static String getVersionName(Context context) {
-        return "0.2.11";
+        return "0.2.12";
     }
     //end region
 }

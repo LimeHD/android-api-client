@@ -33,6 +33,10 @@ public class BroadcastDownloading {
         this.context = context;
     }
 
+    private void initialization() {
+        apiValues = new ApiValues();
+    }
+
     public void loadingRequestBroadCast(final String scheme, final String api_root, final String endpoint_broadcast
             , final String channel_id, final String before_date, final String after_date, final String time_zone
             , String application_id, final String x_access_token, final String locale, final String x_test_ip, final boolean use_cache) {
@@ -91,9 +95,7 @@ public class BroadcastDownloading {
                     , before_date, after_date, time_zone, locale));
     }
 
-    private void initialization() {
-        apiValues = new ApiValues();
-    }
+
 
     private boolean isResponseFromNetwork(Response response) {
         return response.networkResponse() != null;

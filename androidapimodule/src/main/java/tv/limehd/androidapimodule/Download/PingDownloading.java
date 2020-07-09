@@ -2,11 +2,13 @@ package tv.limehd.androidapimodule.Download;
 
 import android.content.Context;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 
+import okhttp3.Cache;
 import okhttp3.CacheControl;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -19,17 +21,28 @@ import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.LimeUri;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
+import static tv.limehd.androidapimodule.LimeApiClient.convertMegaByteToByte;
+
 public class PingDownloading {
     private ApiValues apiValues;
     private Context context;
+    private File cacheDir;
 
     public PingDownloading() {
         initialization();
     }
 
-    public PingDownloading(Context context) {
+    public PingDownloading(Context context, File cacheDir) {
         initialization();
         this.context = context;
+        this.cacheDir = cacheDir;
+    }
+
+    private void connectCacheInOkHttpClient(OkHttpClient.Builder okHttpClientBuilder) {
+        if(cacheDir!=null) {
+            Cache cache = new Cache(cacheDir, convertMegaByteToByte(2));
+            okHttpClientBuilder.cache(cache);
+        }
     }
 
     private void initialization() {
@@ -49,7 +62,7 @@ public class PingDownloading {
                         }
                     }
                 });
-                limeCurlBuilder = LimeApiClient.connectCacheInOkHttpClient(limeCurlBuilder);
+                connectCacheInOkHttpClient(limeCurlBuilder);
 
                 OkHttpClient client = new OkHttpClient(limeCurlBuilder);
                 Request.Builder builder = new Request.Builder()
