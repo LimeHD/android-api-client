@@ -108,11 +108,11 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
         String locale = "";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             locale = LimeLocale.getLocaleTag(getResources().getConfiguration().getLocales().get(0));
-        }else{
+        } else {
             locale = LimeLocale.getLocaleTag(getResources().getConfiguration().locale);
         }
-        limeApiClient = new LimeApiClient(api_root, apiValues.getSCHEME_HTTPS(), application_id, x_access_token,
-                locale);
+        limeApiClient = new LimeApiClient(getApplicationContext(), api_root, apiValues.getSCHEME_HTTPS(), application_id, x_access_token,
+                locale, getApplication().getCacheDir());
         limeApiClient.setDownloadChannelListCallBack(this);
         limeApiClient.setDownloadBroadCastCallBack(this);
         limeApiClient.setDownloadPingCallBack(this);
@@ -128,7 +128,7 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
         String locale = "";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             locale = LimeLocale.getLocaleTag(getResources().getConfiguration().getLocales().get(0));
-        }else{
+        } else {
             locale = LimeLocale.getLocaleTag(getResources().getConfiguration().locale);
         }
         limeApiClient.updateLimeApiClientData(api_root, apiValues.getSCHEME_HTTPS(), application_id, x_access_token

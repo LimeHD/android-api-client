@@ -2,6 +2,11 @@ package tv.limehd.androidapimodule;
 
 import android.content.Context;
 
+import java.io.File;
+
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
+import okhttp3.Response;
 import tv.limehd.androidapimodule.Download.Client.ClientDownloading;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
@@ -15,8 +20,19 @@ public class LimeApiClient {
     private String locale;
     private String x_test_ip;
     private boolean use_cache;
+    private static File cacheDir;
+    private static final int defaultMaxAge = 600;
+    private Context context;
 
-    public LimeApiClient(String api_root, String scheme, String application_id, String x_access_token, String locale, boolean use_cache){
+    public LimeApiClient(Context context, String api_root, String scheme, String application_id, String x_access_token, String locale, File cacheDir, boolean use_cache) {
+        initialization(context, api_root, scheme, application_id, x_access_token, locale, cacheDir, use_cache);
+    }
+
+    public LimeApiClient(Context context, String api_root, String scheme, String application_id, String x_access_token, String locale, File cacheDir) {
+        initialization(context, api_root, scheme, application_id, x_access_token, locale, cacheDir, true);
+    }
+
+    private void initialization(Context context, String api_root, String scheme, String application_id, String x_access_token, String locale, File cacheDir, boolean use_cache) {
         apiValues = new ApiValues();
         this.api_root = api_root;
         this.scheme = scheme;
@@ -25,17 +41,8 @@ public class LimeApiClient {
         this.locale = locale;
         x_test_ip = null;
         this.use_cache = use_cache;
-    }
-
-    public LimeApiClient(String api_root, String scheme, String application_id, String x_access_token, String locale) {
-        apiValues = new ApiValues();
-        this.api_root = api_root;
-        this.scheme = scheme;
-        this.application_id = application_id;
-        this.x_access_token = x_access_token;
-        this.locale = locale;
-        x_test_ip = null;
-        use_cache = true;
+        this.cacheDir = cacheDir;
+        this.context = context;
     }
 
     public void updateLimeApiClientData(String api_root, String scheme, String application_id, String x_access_token, String locale) {
@@ -47,23 +54,40 @@ public class LimeApiClient {
         x_test_ip = null;
     }
 
-    public void setUse_cache(boolean use_cache){
+    public static OkHttpClient.Builder connectCacheInOkHttpClient(OkHttpClient.Builder okHttpClientBuilder) {
+        Cache cache = new Cache(getCacheDir(), convertMegaByteToByte(2));
+        okHttpClientBuilder.cache(cache);
+        return okHttpClientBuilder;
+    }
+
+    public static int getMaxCacheFromCacheControl(Response response) {
+        try {
+            String cacheControlValue = response.networkResponse().header("Cache-Control", "0");
+            String[] cacheArray = cacheControlValue.split("=");
+            return Integer.parseInt(cacheArray[cacheArray.length - 1]);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return defaultMaxAge;
+    }
+
+    public void setUse_cache(boolean use_cache) {
         this.use_cache = use_cache;
     }
 
-    public boolean getUse_cache(){
+    public boolean getUse_cache() {
         return use_cache;
     }
 
-    public void setXTestIp(String x_test_ip){
+    public void setXTestIp(String x_test_ip) {
         this.x_test_ip = x_test_ip;
     }
 
-    public void updateApiRoot(String api_root){
+    public void updateApiRoot(String api_root) {
         this.api_root = api_root;
     }
 
-    public void upDateLocale(String locale){
+    public void upDateLocale(String locale) {
         this.locale = locale;
     }
 
@@ -77,8 +101,8 @@ public class LimeApiClient {
         }
     }
 
-    public void downloadChannelList(String channel_group_id, boolean use_cache){
-        if(api_root!=null){
+    public void downloadChannelList(String channel_group_id, boolean use_cache) {
+        if (api_root != null) {
             ClientDownloading clientDownloading = initializeDownloadChannelList();
             downloadChannelList(clientDownloading, channel_group_id, use_cache);
         }
@@ -115,8 +139,16 @@ public class LimeApiClient {
         return clientDownloading;
     }
 
+    private static File getCacheDir() {
+        return cacheDir;
+    }
+
+    private static long convertMegaByteToByte(int megaByte) {
+        return megaByte * 1024 * 1024;
+    }
+
     private void downloadChannelList(ClientDownloading clientDownloading, String channel_group_id, boolean use_cache) {
-        clientDownloading.downloadChannelList(scheme, api_root, apiValues.getURL_CHANNELS_BY_GROUP(), application_id, x_access_token, channel_group_id, locale, x_test_ip, use_cache);
+        clientDownloading.downloadChannelList(context, scheme, api_root, apiValues.getURL_CHANNELS_BY_GROUP(), application_id, x_access_token, channel_group_id, locale, x_test_ip, use_cache);
     }
 
     public interface DownloadChannelListCallBack {
@@ -181,7 +213,7 @@ public class LimeApiClient {
     }
 
     private void downloadBroadcast(ClientDownloading clientDownloading, String channel_id, String before_date, String after_date, String time_zone, boolean use_cache) {
-        clientDownloading.downloadBroadCast(scheme, api_root, apiValues.getURL_BROADCAST_PATH(), channel_id, before_date, after_date, time_zone, application_id
+        clientDownloading.downloadBroadCast(context, scheme, api_root, apiValues.getURL_BROADCAST_PATH(), channel_id, before_date, after_date, time_zone, application_id
                 , x_access_token, locale, x_test_ip, use_cache);
     }
 
@@ -207,8 +239,8 @@ public class LimeApiClient {
         }
     }
 
-    public void downloadPing(boolean use_cache){
-        if(api_root!=null){
+    public void downloadPing(boolean use_cache) {
+        if (api_root != null) {
             ClientDownloading clientDownloading = initializeDownloadPing();
             downloadPing(clientDownloading, use_cache);
         }
@@ -246,7 +278,7 @@ public class LimeApiClient {
     }
 
     private void downloadPing(ClientDownloading clientDownloading, boolean use_cache) {
-        clientDownloading.downloadPing(scheme, api_root, apiValues.getURL_PING_PATH(), application_id, x_access_token, x_test_ip, use_cache);
+        clientDownloading.downloadPing(context, scheme, api_root, apiValues.getURL_PING_PATH(), application_id, x_access_token, x_test_ip, use_cache);
     }
 
     public interface DownloadPingCallBack {
@@ -271,7 +303,7 @@ public class LimeApiClient {
         }
     }
 
-    public void downloadSession(boolean use_cache){
+    public void downloadSession(boolean use_cache) {
         if (api_root != null) {
             ClientDownloading clientDownloading = initializeDownloadSession();
             downloadSession(clientDownloading, use_cache);
@@ -310,7 +342,7 @@ public class LimeApiClient {
     }
 
     private void downloadSession(ClientDownloading clientDownloading, boolean use_cache) {
-        clientDownloading.downloadSession(scheme, api_root, apiValues.getURL_SESSION_PATH(), application_id, x_access_token, x_test_ip, use_cache);
+        clientDownloading.downloadSession(context, scheme, api_root, apiValues.getURL_SESSION_PATH(), application_id, x_access_token, x_test_ip, use_cache);
     }
 
     public interface DownloadSessionCallBack {
@@ -357,7 +389,7 @@ public class LimeApiClient {
 
     //get version name and code api client
     public static int getVersionCode(Context context) {
-            return 14;
+        return 14;
     }
 
     public static String getVersionName(Context context) {

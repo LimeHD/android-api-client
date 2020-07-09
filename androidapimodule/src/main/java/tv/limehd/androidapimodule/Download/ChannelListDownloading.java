@@ -1,5 +1,7 @@
 package tv.limehd.androidapimodule.Download;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import okhttp3.CacheControl;
@@ -8,6 +10,8 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import tv.limehd.androidapimodule.LimeApiClient;
+import tv.limehd.androidapimodule.LimeCacheSettings;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.LimeUri;
 import tv.limehd.androidapimodule.Values.ApiValues;
@@ -18,9 +22,15 @@ import java.util.concurrent.TimeUnit;
 public class ChannelListDownloading {
 
     private ApiValues apiValues;
+    private Context context;
 
     public ChannelListDownloading() {
-        apiValues = new ApiValues();
+        initialization();
+    }
+
+    public ChannelListDownloading(Context context) {
+        initialization();
+        this.context = context;
     }
 
     public void loadingRequestChannelList(final String scheme, final String api_root, final String endpoint_channels,
@@ -31,10 +41,13 @@ public class ChannelListDownloading {
                 LimeCurlBuilder.Builder limeCurlBuilder = new LimeCurlBuilder().setLogCurlInterface(new LimeCurlBuilder.LogCurlInterface() {
                     @Override
                     public void logCurl(String message) {
-                        if (callBackRequestChannelListInterface != null)
+                        if (callBackRequestChannelListInterface != null) {
                             callBackRequestChannelListInterface.callBackCurlRequestChannelList(message);
+                        }
                     }
                 });
+                limeCurlBuilder = LimeApiClient.connectCacheInOkHttpClient(limeCurlBuilder);
+
                 OkHttpClient client = new OkHttpClient(limeCurlBuilder);
                 Request.Builder builder = new Request.Builder()
                         .url(LimeUri.getUriChannelList(scheme, api_root, endpoint_channels, channel_group_id, locale))
@@ -43,7 +56,7 @@ public class ChannelListDownloading {
                 if (x_test_ip != null)
                     builder.addHeader(apiValues.getX_TEXT_IP_KEY(), x_test_ip);
                 if (use_cache) {
-                    builder.cacheControl(new CacheControl.Builder().maxAge(0, TimeUnit.SECONDS).build());
+                    builder.cacheControl(new CacheControl.Builder().maxAge(tryGetMaxAge(), TimeUnit.SECONDS).build());
                 } else {
                     builder.cacheControl(new CacheControl.Builder().noCache().build());
                 }
@@ -62,6 +75,12 @@ public class ChannelListDownloading {
                                 callBackDownloadChannelListInterface.callBackDownloadedChannelListError(("Unexpected code " + response));
                             throw new IOException("Unexpected code " + response);
                         }
+
+                        if (isResponseFromNetwork(response)) {
+                            int maxAge = LimeApiClient.getMaxCacheFromCacheControl(response);
+                            trySaveMaxAge(maxAge);
+                        }
+
                         if (callBackDownloadChannelListInterface != null)
                             callBackDownloadChannelListInterface.callBackDownloadedChannelListSuccess(response.body().string());
                     }
@@ -70,6 +89,31 @@ public class ChannelListDownloading {
         }).start();
         if (callBackRequestChannelListInterface != null)
             callBackRequestChannelListInterface.callBackUrlRequestChannelList(LimeUri.getUriChannelList(scheme, api_root, endpoint_channels, channel_group_id, locale));
+    }
+
+    private void initialization() {
+        apiValues = new ApiValues();
+    }
+
+    private boolean isResponseFromNetwork(Response response) {
+        return response.networkResponse() != null;
+    }
+
+    private boolean trySaveMaxAge(int maxAge) {
+        if (context != null) {
+            LimeCacheSettings.setMaxAge(context, LimeCacheSettings.DOWNLOADER_CHANNEL_LIST, maxAge);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private int tryGetMaxAge() {
+        if (context != null) {
+            return LimeCacheSettings.getMaxAge(context, LimeCacheSettings.DOWNLOADER_CHANNEL_LIST);
+        } else {
+            return 0;
+        }
     }
 
     public interface CallBackDownloadChannelListInterface {
