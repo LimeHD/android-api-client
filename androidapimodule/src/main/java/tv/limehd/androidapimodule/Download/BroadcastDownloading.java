@@ -1,5 +1,7 @@
 package tv.limehd.androidapimodule.Download;
 
+import android.content.Context;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -11,6 +13,8 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import tv.limehd.androidapimodule.LimeApiClient;
+import tv.limehd.androidapimodule.LimeCacheSettings;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.LimeUri;
 import tv.limehd.androidapimodule.Values.ApiValues;
@@ -18,9 +22,15 @@ import tv.limehd.androidapimodule.Values.ApiValues;
 public class BroadcastDownloading {
 
     private ApiValues apiValues;
+    private Context context;
 
     public BroadcastDownloading() {
-        apiValues = new ApiValues();
+        initialization();
+    }
+
+    public BroadcastDownloading(Context context) {
+        initialization();
+        this.context = context;
     }
 
     public void loadingRequestBroadCast(final String scheme, final String api_root, final String endpoint_broadcast
@@ -45,7 +55,7 @@ public class BroadcastDownloading {
                 if (x_test_ip != null)
                     builder.addHeader(apiValues.getX_TEXT_IP_KEY(), x_test_ip);
                 if (use_cache) {
-                    builder.cacheControl(new CacheControl.Builder().maxAge(0, TimeUnit.SECONDS).build());
+                    builder.cacheControl(new CacheControl.Builder().maxAge(tryGetMaxAge(), TimeUnit.SECONDS).build());
                 } else {
                     builder.cacheControl(new CacheControl.Builder().noCache().build());
                 }
@@ -64,6 +74,12 @@ public class BroadcastDownloading {
                                 callBackDownloadBroadCastInterface.callBackDownloadedBroadCastError(("Unexpected code " + response));
                             throw new IOException("Unexpected code " + response);
                         }
+
+                        if (isResponseFromNetwork(response)) {
+                            int maxAge = LimeApiClient.getMaxCacheFromCacheControl(response);
+                            trySaveMaxAge(maxAge);
+                        }
+
                         if (callBackDownloadBroadCastInterface != null)
                             callBackDownloadBroadCastInterface.callBackDownloadedBroadCastSucces(response.body().string());
                     }
@@ -75,6 +91,30 @@ public class BroadcastDownloading {
                     , before_date, after_date, time_zone, locale));
     }
 
+    private void initialization() {
+        apiValues = new ApiValues();
+    }
+
+    private boolean isResponseFromNetwork(Response response) {
+        return response.networkResponse() != null;
+    }
+
+    private boolean trySaveMaxAge(int maxAge) {
+        if (context != null) {
+            LimeCacheSettings.setMaxAge(context, LimeCacheSettings.DOWNLOADER_BROADCAST, maxAge);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private int tryGetMaxAge() {
+        if (context != null) {
+            return LimeCacheSettings.getMaxAge(context, LimeCacheSettings.DOWNLOADER_BROADCAST);
+        } else {
+            return 0;
+        }
+    }
 
     public interface CallBackDownloadBroadCastInterface {
         void callBackDownloadedBroadCastSucces(String response);

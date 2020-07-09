@@ -1,5 +1,7 @@
 package tv.limehd.androidapimodule.Download;
 
+import android.content.Context;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -12,14 +14,27 @@ import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import tv.limehd.androidapimodule.LimeApiClient;
+import tv.limehd.androidapimodule.LimeCacheSettings;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.LimeUri;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
 public class SessionDownload {
     private ApiValues apiValues;
+    private Context context;
 
     public SessionDownload() {
+        initialization();
+    }
+
+    public SessionDownload(Context context) {
+        initialization();
+        this.context = context;
+
+    }
+
+    private void initialization() {
         apiValues = new ApiValues();
     }
 
@@ -35,6 +50,9 @@ public class SessionDownload {
                             callBackSessionRequestInterface.callBackCurlRequest(message);
                     }
                 });
+
+                limeCurlBuilder = LimeApiClient.connectCacheInOkHttpClient(limeCurlBuilder);
+
                 OkHttpClient client = new OkHttpClient(limeCurlBuilder);
 
                 FormBody.Builder formBodyBuilder = new FormBody.Builder();
@@ -47,8 +65,9 @@ public class SessionDownload {
                         .url(LimeUri.getUriSession(scheme, api_root, endpoint_session));
                 if (x_test_ip != null)
                     builder.addHeader(apiValues.getX_TEXT_IP_KEY(), x_test_ip);
+
                 if (use_cache) {
-                    builder.cacheControl(new CacheControl.Builder().maxAge(0, TimeUnit.SECONDS).build());
+                    builder.cacheControl(new CacheControl.Builder().maxAge(tryGetMaxAge(), TimeUnit.SECONDS).build());
                 } else {
                     builder.cacheControl(new CacheControl.Builder().noCache().build());
                 }
@@ -65,10 +84,17 @@ public class SessionDownload {
                     @Override
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                         if (!response.isSuccessful()) {
-                            if (callBackSessionInterface != null)
+                            if (callBackSessionInterface != null) {
                                 callBackSessionInterface.callBackError(("Unexpected code " + response));
+                            }
                             throw new IOException("Unexpected code " + response);
                         }
+
+                        if (response.networkResponse() != null) {
+                            int maxAge = LimeApiClient.getMaxCacheFromCacheControl(response);
+                            trySaveMaxAge(maxAge);
+                        }
+
                         if (callBackSessionInterface != null)
                             callBackSessionInterface.callBackSuccess(response.body().string());
                     }
@@ -77,6 +103,23 @@ public class SessionDownload {
         }).start();
         if (callBackSessionRequestInterface != null)
             callBackSessionRequestInterface.callBackUrlRequest(LimeUri.getUriSession(scheme, api_root, endpoint_session));
+    }
+
+    private boolean trySaveMaxAge(int maxAge) {
+        if (context != null) {
+            LimeCacheSettings.setMaxAge(context, LimeCacheSettings.DOWNLOADER_SESSION, maxAge);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private int tryGetMaxAge() {
+        if (context != null) {
+            return LimeCacheSettings.getMaxAge(context, LimeCacheSettings.DOWNLOADER_SESSION);
+        } else {
+            return 0;
+        }
     }
 
     public interface CallBackSessionInterface {
