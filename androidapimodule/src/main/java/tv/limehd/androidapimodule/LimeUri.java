@@ -11,6 +11,7 @@ public class LimeUri {
     private static String FINISH_AT = "finish_at";
     private static String LOCALE = "locale";
     private static String DURATION = "duration";
+    private static String TIME_ZONE_PICKER = "time_zone_picker";
 
     private static String STREAM_URL = "${stream_id}";
 
@@ -21,6 +22,7 @@ public class LimeUri {
                 .appendEncodedPath(endpoint_channels)
                 .appendQueryParameter(LOCALE, locale)
                 .appendEncodedPath(channel_group_id)
+                .appendQueryParameter(TIME_ZONE_PICKER, "previous")
                 .build()
                 .toString();
     }
