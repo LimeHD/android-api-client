@@ -381,11 +381,11 @@ public class LimeApiClient {
 
     //get version name and code api client
     public static int getVersionCode(Context context) {
-        return 15;
+        return 16;
     }
 
     public static String getVersionName(Context context) {
-        return "0.2.12";
+        return "0.2.13";
     }
     //end region
 }

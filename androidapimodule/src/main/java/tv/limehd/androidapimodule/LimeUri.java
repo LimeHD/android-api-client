@@ -63,12 +63,12 @@ public class LimeUri {
 
     public static String getArchiveUriTranslation(String archive_url, String channel_id, String start_at, String duration){
         String archive_hls_url = archive_url.replace(STREAM_URL, channel_id);
-        return new Uri.Builder()
-                .appendEncodedPath(archive_hls_url)
+        String params = new Uri.Builder()
                 .appendQueryParameter(START_AT, start_at)
                 .appendQueryParameter(DURATION, duration)
                 .build()
                 .toString();
+        return archive_hls_url + params;
     }
 
 }
