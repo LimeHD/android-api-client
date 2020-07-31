@@ -111,7 +111,8 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
         } else {
             locale = LimeLocale.getLocaleTag(getResources().getConfiguration().locale);
         }
-        limeApiClient = new LimeApiClient(getApplicationContext(), api_root, apiValues.getSCHEME_HTTPS(), application_id, x_access_token,
+
+        limeApiClient = new LimeApiClient(getApplicationContext(), LimeApiClient.getDeviceId(this), api_root, apiValues.getSCHEME_HTTPS(), application_id, x_access_token,
                 locale, getApplication().getCacheDir());
         limeApiClient.setDownloadChannelListCallBack(this);
         limeApiClient.setDownloadBroadCastCallBack(this);

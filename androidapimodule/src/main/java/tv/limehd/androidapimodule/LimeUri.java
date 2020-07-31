@@ -59,6 +59,15 @@ public class LimeUri {
                 .toString();
     }
 
+    public static String getUriDeepClicks(String scheme, String api_root, String endpoint_deepclicks){
+        return new Uri.Builder()
+                .scheme(scheme)
+                .authority(api_root)
+                .appendEncodedPath(endpoint_deepclicks)
+                .build()
+                .toString();
+    }
+
     public static String getUriTranslation(String stream_url, String channel_id) {
         return stream_url.replace(STREAM_URL, channel_id);
     }

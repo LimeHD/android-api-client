@@ -12,6 +12,7 @@ public class LimeCacheSettings {
     public static String DOWNLOADER_SESSION = "DOWNLOADER_SESSION";
     public static String DOWNLOADER_CHANNEL_LIST = "DOWNLOADER_CHANNEL_LIST";
     public static String DOWNLOADER_BROADCAST = "DOWNLOADER_BROADCAST";
+    public static String SENDER_DEEPCLICKS = "SENDER_DEEPCLICKS";
 
     public static int getMaxAge(Context context, String key) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(DOWNLOADING_CACHE, Context.MODE_PRIVATE);

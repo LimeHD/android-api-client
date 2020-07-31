@@ -1,6 +1,7 @@
 package tv.limehd.androidapimodule;
 
 import android.content.Context;
+import android.provider.Settings;
 
 import java.io.File;
 
@@ -10,6 +11,7 @@ import tv.limehd.androidapimodule.Values.ApiValues;
 
 public class LimeApiClient {
 
+    private String deviceId;
     private String api_root;
     private String application_id;
     private String scheme;
@@ -22,19 +24,19 @@ public class LimeApiClient {
     private static final int defaultMaxAge = 600;
     private Context context;
 
-    public LimeApiClient(Context context, String api_root, String scheme, String application_id, String x_access_token, String locale, File cacheDir, boolean use_cache) {
-        initialization(context, api_root, scheme, application_id, x_access_token, locale, cacheDir, use_cache);
+    public LimeApiClient(Context context, String deviceId, String api_root, String scheme, String application_id, String x_access_token, String locale, File cacheDir, boolean use_cache) {
+        initialization(context, deviceId,api_root, scheme, application_id, x_access_token, locale, cacheDir, use_cache);
     }
 
-    public LimeApiClient(Context context, String api_root, String scheme, String application_id, String x_access_token, String locale, File cacheDir) {
-        initialization(context, api_root, scheme, application_id, x_access_token, locale, cacheDir, true);
+    public LimeApiClient(Context context, String deviceId, String api_root, String scheme, String application_id, String x_access_token, String locale, File cacheDir) {
+        initialization(context, deviceId,api_root, scheme, application_id, x_access_token, locale, cacheDir, true);
     }
 
-    public LimeApiClient(String api_root, String scheme, String application_id, String x_access_token, String locale){
-        initialization(null, api_root, scheme, application_id, x_access_token, locale, null, false);
+    public LimeApiClient(String api_root, String deviceId, String scheme, String application_id, String x_access_token, String locale){
+        initialization(null, deviceId, api_root, scheme, application_id, x_access_token, locale, null, false);
     }
 
-    private void initialization(Context context, String api_root, String scheme, String application_id, String x_access_token, String locale, File cacheDir, boolean use_cache) {
+    private void initialization(Context context, String deviceId, String api_root, String scheme, String application_id, String x_access_token, String locale, File cacheDir, boolean use_cache) {
         apiValues = new ApiValues();
         this.api_root = api_root;
         this.scheme = scheme;
@@ -45,6 +47,7 @@ public class LimeApiClient {
         this.use_cache = use_cache;
         this.cacheDir = cacheDir;
         this.context = context;
+        this.deviceId = deviceId;
     }
 
     public void updateLimeApiClientData(String api_root, String scheme, String application_id, String x_access_token, String locale) {
@@ -54,17 +57,6 @@ public class LimeApiClient {
         this.x_access_token = x_access_token;
         this.locale = locale;
         x_test_ip = null;
-    }
-
-    public static int getMaxCacheFromCacheControl(Response response) {
-        try {
-            String cacheControlValue = response.networkResponse().header("Cache-Control", "0");
-            String[] cacheArray = cacheControlValue.split("=");
-            return Integer.parseInt(cacheArray[cacheArray.length - 1]);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return defaultMaxAge;
     }
 
     public void setUse_cache(boolean use_cache) {
@@ -135,12 +127,8 @@ public class LimeApiClient {
         return clientDownloading;
     }
 
-    public static long convertMegaByteToByte(int megaByte) {
-        return megaByte * 1024 * 1024;
-    }
-
     private void downloadChannelList(ClientDownloading clientDownloading, String channel_group_id, boolean use_cache) {
-        clientDownloading.downloadChannelList(context, scheme, api_root, apiValues.getURL_CHANNELS_BY_GROUP(), application_id, x_access_token, channel_group_id, locale, x_test_ip, cacheDir, use_cache);
+        clientDownloading.downloadChannelList(context, cacheDir, scheme, api_root, apiValues.getURL_CHANNELS_BY_GROUP(), application_id, x_access_token, channel_group_id, locale, x_test_ip,  use_cache);
     }
 
     public interface DownloadChannelListCallBack {
@@ -270,7 +258,7 @@ public class LimeApiClient {
     }
 
     private void downloadPing(ClientDownloading clientDownloading, boolean use_cache) {
-        clientDownloading.downloadPing(context, scheme, api_root, apiValues.getURL_PING_PATH(), application_id, x_access_token, x_test_ip, cacheDir, use_cache);
+        clientDownloading.downloadPing(context, cacheDir, scheme, api_root, apiValues.getURL_PING_PATH(), application_id, x_access_token, x_test_ip, use_cache);
     }
 
     public interface DownloadPingCallBack {
@@ -334,7 +322,7 @@ public class LimeApiClient {
     }
 
     private void downloadSession(ClientDownloading clientDownloading, boolean use_cache) {
-        clientDownloading.downloadSession(context, scheme, api_root, apiValues.getURL_SESSION_PATH(), application_id, x_access_token, x_test_ip, cacheDir, use_cache);
+        clientDownloading.downloadSession(context, cacheDir, scheme, api_root, apiValues.getURL_SESSION_PATH(), application_id, x_access_token, x_test_ip,  use_cache);
     }
 
     public interface DownloadSessionCallBack {
@@ -350,6 +338,71 @@ public class LimeApiClient {
     }
     //endregion
 
+    //region Sending deepclicks
+
+    public void downloadDeepClicks(String query, String path){
+        if(api_root!=null){
+            ClientDownloading clientDownloading = initializeSendingDeepClicks();
+            downloadDeepClicks(clientDownloading, use_cache, query, path);
+        }
+    }
+
+    public void downloadDeepClicks(String query, String path, boolean use_cache){
+        if(api_root!=null){
+            ClientDownloading clientDownloading = initializeSendingDeepClicks();
+            downloadDeepClicks(clientDownloading, use_cache, query, path);
+        }
+    }
+
+    private ClientDownloading initializeSendingDeepClicks(){
+        ClientDownloading clientDownloading = new ClientDownloading();
+        clientDownloading.setCallBackDownloadInterface(new ClientDownloading.CallBackDownloadInterface() {
+            @Override
+            public void callBackDownloadedSuccess(String response) {
+                if (downloadDeepClicksCallBack != null)
+                    downloadDeepClicksCallBack.sendingDeepClicksSuccess(response);
+            }
+
+            @Override
+            public void callBackDownloadedError(String error_message) {
+                if (downloadDeepClicksCallBack != null)
+                    downloadDeepClicksCallBack.sendingDeepClicksError(error_message);
+            }
+        });
+        clientDownloading.setCallBackRequestInterface(new ClientDownloading.CallBackRequestInterface() {
+            @Override
+            public void callBackUrlRequest(String request) {
+                if (requestDeepClicks != null)
+                    requestDeepClicks.callBackUrlRequest(request);
+            }
+
+            @Override
+            public void callBackCurlRequest(String request) {
+                if (requestDeepClicks != null)
+                    requestDeepClicks.callBackCurlRequest(request);
+            }
+        });
+        return clientDownloading;
+    }
+
+    private void downloadDeepClicks(ClientDownloading clientDownloading, boolean use_cache, String query, String path){
+        clientDownloading.sendingDeepClicks(context, cacheDir, scheme, api_root, apiValues.getURL_DEEPCLICKS(), application_id, x_access_token, x_test_ip, use_cache, query, path, deviceId);
+    }
+
+    public interface DownloadDeepClicksCallBack {
+        void sendingDeepClicksSuccess(String response);
+
+        void sendingDeepClicksError(String message);
+    }
+
+    private DownloadDeepClicksCallBack downloadDeepClicksCallBack;
+
+    public void setDownloadDeepClicksCallBack(DownloadDeepClicksCallBack downloadDeepClicksCallBack) {
+        this.downloadDeepClicksCallBack = downloadDeepClicksCallBack;
+    }
+
+    //endregion
+
     //region RequestCallBack
     public interface RequestCallBack {
         void callBackUrlRequest(String request);
@@ -361,6 +414,7 @@ public class LimeApiClient {
     private RequestCallBack requestPingCallBack;
     private RequestCallBack requestChannelList;
     private RequestCallBack requestSession;
+    private RequestCallBack requestDeepClicks;
 
     public void setRequestBroadCastCallBack(RequestCallBack requestBroadCastCallBack) {
         this.requestBroadCastCallBack = requestBroadCastCallBack;
@@ -377,9 +431,14 @@ public class LimeApiClient {
     public void setRequestSession(RequestCallBack requestSession) {
         this.requestSession = requestSession;
     }
+
+    public void setRequestDeepClicks(RequestCallBack requestDeepClicks){
+        this.requestDeepClicks = requestDeepClicks;
+    }
+
     //endregion
 
-    //get version name and code api client
+    //region get version name and code api client
     public static int getVersionCode(Context context) {
         return 16;
     }
@@ -387,5 +446,33 @@ public class LimeApiClient {
     public static String getVersionName(Context context) {
         return "0.2.13";
     }
-    //end region
+    //endregion
+
+
+    //region public static methods
+
+    public static int getMaxCacheFromCacheControl(Response response) {
+        try {
+            String cacheControlValue = response.networkResponse().header("Cache-Control", "0");
+            String[] cacheArray = cacheControlValue.split("=");
+            return Integer.parseInt(cacheArray[cacheArray.length - 1]);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return defaultMaxAge;
+    }
+
+    public static long convertMegaByteToByte(int megaByte) {
+        return megaByte * 1024 * 1024;
+    }
+
+    public static String getDeviceId(Context context) {
+        try {
+            return Settings.Secure
+                    .getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        } catch (Exception e) {
+            return "device_id_null";
+        }
+    }
+    //endregion
 }

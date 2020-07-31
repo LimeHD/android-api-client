@@ -6,6 +6,7 @@ import java.io.File;
 
 import tv.limehd.androidapimodule.Download.BroadcastDownloading;
 import tv.limehd.androidapimodule.Download.ChannelListDownloading;
+import tv.limehd.androidapimodule.Download.DeepClicksDownloading;
 import tv.limehd.androidapimodule.Download.PingDownloading;
 import tv.limehd.androidapimodule.Download.SessionDownload;
 
@@ -14,8 +15,8 @@ public class ClientDownloading {
     public ClientDownloading() {
     }
 
-    public void downloadChannelList(Context context, String scheme, String api_root, String endpoint_channels, String application_id
-            , String x_access_token, String channel_group_id, String locale, String x_test_ip, File cacheDir, boolean use_cache) {
+    public void downloadChannelList(Context context, File cacheDir, String scheme, String api_root, String endpoint_channels, String application_id
+            , String x_access_token, String channel_group_id, String locale, String x_test_ip, boolean use_cache) {
         ChannelListDownloading channelListDownloading = new ChannelListDownloading(context, cacheDir);
         channelListDownloading.setCallBackDownloadChannelListInterface(new ChannelListDownloading.CallBackDownloadChannelListInterface() {
             @Override
@@ -81,7 +82,7 @@ public class ClientDownloading {
                 , application_id, x_access_token, locale, x_test_ip, use_cache);
     }
 
-    public void downloadPing(Context context, String scheme, String api_root, String endpoint_ping, String application_id, String x_access_token, String x_test_ip, File cacheDir, boolean use_cache) {
+    public void downloadPing(Context context, File cacheDir, String scheme, String api_root, String endpoint_ping, String application_id, String x_access_token, String x_test_ip, boolean use_cache) {
         PingDownloading pingDownloading = new PingDownloading(context, cacheDir);
         pingDownloading.setCallBackPingInterface(new PingDownloading.CallBackPingInterface() {
             @Override
@@ -112,8 +113,8 @@ public class ClientDownloading {
         pingDownloading.pingDownloadRequest(scheme, api_root, endpoint_ping, application_id, x_access_token, x_test_ip, use_cache);
     }
 
-    public void downloadSession(Context context, String scheme, String api_root, String endpoint_session
-            , String application_id, String x_access_token, String x_test_ip, File cacheDir, boolean use_cache){
+    public void downloadSession(Context context, File cacheDir, String scheme, String api_root, String endpoint_session
+            , String application_id, String x_access_token, String x_test_ip, boolean use_cache) {
         SessionDownload sessionDownload = new SessionDownload(context, cacheDir);
         sessionDownload.setCallBackSessionInterface(new SessionDownload.CallBackSessionInterface() {
             @Override
@@ -142,6 +143,39 @@ public class ClientDownloading {
             }
         });
         sessionDownload.sessionDownloadRequest(scheme, api_root, endpoint_session, application_id, x_access_token, x_test_ip, use_cache);
+    }
+
+    public void sendingDeepClicks(Context context, File cacheDir, String scheme, String api_root, String endpoint_deepclicks,
+                                  String application_id, String x_access_token, String x_test_ip, boolean use_cache, String query, String path, String device_id) {
+        DeepClicksDownloading deepClicksDownloading = new DeepClicksDownloading(context, cacheDir);
+        deepClicksDownloading.setCallBackDeepClicksInterface(new DeepClicksDownloading.CallBackDeepClicksInterface() {
+            @Override
+            public void callBackSuccess(String response) {
+                if (callBackDownloadInterface != null)
+                    callBackDownloadInterface.callBackDownloadedSuccess(response);
+            }
+
+            @Override
+            public void callBackError(String message) {
+                if (callBackDownloadInterface != null)
+                    callBackDownloadInterface.callBackDownloadedSuccess(message);
+            }
+        });
+        deepClicksDownloading.setCallBackDeepClicksRequestInterface(new DeepClicksDownloading.CallBackDeepClicksRequestInterface() {
+            @Override
+            public void callBackUrlRequest(String request) {
+                if (callBackRequestInterface != null)
+                    callBackRequestInterface.callBackUrlRequest(request);
+            }
+
+            @Override
+            public void callBackCurlRequest(String request) {
+                if (callBackRequestInterface != null)
+                    callBackRequestInterface.callBackCurlRequest(request);
+            }
+        });
+        deepClicksDownloading.deepClicksSendRequest(scheme, api_root, endpoint_deepclicks,
+                application_id, x_access_token, x_test_ip, use_cache, query, path, device_id);
     }
 
     public interface CallBackDownloadInterface {
