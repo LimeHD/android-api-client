@@ -42,8 +42,10 @@ String example_x_access_token = "example_x_access_token";
 String locale = getResources().getConfiguration().locale.getLanguage();
 Context context = getApplicationContext();
 File fileCacheDir = getCacheDir();
-LimeApiClient limeApiClient = new LimeApiClient(context, api_root, scheme, package_name, example_x_access_token, locale, fileCacheDir);
+String device_id = LimeApiClient.getDeviceId(context);
+LimeApiClient limeApiClient = new LimeApiClient(context, device_id, api_root, scheme, package_name, example_x_access_token, locale, fileCacheDir);
 ApiValues apiValues = new ApiValues();
+
 ```
 Если требуется обновить локаль:
 ``` java
@@ -124,4 +126,20 @@ limeApiClient.setDownloadPingCallBack(new LimeApiClient.DownloadPingCallBack() {
 	 // ошика
      }
 });
+```
+### DeepClicks
+Пример запроса
+``` java
+limeApiClient.downloadDeepClicks(query, path, false); //false - без кэша 
+limeApiClient.setDownloadDeepClicksCallBack(new LimeApiClient.DownloadDeepClicksCallBack() {
+      @Override
+      public void sendingDeepClicksSuccess(String response) {
+          //ответ         
+      }
+
+      @Override
+      public void sendingDeepClicksError(String message) {
+          //ошибка             
+      }
+ });
 ```
