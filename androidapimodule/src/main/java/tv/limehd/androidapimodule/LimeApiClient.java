@@ -163,11 +163,11 @@ public class LimeApiClient {
 
     private ClientDownloading initializeDownloadBroadcast() {
         ClientDownloading clientDownloading = new ClientDownloading();
-        clientDownloading.setCallBackDownloadInterface(new ClientDownloading.CallBackDownloadInterface() {
+        clientDownloading.setCallBackDownloadInterfaceBroadcast(new ClientDownloading.CallBackDownloadInterfaceBroadcast() {
             @Override
-            public void callBackDownloadedSuccess(String response) {
+            public void callBackDownloadedSuccess(String response, String channel_id) {
                 if (downloadBroadCastCallBack != null)
-                    downloadBroadCastCallBack.downloadBroadCastSuccess(response);
+                    downloadBroadCastCallBack.downloadBroadCastSuccess(response, channel_id);
             }
 
             @Override
@@ -198,7 +198,7 @@ public class LimeApiClient {
     }
 
     public interface DownloadBroadCastCallBack {
-        void downloadBroadCastSuccess(String response);
+        void downloadBroadCastSuccess(String response, String channel_id);
 
         void downloadBroadCastError(String message);
     }
@@ -440,11 +440,11 @@ public class LimeApiClient {
 
     //region get version name and code api client
     public static int getVersionCode(Context context) {
-        return 17;
+        return 18;
     }
 
     public static String getVersionName(Context context) {
-        return "0.2.20";
+        return "0.2.30";
     }
     //endregion
 
