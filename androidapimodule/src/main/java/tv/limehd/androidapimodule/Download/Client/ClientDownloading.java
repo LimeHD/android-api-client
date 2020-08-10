@@ -16,7 +16,7 @@ public class ClientDownloading {
     }
 
     public void downloadChannelList(Context context, File cacheDir, String scheme, String api_root, String endpoint_channels, String application_id
-            , String x_access_token, String channel_group_id, String locale, String x_test_ip, boolean use_cache) {
+            , String x_access_token, String channel_group_id, String time_zone, String locale, String x_test_ip, boolean use_cache) {
         ChannelListDownloading channelListDownloading = new ChannelListDownloading(context, cacheDir);
         channelListDownloading.setCallBackDownloadChannelListInterface(new ChannelListDownloading.CallBackDownloadChannelListInterface() {
             @Override
@@ -45,7 +45,7 @@ public class ClientDownloading {
             }
         });
         channelListDownloading.loadingRequestChannelList(scheme, api_root, endpoint_channels, application_id
-                , x_access_token, channel_group_id, locale, x_test_ip, use_cache);
+                , x_access_token, channel_group_id, time_zone, locale, x_test_ip, use_cache);
     }
 
     public void downloadBroadCast(Context context, String scheme, String api_root, String endpoint_broadcast

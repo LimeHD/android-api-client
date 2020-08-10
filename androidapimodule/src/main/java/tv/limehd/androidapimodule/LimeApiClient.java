@@ -82,17 +82,17 @@ public class LimeApiClient {
     /*Download channel List*/
     //region Download channel List
 
-    public void downloadChannelList(String channel_group_id) {
+    public void downloadChannelList(String channel_group_id, String time_zone) {
         if (api_root != null) {
             ClientDownloading clientDownloading = initializeDownloadChannelList();
-            downloadChannelList(clientDownloading, channel_group_id, use_cache);
+            downloadChannelList(clientDownloading, channel_group_id, time_zone, use_cache);
         }
     }
 
-    public void downloadChannelList(String channel_group_id, boolean use_cache) {
+    public void downloadChannelList(String channel_group_id, String time_zone, boolean use_cache) {
         if (api_root != null) {
             ClientDownloading clientDownloading = initializeDownloadChannelList();
-            downloadChannelList(clientDownloading, channel_group_id, use_cache);
+            downloadChannelList(clientDownloading, channel_group_id, time_zone, use_cache);
         }
     }
 
@@ -127,8 +127,8 @@ public class LimeApiClient {
         return clientDownloading;
     }
 
-    private void downloadChannelList(ClientDownloading clientDownloading, String channel_group_id, boolean use_cache) {
-        clientDownloading.downloadChannelList(context, cacheDir, scheme, api_root, apiValues.getURL_CHANNELS_BY_GROUP(), application_id, x_access_token, channel_group_id, locale, x_test_ip,  use_cache);
+    private void downloadChannelList(ClientDownloading clientDownloading, String channel_group_id, String time_zone, boolean use_cache) {
+        clientDownloading.downloadChannelList(context, cacheDir, scheme, api_root, apiValues.getURL_CHANNELS_BY_GROUP(), application_id, x_access_token, channel_group_id, time_zone, locale, x_test_ip,  use_cache);
     }
 
     public interface DownloadChannelListCallBack {
@@ -440,11 +440,11 @@ public class LimeApiClient {
 
     //region get version name and code api client
     public static int getVersionCode(Context context) {
-        return 17;
+        return 18;
     }
 
     public static String getVersionName(Context context) {
-        return "0.2.20";
+        return "0.2.30";
     }
     //endregion
 

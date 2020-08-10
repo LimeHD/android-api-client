@@ -47,7 +47,7 @@ public class ChannelListDownloading {
     }
 
     public void loadingRequestChannelList(final String scheme, final String api_root, final String endpoint_channels,
-                                          String application_id, final String x_access_token, final String channel_group_id, final String locale, final String x_test_ip, final boolean use_cache) {
+                                          String application_id, final String x_access_token, final String channel_group_id, final String time_zone, final String locale, final String x_test_ip, final boolean use_cache) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -63,7 +63,7 @@ public class ChannelListDownloading {
 
                 OkHttpClient client = new OkHttpClient(limeCurlBuilder);
                 Request.Builder builder = new Request.Builder()
-                        .url(LimeUri.getUriChannelList(scheme, api_root, endpoint_channels, channel_group_id, locale))
+                        .url(LimeUri.getUriChannelList(scheme, api_root, endpoint_channels, channel_group_id, time_zone, locale))
                         .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE())
                         .addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token);
                 if (x_test_ip != null)
@@ -101,7 +101,7 @@ public class ChannelListDownloading {
             }
         }).start();
         if (callBackRequestChannelListInterface != null)
-            callBackRequestChannelListInterface.callBackUrlRequestChannelList(LimeUri.getUriChannelList(scheme, api_root, endpoint_channels, channel_group_id, locale));
+            callBackRequestChannelListInterface.callBackUrlRequestChannelList(LimeUri.getUriChannelList(scheme, api_root, endpoint_channels, channel_group_id, time_zone, locale));
     }
 
     private void initialization() {

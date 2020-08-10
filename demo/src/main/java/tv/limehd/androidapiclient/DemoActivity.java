@@ -14,6 +14,7 @@ import tv.limehd.androidapiclient.Adapters.LogsAdapter;
 import tv.limehd.androidapimodule.LimeApiClient;
 import tv.limehd.androidapimodule.LimeLocale;
 import tv.limehd.androidapimodule.LimeRFC;
+import tv.limehd.androidapimodule.LimeUTC;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
 public class DemoActivity extends Activity implements LimeApiClient.DownloadChannelListCallBack, LimeApiClient.DownloadBroadCastCallBack, LimeApiClient.DownloadPingCallBack,
@@ -182,7 +183,8 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
             public void onClickDownloadChannelList() {
                 loadDataFromLogsAdapter();
                 //запрос списка телеканалов
-                limeApiClient.downloadChannelList("1");
+                Log.e("logos",LimeUTC.oneHourToUtcFormat("-10"));
+                limeApiClient.downloadChannelList("1", LimeUTC.oneHourToUtcFormat("-10"));
             }
 
             @Override

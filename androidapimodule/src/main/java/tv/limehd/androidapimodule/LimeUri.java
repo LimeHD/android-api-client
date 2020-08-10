@@ -15,12 +15,13 @@ public class LimeUri {
 
     private static String STREAM_URL = "${stream_id}";
 
-    public static String getUriChannelList(String scheme, String api_root, String endpoint_channels, String channel_group_id, String locale) {
+    public static String getUriChannelList(String scheme, String api_root, String endpoint_channels, String channel_group_id, String time_zone, String locale) {
         return new Uri.Builder()
                 .scheme(scheme)
                 .authority(api_root)
                 .appendEncodedPath(endpoint_channels)
                 .appendQueryParameter(LOCALE, locale)
+                .appendQueryParameter(TIME_ZONE, time_zone)
                 .appendEncodedPath(channel_group_id)
                 .appendQueryParameter(TIME_ZONE_PICKER, "previous")
                 .build()
@@ -68,12 +69,12 @@ public class LimeUri {
                 .toString();
     }
 
-    public static String getUriTranslation(String stream_url, String channel_id) {
-        return stream_url.replace(STREAM_URL, channel_id);
+    public static String getUriTranslation(String stream_url, String stream_id) {
+        return stream_url.replace(STREAM_URL, stream_id);
     }
 
-    public static String getArchiveUriTranslation(String archive_url, String channel_id, String start_at, String duration){
-        String archive_hls_url = archive_url.replace(STREAM_URL, channel_id);
+    public static String getArchiveUriTranslation(String archive_url, String stream_id, String start_at, String duration){
+        String archive_hls_url = archive_url.replace(STREAM_URL, stream_id);
         String params = new Uri.Builder()
                 .appendQueryParameter(START_AT, start_at)
                 .appendQueryParameter(DURATION, duration)
