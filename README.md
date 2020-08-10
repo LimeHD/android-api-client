@@ -39,7 +39,16 @@ String versionName = LimeApiClient.getVersionName(context);
 String api_root = API_ROOT;
 String package_name = getPackageName();
 String example_x_access_token = "example_x_access_token";
-String locale = getResources().getConfiguration().locale.getLanguage();
+
+//Получение ЛОКАЛИ
+   String locale;
+   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            locale = LimeLocale.getLocaleTag(getResources().getConfiguration().getLocales().get(0));
+   } else {
+            locale = LimeLocale.getLocaleTag(getResources().getConfiguration().locale);
+   }
+   
+
 Context context = getApplicationContext();
 File fileCacheDir = getCacheDir();
 String device_id = LimeApiClient.getDeviceId(context);
