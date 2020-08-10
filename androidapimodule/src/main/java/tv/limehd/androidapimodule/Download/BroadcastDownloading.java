@@ -40,9 +40,7 @@ public class BroadcastDownloading {
     public void loadingRequestBroadCast(final String scheme, final String api_root, final String endpoint_broadcast
             , final String channel_id, final String before_date, final String after_date, final String time_zone
             , String application_id, final String x_access_token, final String locale, final String x_test_ip, final boolean use_cache) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+
                 LimeCurlBuilder.Builder limeCurlBuilder = new LimeCurlBuilder().setLogCurlInterface(new LimeCurlBuilder.LogCurlInterface() {
                     @Override
                     public void logCurl(String message) {
@@ -85,11 +83,10 @@ public class BroadcastDownloading {
                         }
 
                         if (callBackDownloadBroadCastInterface != null)
-                            callBackDownloadBroadCastInterface.callBackDownloadedBroadCastSucces(response.body().string());
+                            callBackDownloadBroadCastInterface.callBackDownloadedBroadCastSucces(response.body().string(), channel_id);
                     }
                 });
-            }
-        }).start();
+
         if (callBackRequestBroadCastInterface != null)
             callBackRequestBroadCastInterface.callBackUrlRequestBroadCast(LimeUri.getUriBroadcast(scheme, api_root, endpoint_broadcast, channel_id
                     , before_date, after_date, time_zone, locale));
@@ -119,7 +116,7 @@ public class BroadcastDownloading {
     }
 
     public interface CallBackDownloadBroadCastInterface {
-        void callBackDownloadedBroadCastSucces(String response);
+        void callBackDownloadedBroadCastSucces(String response, String channel_id);
 
         void callBackDownloadedBroadCastError(String error_message);
     }

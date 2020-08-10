@@ -54,15 +54,15 @@ public class ClientDownloading {
         BroadcastDownloading broadcastDownloading = new BroadcastDownloading(context);
         broadcastDownloading.setCallBackDownloadBroadCastInterface(new BroadcastDownloading.CallBackDownloadBroadCastInterface() {
             @Override
-            public void callBackDownloadedBroadCastSucces(String response) {
-                if (callBackDownloadInterface != null)
-                    callBackDownloadInterface.callBackDownloadedSuccess(response);
+            public void callBackDownloadedBroadCastSucces(String response, String channel_id) {
+                if (callBackDownloadInterfaceBroadcast != null)
+                    callBackDownloadInterfaceBroadcast.callBackDownloadedSuccess(response, channel_id);
             }
 
             @Override
             public void callBackDownloadedBroadCastError(String error_message) {
-                if (callBackDownloadInterface != null)
-                    callBackDownloadInterface.callBackDownloadedError(error_message);
+                if (callBackDownloadInterfaceBroadcast != null)
+                    callBackDownloadInterfaceBroadcast.callBackDownloadedError(error_message);
             }
         });
         broadcastDownloading.setCallBackUrlRequestBroadCastInterface(new BroadcastDownloading.CallBackRequestBroadCastInterface() {
@@ -178,21 +178,28 @@ public class ClientDownloading {
                 application_id, x_access_token, x_test_ip, use_cache, query, path, device_id);
     }
 
+    public interface CallBackDownloadInterfaceBroadcast{
+        void callBackDownloadedSuccess(String response, String channel_id);
+        void callBackDownloadedError(String error_message);
+    }
+
     public interface CallBackDownloadInterface {
         void callBackDownloadedSuccess(String response);
-
         void callBackDownloadedError(String error_message);
     }
 
     public interface CallBackRequestInterface {
         void callBackUrlRequest(String request);
-
         void callBackCurlRequest(String request);
     }
 
-
+    private CallBackDownloadInterfaceBroadcast callBackDownloadInterfaceBroadcast;
     private CallBackDownloadInterface callBackDownloadInterface;
     private CallBackRequestInterface callBackRequestInterface;
+
+    public void setCallBackDownloadInterfaceBroadcast(CallBackDownloadInterfaceBroadcast callBackDownloadInterfaceBroadcast){
+        this.callBackDownloadInterfaceBroadcast = callBackDownloadInterfaceBroadcast;
+    }
 
     public void setCallBackDownloadInterface(CallBackDownloadInterface callBackDownloadInterface) {
         this.callBackDownloadInterface = callBackDownloadInterface;
