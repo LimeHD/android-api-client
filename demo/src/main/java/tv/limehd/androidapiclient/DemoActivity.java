@@ -117,7 +117,7 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
     }
 
     void loadDataFromLogsAdapter() {
-        if(apiManager != null) {
+        if (apiManager != null) {
             api_root = apiManager.getTextApiRoot();
             application_id = apiManager.getTextApplicationId();
             x_access_token = apiManager.getTextAccessToken();
@@ -162,7 +162,7 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
             public void onClickDownloadChannelList() {
                 loadDataFromLogsAdapter();
                 //запрос списка телеканалов
-                Log.e("logos",LimeUTC.oneHourToUtcFormat("-10"));
+                Log.e("logos", LimeUTC.oneHourToUtcFormat("-10"));
                 limeApiClient.downloadChannelList("1", LimeUTC.oneHourToUtcFormat("-10"));
             }
 

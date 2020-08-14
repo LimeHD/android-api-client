@@ -2,7 +2,6 @@ package tv.limehd.androidapiclient;
 
 import android.app.Activity;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -43,7 +42,7 @@ public class ApiManager {
     private EditText editTextCurl;
 
     private DataItemsForRequest itemsForRequest = new DataItemsForRequest();
-    private String [] application_ids;
+    private String[] application_ids;
 
     public ApiManager(@NonNull Activity activity, @NonNull ApiManagerInterface apiManagerInterface) {
         this.activity = activity;
@@ -83,6 +82,7 @@ public class ApiManager {
     private void setTextAccessToken(String text) {
         editTextAccessToken.setText(text);
     }
+
     private void setTextApplicationId(String text) {
         editTextApplicationId.setText(text);
     }
@@ -129,11 +129,11 @@ public class ApiManager {
     }
 
     private void setAdapter(DataItemsForRequest dataItemsForRequest) {
-        if(dataItemsForRequest == null) {
+        if (dataItemsForRequest == null) {
             dataItemsForRequest = new DataItemsForRequest();
         }
         application_ids = new String[dataItemsForRequest.getDataForRequestList().size()];
-        for(int i = 0; i < dataItemsForRequest.getDataForRequestList().size(); i++) {
+        for (int i = 0; i < dataItemsForRequest.getDataForRequestList().size(); i++) {
             application_ids[i] = dataItemsForRequest.getDataForRequestList().get(i).getApplicationId();
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(activity, android.R.layout.simple_spinner_item, application_ids);
@@ -145,7 +145,7 @@ public class ApiManager {
         Gson gson = new Gson();
         String jsonString = SettingsManager.getDataRequests(activity);
         DataItemsForRequest dataItemsForRequest = gson.fromJson(jsonString, DataItemsForRequest.class);
-        if(dataItemsForRequest == null) {
+        if (dataItemsForRequest == null) {
             dataItemsForRequest = new DataItemsForRequest();
         }
         setAdapter(dataItemsForRequest);
@@ -153,8 +153,8 @@ public class ApiManager {
     }
 
     private List<DataItemsForRequest.DataForRequest> tryReplaceItem(@NonNull List<DataItemsForRequest.DataForRequest> itemsForRequestList, DataItemsForRequest.DataForRequest dataForRequest) {
-        for(int i = 0; i < itemsForRequestList.size(); i++) {
-            if(itemsForRequestList.get(i).getApplicationId().equals(dataForRequest.getApplicationId())) {
+        for (int i = 0; i < itemsForRequestList.size(); i++) {
+            if (itemsForRequestList.get(i).getApplicationId().equals(dataForRequest.getApplicationId())) {
                 itemsForRequestList.remove(i);
                 break;
             }
@@ -170,9 +170,8 @@ public class ApiManager {
         dataForRequest.setApplicationId(getTextApplicationId());
 
         itemsForRequest = loadDataFromSettingsManager();
-
         List<DataItemsForRequest.DataForRequest> listLoadedFromJson = itemsForRequest.getDataForRequestList();
-        tryReplaceItem(listLoadedFromJson, dataForRequest);
+        listLoadedFromJson = tryReplaceItem(listLoadedFromJson, dataForRequest);
         itemsForRequest.setDataForRequestList(listLoadedFromJson);
         setAdapter(itemsForRequest);
         Gson gson = new Gson();
