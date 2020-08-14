@@ -1,19 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/root">
+    android:id="@+id/relative_layout_activity_root">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_above="@+id/recyclerViewLogs"
-        android:id="@+id/recyclerViewButtons"
+    <ScrollView
+        android:padding="@dimen/view_mini_padding"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFFFFF" />
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewLogs"
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:layout_height="400dp">
-    </androidx.recyclerview.widget.RecyclerView>/
+        android:layout_gravity="center"
+        tools:ignore="AdapterViewChildren,ScrollViewCount,UselessParent">
+
+        <LinearLayout
+            android:id="@+id/linear_layout_root_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/view_large_padding"
+            android:paddingRight="@dimen/view_large_padding">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/view_mini_padding">
+                <Spinner
+                    android:id="@+id/spinner_application"
+                    android:layout_width="@dimen/view_mini_width"
+                    android:layout_height="@dimen/view_mini_height"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true" />
+                <TextView
+                    android:id="@+id/text_view_spinner_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/view_mini_margin"
+                    android:layout_marginRight="@dimen/view_large_margin"
+                    android:layout_toStartOf="@+id/spinner_application"
+                    android:layout_toLeftOf="@+id/spinner_application"
+                    android:text="ID Application"
+                    android:textSize="18sp"
+                    android:layout_marginEnd="@dimen/view_large_margin" />
+            </RelativeLayout>
+
+
+            <EditText
+                android:id="@+id/edit_text_api_root"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Api root" />
+            <EditText
+                android:id="@+id/edit_text_access_token"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Access token" />
+            <EditText
+                android:id="@+id/edit_text_application_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Application id" />
+            <EditText
+                android:id="@+id/edit_text_device_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Device id"/>
+            <Button
+                android:id="@+id/button_save_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Сохранить идентификаторы"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"/>
+
+            <Button
+                android:id="@+id/button_download_broadcast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Download Broadcast"/>
+            <Button
+                android:id="@+id/button_download_ping"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Download Ping"/>
+            <Button
+                android:id="@+id/button_download_session"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Download Session"/>
+            <Button
+                android:id="@+id/button_download_channel_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Download channel list"/>
+
+            <EditText
+                android:id="@+id/edit_text_url"
+                android:layout_below="@+id/text_name_log"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/url_request"
+                android:cursorVisible="false"/>
+            <EditText
+                android:id="@+id/edit_text_curl"
+                android:layout_below="@+id/text_name_log"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/curl_request"
+                android:cursorVisible="false"/>
+            <EditText
+                android:id="@+id/edit_text_answer"
+                android:layout_below="@+id/text_name_log"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/answer"
+                android:cursorVisible="false"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+    
 </RelativeLayout>
