@@ -15,6 +15,8 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
+import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 import tv.limehd.androidapimodule.LimeApiClient;
 import tv.limehd.androidapimodule.LimeCacheSettings;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
@@ -57,8 +59,8 @@ public class PingDownloading {
                 LimeCurlBuilder.Builder limeCurlBuilder = new LimeCurlBuilder().setLogCurlInterface(new LimeCurlBuilder.LogCurlInterface() {
                     @Override
                     public void logCurl(String message) {
-                        if (callBackPingRequestInterface != null) {
-                            callBackPingRequestInterface.callBackCurlRequest(message);
+                        if (callBackUrlCurlRequestInterface != null) {
+                            callBackUrlCurlRequestInterface.callBackCurlRequest(message);
                         }
                     }
                 });
@@ -73,8 +75,8 @@ public class PingDownloading {
                     builder.url(LimeUri.getUriPing(scheme, api_root, endpoint_ping));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    if(callBackPingInterface != null) {
-                        callBackPingInterface.callBackError(e.getMessage());
+                    if(listenerRequest != null) {
+                        listenerRequest.onError(e.getMessage());
                     }
                     return;
                 }
@@ -94,15 +96,15 @@ public class PingDownloading {
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                        if (callBackPingInterface != null)
-                            callBackPingInterface.callBackError(e.getMessage());
+                        if (listenerRequest != null)
+                            listenerRequest.onError(e.getMessage());
                     }
 
                     @Override
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                         if (!response.isSuccessful()) {
-                            if (callBackPingInterface != null) {
-                                callBackPingInterface.callBackError(("Unexpected code " + response));
+                            if (listenerRequest != null) {
+                                listenerRequest.onError(("Unexpected code " + response));
                             }
                             throw new IOException("Unexpected code " + response);
                         }
@@ -112,14 +114,14 @@ public class PingDownloading {
                             trySaveMaxAge(maxAge);
                         }
 
-                        if (callBackPingInterface != null)
-                            callBackPingInterface.callBackSuccess(response.body().string());
+                        if (listenerRequest != null)
+                            listenerRequest.onSuccess(response.body().string());
                     }
                 });
             }
         }).start();
-        if (callBackPingRequestInterface != null)
-            callBackPingRequestInterface.callBackUrlRequest(LimeUri.getUriPing(scheme, api_root, endpoint_ping));
+        if (callBackUrlCurlRequestInterface != null)
+            callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriPing(scheme, api_root, endpoint_ping));
     }
 
     private boolean isResponseFromNetwork(Response response) {
@@ -143,27 +145,15 @@ public class PingDownloading {
         }
     }
 
-    public interface CallBackPingInterface {
-        void callBackSuccess(String response);
+    private ListenerRequest listenerRequest;
+    private CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface;
 
-        void callBackError(String message);
+    public void setListenerRequest(ListenerRequest listenerRequest) {
+        this.listenerRequest = listenerRequest;
     }
 
-    public interface CallBackPingRequestInterface {
-        void callBackUrlRequest(String request);
-
-        void callBackCurlRequest(String request);
-    }
-
-    private CallBackPingInterface callBackPingInterface;
-    private CallBackPingRequestInterface callBackPingRequestInterface;
-
-    public void setCallBackPingInterface(CallBackPingInterface callBackPingInterface) {
-        this.callBackPingInterface = callBackPingInterface;
-    }
-
-    public void setCallBackPingRequestInterface(CallBackPingRequestInterface callBackPingRequestInterface) {
-        this.callBackPingRequestInterface = callBackPingRequestInterface;
+    public void setCallBackUrlCurlRequestInterface(CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface) {
+        this.callBackUrlCurlRequestInterface = callBackUrlCurlRequestInterface;
     }
 
 }

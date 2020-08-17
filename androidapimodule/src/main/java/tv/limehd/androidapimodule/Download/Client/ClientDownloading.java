@@ -9,6 +9,8 @@ import tv.limehd.androidapimodule.Download.ChannelListDownloading;
 import tv.limehd.androidapimodule.Download.DeepClicksDownloading;
 import tv.limehd.androidapimodule.Download.PingDownloading;
 import tv.limehd.androidapimodule.Download.SessionDownload;
+import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
+import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 
 public class ClientDownloading {
 
@@ -18,28 +20,28 @@ public class ClientDownloading {
     public void downloadChannelList(Context context, File cacheDir, String scheme, String api_root, String endpoint_channels, String application_id
             , String x_access_token, String channel_group_id, String time_zone, String locale, String x_test_ip, boolean use_cache) {
         ChannelListDownloading channelListDownloading = new ChannelListDownloading(context, cacheDir);
-        channelListDownloading.setCallBackDownloadChannelListInterface(new ChannelListDownloading.CallBackDownloadChannelListInterface() {
+        channelListDownloading.setListenerRequest(new ListenerRequest() {
             @Override
-            public void callBackDownloadedChannelListSuccess(String response) {
+            public void onSuccess(String response) {
                 if (callBackDownloadInterface != null)
                     callBackDownloadInterface.callBackDownloadedSuccess(response);
             }
 
             @Override
-            public void callBackDownloadedChannelListError(String error_message) {
+            public void onError(String error) {
                 if (callBackDownloadInterface != null)
-                    callBackDownloadInterface.callBackDownloadedError(error_message);
+                    callBackDownloadInterface.callBackDownloadedError(error);
             }
         });
-        channelListDownloading.setCallBackRequestChannelListInterface(new ChannelListDownloading.CallBackRequestChannelListInterface() {
+        channelListDownloading.setCallBackUrlCurlRequestInterface(new CallBackUrlCurlRequestInterface() {
             @Override
-            public void callBackUrlRequestChannelList(String request) {
+            public void callBackUrlRequest(String request) {
                 if (callBackRequestInterface != null)
                     callBackRequestInterface.callBackUrlRequest(request);
             }
 
             @Override
-            public void callBackCurlRequestChannelList(String request) {
+            public void callBackCurlRequest(String request) {
                 if (callBackRequestInterface != null)
                     callBackRequestInterface.callBackCurlRequest(request);
             }
@@ -65,15 +67,15 @@ public class ClientDownloading {
                     callBackDownloadInterfaceBroadcast.callBackDownloadedError(error_message);
             }
         });
-        broadcastDownloading.setCallBackUrlRequestBroadCastInterface(new BroadcastDownloading.CallBackRequestBroadCastInterface() {
-            @Override
-            public void callBackUrlRequestBroadCast(String request) {
+        broadcastDownloading.setCallBackUrlRequestBroadCastInterface(new CallBackUrlCurlRequestInterface() {
+                @Override
+            public void callBackUrlRequest(String request) {
                 if (callBackRequestInterface != null)
                     callBackRequestInterface.callBackUrlRequest(request);
             }
 
             @Override
-            public void callBackCUrlRequestBroadCast(String request) {
+            public void callBackCurlRequest(String request) {
                 if (callBackRequestInterface != null)
                     callBackRequestInterface.callBackCurlRequest(request);
             }
@@ -82,22 +84,23 @@ public class ClientDownloading {
                 , application_id, x_access_token, locale, x_test_ip, use_cache);
     }
 
+
     public void downloadPing(Context context, File cacheDir, String scheme, String api_root, String endpoint_ping, String application_id, String x_access_token, String x_test_ip, boolean use_cache) {
         PingDownloading pingDownloading = new PingDownloading(context, cacheDir);
-        pingDownloading.setCallBackPingInterface(new PingDownloading.CallBackPingInterface() {
+        pingDownloading.setListenerRequest(new ListenerRequest() {
             @Override
-            public void callBackSuccess(String response) {
+            public void onSuccess(String response) {
                 if (callBackDownloadInterface != null)
                     callBackDownloadInterface.callBackDownloadedSuccess(response);
             }
 
             @Override
-            public void callBackError(String message) {
+            public void onError(String error) {
                 if (callBackDownloadInterface != null)
-                    callBackDownloadInterface.callBackDownloadedError(message);
+                    callBackDownloadInterface.callBackDownloadedError(error);
             }
         });
-        pingDownloading.setCallBackPingRequestInterface(new PingDownloading.CallBackPingRequestInterface() {
+        pingDownloading.setCallBackUrlCurlRequestInterface(new CallBackUrlCurlRequestInterface() {
             @Override
             public void callBackUrlRequest(String request) {
                 if (callBackRequestInterface != null)
@@ -116,20 +119,20 @@ public class ClientDownloading {
     public void downloadSession(Context context, File cacheDir, String scheme, String api_root, String endpoint_session
             , String application_id, String x_access_token, String x_test_ip, boolean use_cache) {
         SessionDownload sessionDownload = new SessionDownload(context, cacheDir);
-        sessionDownload.setCallBackSessionInterface(new SessionDownload.CallBackSessionInterface() {
+        sessionDownload.setListenerRequest(new ListenerRequest() {
             @Override
-            public void callBackSuccess(String response) {
+            public void onSuccess(String response) {
                 if (callBackDownloadInterface != null)
                     callBackDownloadInterface.callBackDownloadedSuccess(response);
             }
 
             @Override
-            public void callBackError(String message) {
+            public void onError(String error) {
                 if (callBackDownloadInterface != null)
-                    callBackDownloadInterface.callBackDownloadedError(message);
+                    callBackDownloadInterface.callBackDownloadedError(error);
             }
         });
-        sessionDownload.setCallBackSessionRequestInterface(new SessionDownload.CallBackSessionRequestInterface() {
+        sessionDownload.setCallBackUrlCurlRequestInterface(new CallBackUrlCurlRequestInterface() {
             @Override
             public void callBackUrlRequest(String request) {
                 if (callBackRequestInterface != null)
@@ -148,20 +151,20 @@ public class ClientDownloading {
     public void sendingDeepClicks(Context context, File cacheDir, String scheme, String api_root, String endpoint_deepclicks,
                                   String application_id, String x_access_token, String x_test_ip, boolean use_cache, String query, String path, String device_id) {
         DeepClicksDownloading deepClicksDownloading = new DeepClicksDownloading(context, cacheDir);
-        deepClicksDownloading.setCallBackDeepClicksInterface(new DeepClicksDownloading.CallBackDeepClicksInterface() {
+        deepClicksDownloading.setListenerRequest(new ListenerRequest() {
             @Override
-            public void callBackSuccess(String response) {
+            public void onSuccess(String response) {
                 if (callBackDownloadInterface != null)
                     callBackDownloadInterface.callBackDownloadedSuccess(response);
             }
 
             @Override
-            public void callBackError(String message) {
+            public void onError(String error) {
                 if (callBackDownloadInterface != null)
-                    callBackDownloadInterface.callBackDownloadedSuccess(message);
+                    callBackDownloadInterface.callBackDownloadedSuccess(error);
             }
         });
-        deepClicksDownloading.setCallBackDeepClicksRequestInterface(new DeepClicksDownloading.CallBackDeepClicksRequestInterface() {
+        deepClicksDownloading.setCallBackUrlCurlRequestInterface(new CallBackUrlCurlRequestInterface() {
             @Override
             public void callBackUrlRequest(String request) {
                 if (callBackRequestInterface != null)

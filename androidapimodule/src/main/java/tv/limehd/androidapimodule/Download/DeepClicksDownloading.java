@@ -16,6 +16,8 @@ import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
+import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 import tv.limehd.androidapimodule.LimeApiClient;
 import tv.limehd.androidapimodule.LimeCacheSettings;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
@@ -51,8 +53,8 @@ public class DeepClicksDownloading {
                 LimeCurlBuilder.Builder limeCurlBuilder = new LimeCurlBuilder().setLogCurlInterface(new LimeCurlBuilder.LogCurlInterface() {
                     @Override
                     public void logCurl(String message) {
-                        if (callBackDeepClicksRequestInterface != null)
-                            callBackDeepClicksRequestInterface.callBackCurlRequest(message);
+                        if (callBackUrlCurlRequestInterface != null)
+                            callBackUrlCurlRequestInterface.callBackCurlRequest(message);
                     }
                 });
                 connectCacheInOkHttpClient(limeCurlBuilder);
@@ -70,8 +72,8 @@ public class DeepClicksDownloading {
                     builder.url(LimeUri.getUriPing(scheme, api_root, endpoint_deepclicks));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    if(callBackDeepClicksInterface != null) {
-                        callBackDeepClicksInterface.callBackError(e.getMessage());
+                    if(listenerRequest != null) {
+                        listenerRequest.onError(e.getMessage());
                     }
                     return;
                 }
@@ -89,15 +91,15 @@ public class DeepClicksDownloading {
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                        if (callBackDeepClicksInterface != null)
-                            callBackDeepClicksInterface.callBackError(e.getMessage());
+                        if (listenerRequest != null)
+                            listenerRequest.onError(e.getMessage());
                     }
 
                     @Override
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                         if (!response.isSuccessful()) {
-                            if (callBackDeepClicksInterface != null) {
-                                callBackDeepClicksInterface.callBackError(("Unexpected code " + response));
+                            if (listenerRequest != null) {
+                                listenerRequest.onError(("Unexpected code " + response));
                             }
                             throw new IOException("Unexpected code " + response);
                         }
@@ -107,14 +109,14 @@ public class DeepClicksDownloading {
                             trySaveMaxAge(maxAge);
                         }
 
-                        if (callBackDeepClicksInterface != null)
-                            callBackDeepClicksInterface.callBackSuccess(response.body().string());
+                        if (listenerRequest != null)
+                            listenerRequest.onSuccess(response.body().string());
                     }
                 });
             }
         }).start();
-        if (callBackDeepClicksRequestInterface != null)
-            callBackDeepClicksRequestInterface.callBackUrlRequest(LimeUri.getUriDeepClicks(scheme, api_root, endpoint_deepclicks));
+        if (callBackUrlCurlRequestInterface != null)
+            callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriDeepClicks(scheme, api_root, endpoint_deepclicks));
     }
 
     private boolean trySaveMaxAge(int maxAge) {
@@ -134,27 +136,15 @@ public class DeepClicksDownloading {
         }
     }
 
-    public interface CallBackDeepClicksInterface {
-        void callBackSuccess(String response);
+    private ListenerRequest listenerRequest;
+    private CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface;
 
-        void callBackError(String message);
+    public void setListenerRequest(ListenerRequest listenerRequest) {
+        this.listenerRequest = listenerRequest;
     }
 
-    public interface CallBackDeepClicksRequestInterface {
-        void callBackUrlRequest(String request);
-
-        void callBackCurlRequest(String request);
-    }
-
-    private CallBackDeepClicksInterface callBackDeepClicksInterface;
-    private CallBackDeepClicksRequestInterface callBackDeepClicksRequestInterface;
-
-    public void setCallBackDeepClicksInterface(CallBackDeepClicksInterface callBackDeepClicksInterface) {
-        this.callBackDeepClicksInterface = callBackDeepClicksInterface;
-    }
-
-    public void setCallBackDeepClicksRequestInterface(CallBackDeepClicksRequestInterface callBackDeepClicksRequestInterface) {
-        this.callBackDeepClicksRequestInterface = callBackDeepClicksRequestInterface;
+    public void setCallBackUrlCurlRequestInterface(CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface) {
+        this.callBackUrlCurlRequestInterface = callBackUrlCurlRequestInterface;
     }
 
 }

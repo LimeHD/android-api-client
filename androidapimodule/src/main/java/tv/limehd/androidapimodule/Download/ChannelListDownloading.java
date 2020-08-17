@@ -11,6 +11,8 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
+import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 import tv.limehd.androidapimodule.LimeApiClient;
 import tv.limehd.androidapimodule.LimeCacheSettings;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
@@ -54,8 +56,8 @@ public class ChannelListDownloading {
                 LimeCurlBuilder.Builder limeCurlBuilder = new LimeCurlBuilder().setLogCurlInterface(new LimeCurlBuilder.LogCurlInterface() {
                     @Override
                     public void logCurl(String message) {
-                        if (callBackRequestChannelListInterface != null) {
-                            callBackRequestChannelListInterface.callBackCurlRequestChannelList(message);
+                        if (callBackUrlCurlRequestInterface != null) {
+                            callBackUrlCurlRequestInterface.callBackCurlRequest(message);
                         }
                     }
                 });
@@ -69,8 +71,8 @@ public class ChannelListDownloading {
                     builder.url(LimeUri.getUriChannelList(scheme, api_root, endpoint_channels, channel_group_id, time_zone, locale));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    if(callBackDownloadChannelListInterface != null) {
-                        callBackDownloadChannelListInterface.callBackDownloadedChannelListError(e.getMessage());
+                    if(listenerRequest != null) {
+                        listenerRequest.onError(e.getMessage());
                     }
                     return;
                 }
@@ -86,15 +88,15 @@ public class ChannelListDownloading {
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                        if (callBackDownloadChannelListInterface != null)
-                            callBackDownloadChannelListInterface.callBackDownloadedChannelListError(e.getMessage());
+                        if (listenerRequest != null)
+                            listenerRequest.onError(e.getMessage());
                     }
 
                     @Override
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                         if (!response.isSuccessful()) {
-                            if (callBackDownloadChannelListInterface != null)
-                                callBackDownloadChannelListInterface.callBackDownloadedChannelListError(("Unexpected code " + response));
+                            if (listenerRequest != null)
+                                listenerRequest.onError(("Unexpected code " + response));
                             throw new IOException("Unexpected code " + response);
                         }
 
@@ -103,14 +105,14 @@ public class ChannelListDownloading {
                             trySaveMaxAge(maxAge);
                         }
 
-                        if (callBackDownloadChannelListInterface != null)
-                            callBackDownloadChannelListInterface.callBackDownloadedChannelListSuccess(response.body().string());
+                        if (listenerRequest != null)
+                            listenerRequest.onSuccess(response.body().string());
                     }
                 });
             }
         }).start();
-        if (callBackRequestChannelListInterface != null)
-            callBackRequestChannelListInterface.callBackUrlRequestChannelList(LimeUri.getUriChannelList(scheme, api_root, endpoint_channels, channel_group_id, time_zone, locale));
+        if (callBackUrlCurlRequestInterface != null)
+            callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriChannelList(scheme, api_root, endpoint_channels, channel_group_id, time_zone, locale));
     }
 
     private void initialization() {
@@ -138,26 +140,15 @@ public class ChannelListDownloading {
         }
     }
 
-    public interface CallBackDownloadChannelListInterface {
-        void callBackDownloadedChannelListSuccess(String response);
 
-        void callBackDownloadedChannelListError(String error_message);
+    private ListenerRequest listenerRequest;
+    private CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface;
+
+    public void setListenerRequest(ListenerRequest listenerRequest) {
+        this.listenerRequest = listenerRequest;
     }
 
-    public interface CallBackRequestChannelListInterface {
-        void callBackUrlRequestChannelList(String request);
-
-        void callBackCurlRequestChannelList(String request);
-    }
-
-    private CallBackDownloadChannelListInterface callBackDownloadChannelListInterface;
-    private CallBackRequestChannelListInterface callBackRequestChannelListInterface;
-
-    public void setCallBackDownloadChannelListInterface(CallBackDownloadChannelListInterface callBackDownloadChannelListInterface) {
-        this.callBackDownloadChannelListInterface = callBackDownloadChannelListInterface;
-    }
-
-    public void setCallBackRequestChannelListInterface(CallBackRequestChannelListInterface callBackRequestChannelListInterface) {
-        this.callBackRequestChannelListInterface = callBackRequestChannelListInterface;
+    public void setCallBackUrlCurlRequestInterface(CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface) {
+        this.callBackUrlCurlRequestInterface = callBackUrlCurlRequestInterface;
     }
 }

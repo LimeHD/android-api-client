@@ -16,6 +16,8 @@ import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
+import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 import tv.limehd.androidapimodule.LimeApiClient;
 import tv.limehd.androidapimodule.LimeCacheSettings;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
@@ -58,8 +60,8 @@ public class SessionDownload {
                 LimeCurlBuilder.Builder limeCurlBuilder = new LimeCurlBuilder().setLogCurlInterface(new LimeCurlBuilder.LogCurlInterface() {
                     @Override
                     public void logCurl(String message) {
-                        if (callBackSessionRequestInterface != null)
-                            callBackSessionRequestInterface.callBackCurlRequest(message);
+                        if (callBackUrlCurlRequestInterface != null)
+                            callBackUrlCurlRequestInterface.callBackCurlRequest(message);
                     }
                 });
 
@@ -78,8 +80,8 @@ public class SessionDownload {
                     builder.url(LimeUri.getUriPing(scheme, api_root, endpoint_session));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    if(callBackSessionInterface != null) {
-                        callBackSessionInterface.callBackError(e.getMessage());
+                    if(listenerRequest != null) {
+                        listenerRequest.onError(e.getMessage());
                     }
                     return;
                 }
@@ -99,15 +101,15 @@ public class SessionDownload {
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                        if (callBackSessionInterface != null)
-                            callBackSessionInterface.callBackError(e.getMessage());
+                        if (listenerRequest != null)
+                            listenerRequest.onError(e.getMessage());
                     }
 
                     @Override
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                         if (!response.isSuccessful()) {
-                            if (callBackSessionInterface != null) {
-                                callBackSessionInterface.callBackError(("Unexpected code " + response));
+                            if (listenerRequest != null) {
+                                listenerRequest.onError(("Unexpected code " + response));
                             }
                             throw new IOException("Unexpected code " + response);
                         }
@@ -117,14 +119,14 @@ public class SessionDownload {
                             trySaveMaxAge(maxAge);
                         }
 
-                        if (callBackSessionInterface != null)
-                            callBackSessionInterface.callBackSuccess(response.body().string());
+                        if (listenerRequest != null)
+                            listenerRequest.onSuccess(response.body().string());
                     }
                 });
             }
         }).start();
-        if (callBackSessionRequestInterface != null)
-            callBackSessionRequestInterface.callBackUrlRequest(LimeUri.getUriSession(scheme, api_root, endpoint_session));
+        if (callBackUrlCurlRequestInterface != null)
+            callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriSession(scheme, api_root, endpoint_session));
     }
 
     private boolean trySaveMaxAge(int maxAge) {
@@ -144,26 +146,15 @@ public class SessionDownload {
         }
     }
 
-    public interface CallBackSessionInterface {
-        void callBackSuccess(String response);
 
-        void callBackError(String message);
+    private ListenerRequest listenerRequest;
+    private CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface;
+
+    public void setListenerRequest(ListenerRequest listenerRequest) {
+        this.listenerRequest = listenerRequest;
     }
 
-    public interface CallBackSessionRequestInterface {
-        void callBackUrlRequest(String request);
-
-        void callBackCurlRequest(String request);
-    }
-
-    private CallBackSessionInterface callBackSessionInterface;
-    private CallBackSessionRequestInterface callBackSessionRequestInterface;
-
-    public void setCallBackSessionInterface(CallBackSessionInterface callBackSessionInterface) {
-        this.callBackSessionInterface = callBackSessionInterface;
-    }
-
-    public void setCallBackSessionRequestInterface(CallBackSessionRequestInterface callBackSessionRequestInterface) {
-        this.callBackSessionRequestInterface = callBackSessionRequestInterface;
+    public void setCallBackUrlCurlRequestInterface(CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface) {
+        this.callBackUrlCurlRequestInterface = callBackUrlCurlRequestInterface;
     }
 }
