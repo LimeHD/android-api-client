@@ -63,9 +63,18 @@ public class ChannelListDownloading {
 
                 OkHttpClient client = new OkHttpClient(limeCurlBuilder);
                 Request.Builder builder = new Request.Builder()
-                        .url(LimeUri.getUriChannelList(scheme, api_root, endpoint_channels, channel_group_id, time_zone, locale))
                         .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE())
                         .addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token);
+                try {
+                    builder.url(LimeUri.getUriChannelList(scheme, api_root, endpoint_channels, channel_group_id, time_zone, locale));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    if(callBackDownloadChannelListInterface != null) {
+                        callBackDownloadChannelListInterface.callBackDownloadedChannelListError(e.getMessage());
+                    }
+                    return;
+                }
+
                 if (x_test_ip != null)
                     builder.addHeader(apiValues.getX_TEXT_IP_KEY(), x_test_ip);
                 if (use_cache) {
