@@ -58,6 +58,10 @@ public class LimeApiClient {
         this.locale = locale;
         x_test_ip = null;
     }
+    public void updateLimeApiClientData(String api_root, String device_id, String scheme, String application_id, String x_access_token, String locale) {
+        updateLimeApiClientData(api_root, scheme, application_id, x_access_token, locale);
+        this.deviceId = device_id;
+    }
 
     public void setUse_cache(boolean use_cache) {
         this.use_cache = use_cache;

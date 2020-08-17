@@ -73,8 +73,18 @@ public class SessionDownload {
 
                 Request.Builder builder = new Request.Builder()
                         .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE())
-                        .addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token)
-                        .url(LimeUri.getUriSession(scheme, api_root, endpoint_session));
+                        .addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token);
+                try {
+                    builder.url(LimeUri.getUriPing(scheme, api_root, endpoint_session));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    if(callBackSessionInterface != null) {
+                        callBackSessionInterface.callBackError(e.getMessage());
+                    }
+                    return;
+                }
+
+
                 if (x_test_ip != null)
                     builder.addHeader(apiValues.getX_TEXT_IP_KEY(), x_test_ip);
 

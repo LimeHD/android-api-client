@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="view_mini_width">40dp</dimen>
+    <dimen name="view_mini_height">40dp</dimen>
+    <dimen name="view_mini_padding">5dp</dimen>
+    <dimen name="view_mini_margin">5dp</dimen>
+
+    <dimen name="view_large_width">400dp</dimen>
+    <dimen name="view_large_height">400dp</dimen>
+    <dimen name="view_large_padding">50dp</dimen>
+    <dimen name="view_large_margin">50dp</dimen>
+
+</resources>
