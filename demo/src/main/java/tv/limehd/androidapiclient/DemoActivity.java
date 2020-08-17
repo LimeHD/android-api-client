@@ -7,6 +7,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import tv.limehd.androidapiclient.ApiManager.ApiManager;
 import tv.limehd.androidapimodule.LimeApiClient;
 import tv.limehd.androidapimodule.LimeLocale;
 import tv.limehd.androidapimodule.LimeRFC;
@@ -14,7 +15,7 @@ import tv.limehd.androidapimodule.LimeUTC;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
 public class DemoActivity extends Activity implements LimeApiClient.DownloadChannelListCallBack, LimeApiClient.DownloadBroadCastCallBack, LimeApiClient.DownloadPingCallBack,
-        LimeApiClient.DownloadSessionCallBack {
+        LimeApiClient.DownloadSessionCallBack, LimeApiClient.DownloadDeepClicksCallBack {
 
     private String LIME_LOG = "limeapilog";
     //экземпляр апи клиента для запросов
@@ -94,6 +95,19 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
                 printCurl(request);
             }
         });
+        limeApiClient.setRequestDeepClicks(new LimeApiClient.RequestCallBack() {
+            @Override
+            public void callBackUrlRequest(String request) {
+                Log.e(LIME_LOG, request);
+                printUrlRequest(request);
+            }
+
+            @Override
+            public void callBackCurlRequest(String request) {
+                Log.e(LIME_LOG, request);
+                printCurl(request);
+            }
+        });
     }
 
     private String getLocale() {
@@ -116,7 +130,7 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
         limeApiClient.setDownloadSessionCallBack(this);
     }
 
-    void loadDataFromLogsAdapter() {
+    void loadDataFromApiManager() {
         if (apiManager != null) {
             api_root = apiManager.getTextApiRoot();
             application_id = apiManager.getTextApplicationId();
@@ -148,19 +162,19 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
         apiManager = new ApiManager(this, new ApiManager.ApiManagerInterface() {
             @Override
             public void onClickDownloadPing() {
-                loadDataFromLogsAdapter();
+                loadDataFromApiManager();
                 limeApiClient.downloadPing();
             }
 
             @Override
             public void onClickDownloadBroadcast() {
-                loadDataFromLogsAdapter();
+                loadDataFromApiManager();
                 limeApiClient.downloadBroadcast(example_channel_id, LimeRFC.timeStampToRFC(before_date), LimeRFC.timeStampToRFC(after_date), example_time_zone);
             }
 
             @Override
             public void onClickDownloadChannelList() {
-                loadDataFromLogsAdapter();
+                loadDataFromApiManager();
                 //запрос списка телеканалов
                 Log.e("logos", LimeUTC.oneHourToUtcFormat("-10"));
                 limeApiClient.downloadChannelList("1", LimeUTC.oneHourToUtcFormat("-10"));
@@ -168,8 +182,15 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
 
             @Override
             public void onClickDownloadSessions() {
-                loadDataFromLogsAdapter();
+                loadDataFromApiManager();
                 limeApiClient.downloadSession();
+            }
+
+            @Override
+            public void onClickDownloadDeepClicks() {
+                loadDataFromApiManager();
+                //TODO Заменить query и path на рабочие
+                limeApiClient.downloadDeepClicks("query", "path");
             }
         });
     }
@@ -227,6 +248,12 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
     }
 
     @Override
+    public void sendingDeepClicksSuccess(String response) {
+        Log.e(LIME_LOG, response);
+        printAnswer(response);
+    }
+
+    @Override
     public void downloadChannelListError(String message) {
         Log.e(LIME_LOG, message);
         printAnswer(message);
@@ -246,6 +273,12 @@ public class DemoActivity extends Activity implements LimeApiClient.DownloadChan
 
     @Override
     public void downloadSessionError(String message) {
+        Log.e(LIME_LOG, message);
+        printAnswer(message);
+    }
+
+    @Override
+    public void sendingDeepClicksError(String message) {
         Log.e(LIME_LOG, message);
         printAnswer(message);
     }
