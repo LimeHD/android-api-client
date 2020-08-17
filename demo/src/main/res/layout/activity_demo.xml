@@ -106,6 +106,12 @@
                 android:layout_height="wrap_content"
                 android:text="Download channel list" />
 
+            <Button
+                android:id="@+id/button_download_deep_clicks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Download deep clicks" />
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
