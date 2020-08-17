@@ -79,7 +79,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp" />
+                android:layout_height="70dp" />
 
             <Button
                 android:id="@+id/button_download_broadcast"
@@ -105,29 +105,69 @@
                 android:layout_height="wrap_content"
                 android:text="Download channel list" />
 
-            <EditText
-                android:id="@+id/edit_text_url"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/text_name_log"
-                android:cursorVisible="false"
-                android:hint="@string/url_request" />
+                android:padding="@dimen/view_mini_padding">
+                <EditText
+                    android:id="@+id/edit_text_url"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:cursorVisible="false"
+                    android:hint="@string/url_request"
+                    android:layout_toStartOf="@+id/button_copy_text_url"
+                    android:layout_toLeftOf="@+id/button_copy_text_url" />
+                <ImageButton
+                    android:id="@+id/button_copy_text_url"
+                    android:src="@drawable/ic_content_copy"
+                    android:layout_width="@dimen/view_mini_width"
+                    android:layout_height="@dimen/view_mini_height"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"/>
+            </RelativeLayout>
 
-            <EditText
-                android:id="@+id/edit_text_curl"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/text_name_log"
-                android:cursorVisible="false"
-                android:hint="@string/curl_request" />
+                android:padding="@dimen/view_mini_padding">
+                <EditText
+                    android:id="@+id/edit_text_curl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:cursorVisible="false"
+                    android:hint="@string/curl_request"
+                    android:layout_toStartOf="@+id/button_copy_text_curl"
+                    android:layout_toLeftOf="@+id/button_copy_text_curl" />
+                <ImageButton
+                    android:id="@+id/button_copy_text_curl"
+                    android:layout_width="@dimen/view_mini_width"
+                    android:layout_height="@dimen/view_mini_height"
+                    android:src="@drawable/ic_content_copy"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"/>
+            </RelativeLayout>
 
-            <EditText
-                android:id="@+id/edit_text_answer"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/text_name_log"
-                android:cursorVisible="false"
-                android:hint="@string/answer" />
+                android:padding="@dimen/view_mini_padding">
+                <EditText
+                    android:id="@+id/edit_text_answer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:cursorVisible="false"
+                    android:hint="@string/answer"
+                    android:layout_toLeftOf="@+id/button_copy_text_answer"
+                    android:layout_toStartOf="@+id/button_copy_text_answer" />
+
+                <ImageButton
+                    android:id="@+id/button_copy_text_answer"
+                    android:layout_width="@dimen/view_mini_width"
+                    android:layout_height="@dimen/view_mini_height"
+                    android:src="@drawable/ic_content_copy"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
 
         </LinearLayout>
 

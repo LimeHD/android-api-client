@@ -1,12 +1,16 @@
 package tv.limehd.androidapiclient;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -40,6 +44,10 @@ public class ApiManager {
     private EditText editTextAnswer;
     private EditText editTextUrl;
     private EditText editTextCurl;
+
+    private ImageButton buttonCopyTextAnswer;
+    private ImageButton buttonCopyTextUrl;
+    private ImageButton buttonCopyTextCurl;
 
     private DataItemsForRequest itemsForRequest = new DataItemsForRequest();
     private String[] application_ids;
@@ -126,6 +134,10 @@ public class ApiManager {
         editTextAnswer = activity.findViewById(R.id.edit_text_answer);
         editTextUrl = activity.findViewById(R.id.edit_text_url);
         editTextCurl = activity.findViewById(R.id.edit_text_curl);
+
+        buttonCopyTextAnswer = activity.findViewById(R.id.button_copy_text_answer);
+        buttonCopyTextUrl = activity.findViewById(R.id.button_copy_text_url);
+        buttonCopyTextCurl = activity.findViewById(R.id.button_copy_text_curl);
     }
 
     private void setAdapter(DataItemsForRequest dataItemsForRequest) {
@@ -213,6 +225,32 @@ public class ApiManager {
                 apiManagerInterface.onClickDownloadChannelList();
             }
         });
+
+        buttonCopyTextUrl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                copyTextFrom(editTextUrl);
+            }
+        });
+        buttonCopyTextCurl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                copyTextFrom(editTextCurl);
+            }
+        });
+        buttonCopyTextAnswer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                copyTextFrom(editTextAnswer);
+            }
+        });
+    }
+
+    private void copyTextFrom(EditText editText) {
+        ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("", editText.getText().toString());
+        if(clipboard != null && clip != null)
+            clipboard.setPrimaryClip(clip);
     }
 
     private void showData(@NonNull DataItemsForRequest.DataForRequest dataForRequest) {
