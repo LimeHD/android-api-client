@@ -3,7 +3,7 @@
     <string name="hello_lime_api">Hello lime api</string>
 
     <string name="answer">Answer</string>
-    <string name="curl">Curl</string>
+    <string name="curl_request">Curl Request</string>
     <string name="url_request">Url Request</string>
 
     <string name="button_ping">Ping</string>

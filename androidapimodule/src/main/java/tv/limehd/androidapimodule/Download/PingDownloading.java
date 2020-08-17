@@ -39,7 +39,7 @@ public class PingDownloading {
     }
 
     private void connectCacheInOkHttpClient(OkHttpClient.Builder okHttpClientBuilder) {
-        if(cacheDir!=null) {
+        if (cacheDir != null) {
             Cache cache = new Cache(cacheDir, convertMegaByteToByte(2));
             okHttpClientBuilder.cache(cache);
         }
@@ -65,10 +65,20 @@ public class PingDownloading {
                 connectCacheInOkHttpClient(limeCurlBuilder);
 
                 OkHttpClient client = new OkHttpClient(limeCurlBuilder);
+
                 Request.Builder builder = new Request.Builder()
-                        .url(LimeUri.getUriPing(scheme, api_root, endpoint_ping))
                         .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE())
                         .addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token);
+                try {
+                    builder.url(LimeUri.getUriPing(scheme, api_root, endpoint_ping));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    if(callBackPingInterface != null) {
+                        callBackPingInterface.callBackError(e.getMessage());
+                    }
+                    return;
+                }
+
                 if (x_test_ip != null)
                     builder.addHeader(apiValues.getX_TEXT_IP_KEY(), x_test_ip);
 
