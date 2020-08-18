@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 
 import java.io.File;
 
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
@@ -13,7 +15,9 @@ import tv.limehd.androidapimodule.LimeCacheSettings;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
-public class DownloadingBase {
+import static tv.limehd.androidapimodule.LimeApiClient.convertMegaByteToByte;
+
+public abstract class DownloadingBase {
 
     protected ApiValues apiValues;
     protected Context context;
@@ -74,4 +78,17 @@ public class DownloadingBase {
                 .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE())
                 .addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token);
     }
+
+    protected <T extends OkHttpClient.Builder> OkHttpClient createOkHttpClient(@NonNull T builder) {
+        return new OkHttpClient(builder);
+    }
+
+    protected void tryConnectCacheInOkHttpClient(@NonNull OkHttpClient.Builder okHttpClientBuilder) {
+        if (cacheDir != null) {
+            Cache cache = new Cache(cacheDir, convertMegaByteToByte(2));
+            okHttpClientBuilder.cache(cache);
+        }
+    }
+
+
 }

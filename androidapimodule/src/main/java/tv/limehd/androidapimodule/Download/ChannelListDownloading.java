@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Cache;
 import okhttp3.CacheControl;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -20,8 +19,6 @@ import tv.limehd.androidapimodule.LimeApiClient;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.LimeUri;
 
-import static tv.limehd.androidapimodule.LimeApiClient.convertMegaByteToByte;
-
 public class ChannelListDownloading extends DownloadingBase {
 
     public ChannelListDownloading() {
@@ -32,19 +29,12 @@ public class ChannelListDownloading extends DownloadingBase {
         super(context, cacheDir);
     }
 
-    private void connectCacheInOkHttpClient(OkHttpClient.Builder okHttpClientBuilder) {
-        if (cacheDir != null) {
-            Cache cache = new Cache(cacheDir, convertMegaByteToByte(2));
-            okHttpClientBuilder.cache(cache);
-        }
-    }
-
     public void loadingRequestChannelList(final String scheme, final String api_root, final String endpoint_channels,
                                           String application_id, final String x_access_token, final String channel_group_id, final String time_zone, final String locale, final String x_test_ip, final boolean use_cache) {
         LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
-        connectCacheInOkHttpClient(limeCurlBuilder);
+        tryConnectCacheInOkHttpClient(limeCurlBuilder);
+        OkHttpClient client = createOkHttpClient(limeCurlBuilder);
 
-        OkHttpClient client = new OkHttpClient(limeCurlBuilder);
         Request.Builder builder = createRequestBuilder(x_access_token);
         try {
             builder.url(LimeUri.getUriChannelList(scheme, api_root, endpoint_channels, channel_group_id, time_zone, locale));

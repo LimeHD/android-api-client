@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Cache;
 import okhttp3.CacheControl;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -21,8 +20,6 @@ import tv.limehd.androidapimodule.LimeApiClient;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.LimeUri;
 
-import static tv.limehd.androidapimodule.LimeApiClient.convertMegaByteToByte;
-
 public class SessionDownload extends DownloadingBase {
 
     public SessionDownload() {
@@ -33,19 +30,12 @@ public class SessionDownload extends DownloadingBase {
         super(context, cacheDir);
     }
 
-    private void connectCacheInOkHttpClient(OkHttpClient.Builder okHttpClientBuilder) {
-        if (cacheDir != null) {
-            Cache cache = new Cache(cacheDir, convertMegaByteToByte(2));
-            okHttpClientBuilder.cache(cache);
-        }
-    }
-
     public void sessionDownloadRequest(final String scheme, final String api_root, final String endpoint_session
             , final String application_id, final String x_access_token, final String x_test_ip, final boolean use_cache) {
-        LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
-        connectCacheInOkHttpClient(limeCurlBuilder);
 
-        OkHttpClient client = new OkHttpClient(limeCurlBuilder);
+        LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
+        tryConnectCacheInOkHttpClient(limeCurlBuilder);
+        OkHttpClient client = createOkHttpClient(limeCurlBuilder);
 
         FormBody.Builder formBodyBuilder = new FormBody.Builder();
         formBodyBuilder.add(apiValues.getAPP_ID_KEY(), application_id);
