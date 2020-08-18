@@ -2,11 +2,11 @@ package tv.limehd.androidapimodule.Download;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-
-import androidx.annotation.NonNull;
 
 import okhttp3.Cache;
 import okhttp3.CacheControl;
@@ -18,14 +18,12 @@ import okhttp3.Response;
 import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
 import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 import tv.limehd.androidapimodule.LimeApiClient;
-import tv.limehd.androidapimodule.LimeCacheSettings;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.LimeUri;
-import tv.limehd.androidapimodule.Values.ApiValues;
 
 import static tv.limehd.androidapimodule.LimeApiClient.convertMegaByteToByte;
 
-public class PingDownloading extends DownloadingBase{
+public class PingDownloading extends DownloadingBase {
 
     public PingDownloading() {
         super();
@@ -68,7 +66,7 @@ public class PingDownloading extends DownloadingBase{
                     builder.url(LimeUri.getUriPing(scheme, api_root, endpoint_ping));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    if(listenerRequest != null) {
+                    if (listenerRequest != null) {
                         listenerRequest.onError(e.getMessage());
                     }
                     return;
@@ -115,27 +113,6 @@ public class PingDownloading extends DownloadingBase{
         }).start();
         if (callBackUrlCurlRequestInterface != null)
             callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriPing(scheme, api_root, endpoint_ping));
-    }
-
-    private boolean isResponseFromNetwork(Response response) {
-        return response.networkResponse() != null;
-    }
-
-    private boolean trySaveMaxAge(int maxAge) {
-        if (context != null) {
-            LimeCacheSettings.setMaxAge(context, LimeCacheSettings.DOWNLOADER_PING, maxAge);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private int tryGetMaxAge() {
-        if (context != null) {
-            return LimeCacheSettings.getMaxAge(context, LimeCacheSettings.DOWNLOADER_PING);
-        } else {
-            return 0;
-        }
     }
 
     private ListenerRequest listenerRequest;

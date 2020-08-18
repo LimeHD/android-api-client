@@ -19,14 +19,12 @@ import okhttp3.Response;
 import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
 import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 import tv.limehd.androidapimodule.LimeApiClient;
-import tv.limehd.androidapimodule.LimeCacheSettings;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.LimeUri;
-import tv.limehd.androidapimodule.Values.ApiValues;
 
 import static tv.limehd.androidapimodule.LimeApiClient.convertMegaByteToByte;
 
-public class DeepClicksDownloading extends DownloadingBase{
+public class DeepClicksDownloading extends DownloadingBase {
 
     public DeepClicksDownloading(@NonNull Context context, File cacheDir) {
         super(context);
@@ -67,7 +65,7 @@ public class DeepClicksDownloading extends DownloadingBase{
                     builder.url(LimeUri.getUriPing(scheme, api_root, endpoint_deepclicks));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    if(listenerRequest != null) {
+                    if (listenerRequest != null) {
                         listenerRequest.onError(e.getMessage());
                     }
                     return;
@@ -99,7 +97,7 @@ public class DeepClicksDownloading extends DownloadingBase{
                             throw new IOException("Unexpected code " + response);
                         }
 
-                        if (response.networkResponse() != null) {
+                        if (isResponseFromNetwork(response)) {
                             int maxAge = LimeApiClient.getMaxCacheFromCacheControl(response);
                             trySaveMaxAge(maxAge);
                         }
@@ -112,23 +110,6 @@ public class DeepClicksDownloading extends DownloadingBase{
         }).start();
         if (callBackUrlCurlRequestInterface != null)
             callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriDeepClicks(scheme, api_root, endpoint_deepclicks));
-    }
-
-    private boolean trySaveMaxAge(int maxAge) {
-        if (context != null) {
-            LimeCacheSettings.setMaxAge(context, LimeCacheSettings.SENDER_DEEPCLICKS, maxAge);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private int tryGetMaxAge() {
-        if (context != null) {
-            return LimeCacheSettings.getMaxAge(context, LimeCacheSettings.SENDER_DEEPCLICKS);
-        } else {
-            return 0;
-        }
     }
 
     private ListenerRequest listenerRequest;
