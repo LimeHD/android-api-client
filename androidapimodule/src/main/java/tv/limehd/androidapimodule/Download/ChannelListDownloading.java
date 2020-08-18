@@ -45,14 +45,7 @@ public class ChannelListDownloading extends DownloadingBase {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                LimeCurlBuilder.Builder limeCurlBuilder = new LimeCurlBuilder().setLogCurlInterface(new LimeCurlBuilder.LogCurlInterface() {
-                    @Override
-                    public void logCurl(String message) {
-                        if (callBackUrlCurlRequestInterface != null) {
-                            callBackUrlCurlRequestInterface.callBackCurlRequest(message);
-                        }
-                    }
-                });
+                LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder()
                 connectCacheInOkHttpClient(limeCurlBuilder);
 
                 OkHttpClient client = new OkHttpClient(limeCurlBuilder);

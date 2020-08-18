@@ -67,7 +67,7 @@ public class ClientDownloading {
                     callBackDownloadInterfaceBroadcast.callBackDownloadedError(error_message);
             }
         });
-        broadcastDownloading.setCallBackUrlRequestBroadCastInterface(new CallBackUrlCurlRequestInterface() {
+        broadcastDownloading.setCallBackUrlCurlRequestInterface(new CallBackUrlCurlRequestInterface() {
                 @Override
             public void callBackUrlRequest(String request) {
                 if (callBackRequestInterface != null)

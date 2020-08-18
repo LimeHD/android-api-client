@@ -9,6 +9,7 @@ import java.io.File;
 import okhttp3.Response;
 import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
 import tv.limehd.androidapimodule.LimeCacheSettings;
+import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
 public class DownloadingBase {
@@ -27,7 +28,7 @@ public class DownloadingBase {
         initialization();
     }
 
-    private void setCallBackUrlRequestBroadCastInterface(CallBackUrlCurlRequestInterface callBackRequestBroadCastInterface) {
+    public void setCallBackUrlCurlRequestInterface(CallBackUrlCurlRequestInterface callBackRequestBroadCastInterface) {
         this.callBackUrlCurlRequestInterface = callBackRequestBroadCastInterface;
     }
 
@@ -54,5 +55,15 @@ public class DownloadingBase {
         } else {
             return false;
         }
+    }
+
+    protected LimeCurlBuilder.Builder createLimeCurlBuilder() {
+        return new LimeCurlBuilder().setLogCurlInterface(new LimeCurlBuilder.LogCurlInterface() {
+            @Override
+            public void logCurl(String message) {
+                if (callBackUrlCurlRequestInterface != null)
+                    callBackUrlCurlRequestInterface.callBackCurlRequest(message);
+            }
+        });
     }
 }

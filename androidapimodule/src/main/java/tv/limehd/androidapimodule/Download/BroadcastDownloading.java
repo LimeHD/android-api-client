@@ -30,13 +30,8 @@ public class BroadcastDownloading extends DownloadingBase {
     public void loadingRequestBroadCast(final String scheme, final String api_root, final String endpoint_broadcast
             , final String channel_id, final String before_date, final String after_date, final String time_zone
             , String application_id, final String x_access_token, final String locale, final String x_test_ip, final boolean use_cache) {
-        LimeCurlBuilder.Builder limeCurlBuilder = new LimeCurlBuilder().setLogCurlInterface(new LimeCurlBuilder.LogCurlInterface() {
-            @Override
-            public void logCurl(String message) {
-                if (callBackUrlCurlRequestInterface != null)
-                    callBackUrlCurlRequestInterface.callBackCurlRequest(message);
-            }
-        });
+        LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
+
         OkHttpClient client = new OkHttpClient(limeCurlBuilder);
         Request.Builder builder = new Request.Builder()
                 .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE())
