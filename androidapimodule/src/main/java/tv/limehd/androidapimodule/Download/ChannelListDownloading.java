@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import static tv.limehd.androidapimodule.LimeApiClient.convertMegaByteToByte;
 
-public class ChannelListDownloading {
+public class ChannelListDownloading extends DownloadingBase {
 
     private ApiValues apiValues;
     private Context context;

@@ -20,7 +20,7 @@ import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.LimeUri;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
-public class BroadcastDownloading {
+public class BroadcastDownloading extends DownloadingBase {
 
     private ApiValues apiValues;
     private Context context;

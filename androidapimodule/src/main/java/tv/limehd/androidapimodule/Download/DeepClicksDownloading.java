@@ -26,7 +26,7 @@ import tv.limehd.androidapimodule.Values.ApiValues;
 
 import static tv.limehd.androidapimodule.LimeApiClient.convertMegaByteToByte;
 
-public class DeepClicksDownloading {
+public class DeepClicksDownloading extends DownloadingBase{
 
     private ApiValues apiValues;
     private Context context;
