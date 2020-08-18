@@ -29,7 +29,7 @@ public class ChannelListDownloading extends DownloadingBase {
         super(context, cacheDir);
     }
 
-    public void loadingRequestChannelList(final String scheme, final String api_root, final String endpoint_channels,
+    public void loadingRequestChannelList(final String scheme, final String api_root, final String endpoint,
                                           String application_id, final String x_access_token, final String channel_group_id, final String time_zone, final String locale, final String x_test_ip, final boolean use_cache) {
         LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
         tryConnectCacheInOkHttpClient(limeCurlBuilder);
@@ -37,7 +37,7 @@ public class ChannelListDownloading extends DownloadingBase {
 
         Request.Builder builder = createRequestBuilder(x_access_token);
         try {
-            builder.url(LimeUri.getUriChannelList(scheme, api_root, endpoint_channels, channel_group_id, time_zone, locale));
+            builder.url(LimeUri.getUriChannelList(scheme, api_root, endpoint, channel_group_id, time_zone, locale));
         } catch (Exception e) {
             e.printStackTrace();
             if (listenerRequest != null) {
@@ -80,7 +80,7 @@ public class ChannelListDownloading extends DownloadingBase {
         });
 
         if (callBackUrlCurlRequestInterface != null)
-            callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriChannelList(scheme, api_root, endpoint_channels, channel_group_id, time_zone, locale));
+            callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriChannelList(scheme, api_root, endpoint, channel_group_id, time_zone, locale));
     }
 
     private ListenerRequest listenerRequest;

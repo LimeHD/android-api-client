@@ -29,7 +29,7 @@ public class PingDownloading extends DownloadingBase {
         super(context, cacheDir);
     }
 
-    public void pingDownloadRequest(final String scheme, final String api_root, final String endpoint_ping
+    public void pingDownloadRequest(final String scheme, final String api_root, final String endpoint
             , String application_id, final String x_access_token, final String x_test_ip, final boolean isUseCache) {
         LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
         tryConnectCacheInOkHttpClient(limeCurlBuilder);
@@ -38,7 +38,7 @@ public class PingDownloading extends DownloadingBase {
         Request.Builder builder = createRequestBuilder(x_access_token);
 
         try {
-            builder.url(LimeUri.getUriPing(scheme, api_root, endpoint_ping));
+            builder.url(LimeUri.getUriPing(scheme, api_root, endpoint));
         } catch (Exception e) {
             e.printStackTrace();
             if (listenerRequest != null) {
@@ -83,7 +83,7 @@ public class PingDownloading extends DownloadingBase {
             }
         });
         if (callBackUrlCurlRequestInterface != null)
-            callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriPing(scheme, api_root, endpoint_ping));
+            callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriPing(scheme, api_root, endpoint));
     }
 
     private ListenerRequest listenerRequest;

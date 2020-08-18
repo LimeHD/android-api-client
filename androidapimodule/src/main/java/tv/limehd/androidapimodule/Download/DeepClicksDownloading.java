@@ -26,7 +26,7 @@ public class DeepClicksDownloading extends DownloadingBase {
         super(context, cacheDir);
     }
 
-    public void deepClicksSendRequest(final String scheme, final String api_root, final String endpoint_deepclicks,
+    public void deepClicksSendRequest(final String scheme, final String api_root, final String endpoint,
                                       final String application_id, final String x_access_token, final String x_test_ip, final boolean use_cache, final String query, final String path, final String device_id) {
 
         LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
@@ -41,7 +41,7 @@ public class DeepClicksDownloading extends DownloadingBase {
         FormBody formBody = formBodyBuilder.build();
         Request.Builder builder = createRequestBuilder(x_access_token);
         try {
-            builder.url(LimeUri.getUriPing(scheme, api_root, endpoint_deepclicks));
+            builder.url(LimeUri.getUriPing(scheme, api_root, endpoint));
         } catch (Exception e) {
             e.printStackTrace();
             if (listenerRequest != null) {
@@ -85,7 +85,7 @@ public class DeepClicksDownloading extends DownloadingBase {
             }
         });
         if (callBackUrlCurlRequestInterface != null)
-            callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriDeepClicks(scheme, api_root, endpoint_deepclicks));
+            callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriDeepClicks(scheme, api_root, endpoint));
     }
 
     private ListenerRequest listenerRequest;

@@ -30,7 +30,7 @@ public class SessionDownload extends DownloadingBase {
         super(context, cacheDir);
     }
 
-    public void sessionDownloadRequest(final String scheme, final String api_root, final String endpoint_session
+    public void sessionDownloadRequest(final String scheme, final String api_root, final String endpoint
             , final String application_id, final String x_access_token, final String x_test_ip, final boolean use_cache) {
 
         LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
@@ -43,7 +43,7 @@ public class SessionDownload extends DownloadingBase {
 
         Request.Builder builder = createRequestBuilder(x_access_token);
         try {
-            builder.url(LimeUri.getUriPing(scheme, api_root, endpoint_session));
+            builder.url(LimeUri.getUriPing(scheme, api_root, endpoint));
         } catch (Exception e) {
             e.printStackTrace();
             if (listenerRequest != null) {
@@ -91,7 +91,7 @@ public class SessionDownload extends DownloadingBase {
             }
         });
         if (callBackUrlCurlRequestInterface != null)
-            callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriSession(scheme, api_root, endpoint_session));
+            callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriSession(scheme, api_root, endpoint));
     }
 
     private ListenerRequest listenerRequest;

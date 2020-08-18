@@ -27,17 +27,17 @@ public class BroadcastDownloading extends DownloadingBase {
         super(context, null);
     }
 
-    public void loadingRequestBroadCast(final String scheme, final String api_root, final String endpoint_broadcast
+    public void loadingRequestBroadCast(final String scheme, final String api_root, final String endpoint
             , final String channel_id, final String before_date, final String after_date, final String time_zone
             , String application_id, final String x_access_token, final String locale, final String x_test_ip, final boolean use_cache) {
         LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
         tryConnectCacheInOkHttpClient(limeCurlBuilder);
         OkHttpClient client = createOkHttpClient(limeCurlBuilder);
-
+        
         Request.Builder builder = createRequestBuilder(x_access_token);
 
         try {
-            builder.url(LimeUri.getUriBroadcast(scheme, api_root, endpoint_broadcast, channel_id
+            builder.url(LimeUri.getUriBroadcast(scheme, api_root, endpoint, channel_id
                     , before_date, after_date, time_zone, locale));
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,7 +80,7 @@ public class BroadcastDownloading extends DownloadingBase {
         });
 
         if (callBackUrlCurlRequestInterface != null)
-            callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriBroadcast(scheme, api_root, endpoint_broadcast, channel_id
+            callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriBroadcast(scheme, api_root, endpoint, channel_id
                     , before_date, after_date, time_zone, locale));
     }
 
