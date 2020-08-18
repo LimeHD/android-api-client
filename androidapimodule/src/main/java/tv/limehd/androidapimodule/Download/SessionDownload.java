@@ -29,12 +29,11 @@ import static tv.limehd.androidapimodule.LimeApiClient.convertMegaByteToByte;
 public class SessionDownload extends DownloadingBase {
 
     public SessionDownload() {
-        initialization();
+        super();
     }
 
-    public SessionDownload(Context context, File cacheDir) {
-        initialization();
-        this.context = context;
+    public SessionDownload(@NonNull Context context, File cacheDir) {
+        super(context);
         this.cacheDir = cacheDir;
     }
 
@@ -43,10 +42,6 @@ public class SessionDownload extends DownloadingBase {
             Cache cache = new Cache(cacheDir, convertMegaByteToByte(2));
             okHttpClientBuilder.cache(cache);
         }
-    }
-
-    private void initialization() {
-        apiValues = new ApiValues();
     }
 
     public void sessionDownloadRequest(final String scheme, final String api_root, final String endpoint_session

@@ -28,12 +28,11 @@ import static tv.limehd.androidapimodule.LimeApiClient.convertMegaByteToByte;
 public class ChannelListDownloading extends DownloadingBase {
 
     public ChannelListDownloading() {
-        initialization();
+        super();
     }
 
-    public ChannelListDownloading(Context context, File cacheDir) {
-        initialization();
-        this.context = context;
+    public ChannelListDownloading(@NonNull Context context, File cacheDir) {
+        super(context);
         this.cacheDir = cacheDir;
     }
 
@@ -109,10 +108,6 @@ public class ChannelListDownloading extends DownloadingBase {
         }).start();
         if (callBackUrlCurlRequestInterface != null)
             callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriChannelList(scheme, api_root, endpoint_channels, channel_group_id, time_zone, locale));
-    }
-
-    private void initialization() {
-        apiValues = new ApiValues();
     }
 
     private boolean isResponseFromNetwork(Response response) {

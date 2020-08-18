@@ -28,12 +28,11 @@ import static tv.limehd.androidapimodule.LimeApiClient.convertMegaByteToByte;
 public class PingDownloading extends DownloadingBase{
 
     public PingDownloading() {
-        initialization();
+        super();
     }
 
-    public PingDownloading(Context context, File cacheDir) {
-        initialization();
-        this.context = context;
+    public PingDownloading(@NonNull Context context, File cacheDir) {
+        super(context);
         this.cacheDir = cacheDir;
     }
 
@@ -44,9 +43,6 @@ public class PingDownloading extends DownloadingBase{
         }
     }
 
-    private void initialization() {
-        apiValues = new ApiValues();
-    }
 
     public void pingDownloadRequest(final String scheme, final String api_root, final String endpoint_ping
             , String application_id, final String x_access_token, final String x_test_ip, final boolean isUseCache) {

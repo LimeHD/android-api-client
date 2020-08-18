@@ -23,16 +23,11 @@ import tv.limehd.androidapimodule.Values.ApiValues;
 public class BroadcastDownloading extends DownloadingBase {
 
     public BroadcastDownloading() {
-        initialization();
+        super();
     }
 
-    public BroadcastDownloading(Context context) {
-        initialization();
-        this.context = context;
-    }
-
-    private void initialization() {
-        apiValues = new ApiValues();
+    public BroadcastDownloading(@NonNull Context context) {
+        super(context);
     }
 
     public void loadingRequestBroadCast(final String scheme, final String api_root, final String endpoint_broadcast
