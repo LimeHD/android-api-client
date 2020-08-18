@@ -13,7 +13,6 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
 import tv.limehd.androidapimodule.LimeApiClient;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.LimeUri;
@@ -97,13 +96,9 @@ public class BroadcastDownloading extends DownloadingBase {
     }
 
     private CallBackDownloadBroadCastInterface callBackDownloadBroadCastInterface;
-    private CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface;
+
 
     public void setCallBackDownloadBroadCastInterface(CallBackDownloadBroadCastInterface callBackDownloadBroadCastInterface) {
         this.callBackDownloadBroadCastInterface = callBackDownloadBroadCastInterface;
-    }
-
-    public void setCallBackUrlRequestBroadCastInterface(CallBackUrlCurlRequestInterface callBackRequestBroadCastInterface) {
-        this.callBackUrlCurlRequestInterface = callBackRequestBroadCastInterface;
     }
 }

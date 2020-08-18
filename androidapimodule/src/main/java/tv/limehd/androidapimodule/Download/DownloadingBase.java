@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import java.io.File;
 
 import okhttp3.Response;
+import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
 import tv.limehd.androidapimodule.LimeCacheSettings;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
@@ -15,6 +16,7 @@ public class DownloadingBase {
     protected ApiValues apiValues;
     protected Context context;
     protected File cacheDir;
+    protected CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface;
 
     protected DownloadingBase(@NonNull Context context) {
         this.context = context;
@@ -23,6 +25,10 @@ public class DownloadingBase {
 
     protected DownloadingBase() {
         initialization();
+    }
+
+    private void setCallBackUrlRequestBroadCastInterface(CallBackUrlCurlRequestInterface callBackRequestBroadCastInterface) {
+        this.callBackUrlCurlRequestInterface = callBackRequestBroadCastInterface;
     }
 
     private void initialization() {

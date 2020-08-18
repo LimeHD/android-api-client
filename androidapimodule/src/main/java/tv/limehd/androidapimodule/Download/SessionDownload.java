@@ -16,7 +16,6 @@ import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
 import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 import tv.limehd.androidapimodule.LimeApiClient;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
@@ -121,13 +120,8 @@ public class SessionDownload extends DownloadingBase {
     }
 
     private ListenerRequest listenerRequest;
-    private CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface;
 
     public void setListenerRequest(ListenerRequest listenerRequest) {
         this.listenerRequest = listenerRequest;
-    }
-
-    public void setCallBackUrlCurlRequestInterface(CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface) {
-        this.callBackUrlCurlRequestInterface = callBackUrlCurlRequestInterface;
     }
 }
