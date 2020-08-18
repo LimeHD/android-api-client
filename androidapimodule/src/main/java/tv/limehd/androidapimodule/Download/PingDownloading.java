@@ -51,9 +51,7 @@ public class PingDownloading extends DownloadingBase {
 
                 OkHttpClient client = new OkHttpClient(limeCurlBuilder);
 
-                Request.Builder builder = new Request.Builder()
-                        .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE())
-                        .addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token);
+                Request.Builder builder = createRequestBuilder(x_access_token);
                 try {
                     builder.url(LimeUri.getUriPing(scheme, api_root, endpoint_ping));
                 } catch (Exception e) {
@@ -66,8 +64,6 @@ public class PingDownloading extends DownloadingBase {
 
                 if (x_test_ip != null)
                     builder.addHeader(apiValues.getX_TEXT_IP_KEY(), x_test_ip);
-
-
                 if (isUseCache) {
                     builder.cacheControl(new CacheControl.Builder().maxAge(tryGetMaxAge(), TimeUnit.SECONDS).build());
                 } else {

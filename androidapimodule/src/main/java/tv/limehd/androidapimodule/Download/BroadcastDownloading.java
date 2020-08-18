@@ -33,9 +33,7 @@ public class BroadcastDownloading extends DownloadingBase {
         LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
 
         OkHttpClient client = new OkHttpClient(limeCurlBuilder);
-        Request.Builder builder = new Request.Builder()
-                .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE())
-                .addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token);
+        Request.Builder builder = createRequestBuilder(x_access_token);
         try {
             builder.url(LimeUri.getUriBroadcast(scheme, api_root, endpoint_broadcast, channel_id
                     , before_date, after_date, time_zone, locale));

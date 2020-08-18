@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import java.io.File;
 
+import okhttp3.Request;
 import okhttp3.Response;
 import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
 import tv.limehd.androidapimodule.LimeCacheSettings;
@@ -65,5 +66,11 @@ public class DownloadingBase {
                     callBackUrlCurlRequestInterface.callBackCurlRequest(message);
             }
         });
+    }
+
+    protected Request.Builder createRequestBuilder(final String x_access_token) {
+        return new Request.Builder()
+                .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE())
+                .addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token);
     }
 }

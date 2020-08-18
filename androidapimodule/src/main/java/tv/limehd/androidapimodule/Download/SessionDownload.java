@@ -55,9 +55,7 @@ public class SessionDownload extends DownloadingBase {
                 formBodyBuilder.add(apiValues.getAPP_ID_KEY(), application_id);
                 FormBody formBody = formBodyBuilder.build();
 
-                Request.Builder builder = new Request.Builder()
-                        .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE())
-                        .addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token);
+                Request.Builder builder = createRequestBuilder(x_access_token);
                 try {
                     builder.url(LimeUri.getUriPing(scheme, api_root, endpoint_session));
                 } catch (Exception e) {

@@ -45,13 +45,11 @@ public class ChannelListDownloading extends DownloadingBase {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder()
+                LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
                 connectCacheInOkHttpClient(limeCurlBuilder);
 
                 OkHttpClient client = new OkHttpClient(limeCurlBuilder);
-                Request.Builder builder = new Request.Builder()
-                        .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE())
-                        .addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token);
+                Request.Builder builder = createRequestBuilder(x_access_token);
                 try {
                     builder.url(LimeUri.getUriChannelList(scheme, api_root, endpoint_channels, channel_group_id, time_zone, locale));
                 } catch (Exception e) {
