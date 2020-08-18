@@ -20,8 +20,9 @@ public class DownloadingBase {
     protected File cacheDir;
     protected CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface;
 
-    protected DownloadingBase(@NonNull Context context) {
+    protected DownloadingBase(@NonNull Context context, File cacheDir) {
         this.context = context;
+        this.cacheDir = cacheDir;
         initialization();
     }
 

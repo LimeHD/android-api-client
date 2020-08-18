@@ -29,9 +29,8 @@ public class SessionDownload extends DownloadingBase {
         super();
     }
 
-    public SessionDownload(@NonNull Context context, File cacheDir) {
-        super(context);
-        this.cacheDir = cacheDir;
+    public SessionDownload(@NonNull Context context, @NonNull File cacheDir) {
+        super(context, cacheDir);
     }
 
     private void connectCacheInOkHttpClient(OkHttpClient.Builder okHttpClientBuilder) {
@@ -43,69 +42,64 @@ public class SessionDownload extends DownloadingBase {
 
     public void sessionDownloadRequest(final String scheme, final String api_root, final String endpoint_session
             , final String application_id, final String x_access_token, final String x_test_ip, final boolean use_cache) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
-                connectCacheInOkHttpClient(limeCurlBuilder);
+        LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
+        connectCacheInOkHttpClient(limeCurlBuilder);
 
-                OkHttpClient client = new OkHttpClient(limeCurlBuilder);
+        OkHttpClient client = new OkHttpClient(limeCurlBuilder);
 
-                FormBody.Builder formBodyBuilder = new FormBody.Builder();
-                formBodyBuilder.add(apiValues.getAPP_ID_KEY(), application_id);
-                FormBody formBody = formBodyBuilder.build();
+        FormBody.Builder formBodyBuilder = new FormBody.Builder();
+        formBodyBuilder.add(apiValues.getAPP_ID_KEY(), application_id);
+        FormBody formBody = formBodyBuilder.build();
 
-                Request.Builder builder = createRequestBuilder(x_access_token);
-                try {
-                    builder.url(LimeUri.getUriPing(scheme, api_root, endpoint_session));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    if (listenerRequest != null) {
-                        listenerRequest.onError(e.getMessage());
-                    }
-                    return;
-                }
-
-
-                if (x_test_ip != null)
-                    builder.addHeader(apiValues.getX_TEXT_IP_KEY(), x_test_ip);
-
-                if (use_cache) {
-                    builder.cacheControl(new CacheControl.Builder().maxAge(tryGetMaxAge(), TimeUnit.SECONDS).build());
-                } else {
-                    builder.cacheControl(new CacheControl.Builder().noCache().build());
-                }
-                builder.post(formBody);
-                final Request request = builder.build();
-
-                client.newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                        if (listenerRequest != null)
-                            listenerRequest.onError(e.getMessage());
-                    }
-
-                    @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                        if (!response.isSuccessful()) {
-                            if (listenerRequest != null) {
-                                listenerRequest.onError(("Unexpected code " + response));
-                            }
-                            throw new IOException("Unexpected code " + response);
-                        }
-
-
-                        if (isResponseFromNetwork(response)) {
-                            int maxAge = LimeApiClient.getMaxCacheFromCacheControl(response);
-                            trySaveMaxAge(maxAge);
-                        }
-
-                        if (listenerRequest != null)
-                            listenerRequest.onSuccess(response.body().string());
-                    }
-                });
+        Request.Builder builder = createRequestBuilder(x_access_token);
+        try {
+            builder.url(LimeUri.getUriPing(scheme, api_root, endpoint_session));
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (listenerRequest != null) {
+                listenerRequest.onError(e.getMessage());
             }
-        }).start();
+            return;
+        }
+
+
+        if (x_test_ip != null)
+            builder.addHeader(apiValues.getX_TEXT_IP_KEY(), x_test_ip);
+
+        if (use_cache) {
+            builder.cacheControl(new CacheControl.Builder().maxAge(tryGetMaxAge(), TimeUnit.SECONDS).build());
+        } else {
+            builder.cacheControl(new CacheControl.Builder().noCache().build());
+        }
+        builder.post(formBody);
+        final Request request = builder.build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                if (listenerRequest != null)
+                    listenerRequest.onError(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    if (listenerRequest != null) {
+                        listenerRequest.onError(("Unexpected code " + response));
+                    }
+                    throw new IOException("Unexpected code " + response);
+                }
+
+
+                if (isResponseFromNetwork(response)) {
+                    int maxAge = LimeApiClient.getMaxCacheFromCacheControl(response);
+                    trySaveMaxAge(maxAge);
+                }
+
+                if (listenerRequest != null)
+                    listenerRequest.onSuccess(response.body().string());
+            }
+        });
         if (callBackUrlCurlRequestInterface != null)
             callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriSession(scheme, api_root, endpoint_session));
     }

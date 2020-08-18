@@ -24,7 +24,7 @@ public class BroadcastDownloading extends DownloadingBase {
     }
 
     public BroadcastDownloading(@NonNull Context context) {
-        super(context);
+        super(context, null);
     }
 
     public void loadingRequestBroadCast(final String scheme, final String api_root, final String endpoint_broadcast
@@ -89,7 +89,6 @@ public class BroadcastDownloading extends DownloadingBase {
     }
 
     private CallBackDownloadBroadCastInterface callBackDownloadBroadCastInterface;
-
 
     public void setCallBackDownloadBroadCastInterface(CallBackDownloadBroadCastInterface callBackDownloadBroadCastInterface) {
         this.callBackDownloadBroadCastInterface = callBackDownloadBroadCastInterface;
