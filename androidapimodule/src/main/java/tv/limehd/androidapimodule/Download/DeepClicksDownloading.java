@@ -28,10 +28,6 @@ import static tv.limehd.androidapimodule.LimeApiClient.convertMegaByteToByte;
 
 public class DeepClicksDownloading extends DownloadingBase{
 
-    private ApiValues apiValues;
-    private Context context;
-    private File cacheDir;
-
     public DeepClicksDownloading(Context context, File cacheDir) {
         this.context = context;
         apiValues = new ApiValues();

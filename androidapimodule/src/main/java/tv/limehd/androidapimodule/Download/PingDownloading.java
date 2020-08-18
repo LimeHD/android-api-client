@@ -26,9 +26,6 @@ import tv.limehd.androidapimodule.Values.ApiValues;
 import static tv.limehd.androidapimodule.LimeApiClient.convertMegaByteToByte;
 
 public class PingDownloading extends DownloadingBase{
-    private ApiValues apiValues;
-    private Context context;
-    private File cacheDir;
 
     public PingDownloading() {
         initialization();

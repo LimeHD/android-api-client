@@ -27,9 +27,6 @@ import tv.limehd.androidapimodule.Values.ApiValues;
 import static tv.limehd.androidapimodule.LimeApiClient.convertMegaByteToByte;
 
 public class SessionDownload extends DownloadingBase {
-    private ApiValues apiValues;
-    private Context context;
-    private File cacheDir;
 
     public SessionDownload() {
         initialization();
