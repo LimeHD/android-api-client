@@ -15,6 +15,8 @@ import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import tv.limehd.androidapimodule.Download.Data.Component;
+import tv.limehd.androidapimodule.Download.Data.DataForRequest;
 import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 import tv.limehd.androidapimodule.LimeApiClient;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
@@ -22,28 +24,36 @@ import tv.limehd.androidapimodule.LimeUri;
 
 public class SessionDownload extends DownloadingBase {
 
+    private Component.DataSession specificData;
+
     public SessionDownload() {
         super();
+    }
+
+    @Override
+    protected String getUriFromLimeUri() {
+        return null;
     }
 
     public SessionDownload(@NonNull Context context, @NonNull File cacheDir) {
         super(context, cacheDir);
     }
 
-    public void sessionDownloadRequest(final String scheme, final String api_root, final String endpoint
-            , final String application_id, final String x_access_token, final String x_test_ip, final boolean use_cache) {
+    public void sessionDownloadRequest(DataForRequest dataForRequest) {
+        DataForRequest dataForRequest1 = dataForRequest;
+        dataBasic = dataForRequest.getComponent(Component.DataBasic.class);
+        specificData = dataForRequest.getComponent(Component.DataSession.class);
 
         LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
         tryConnectCacheInOkHttpClient(limeCurlBuilder);
         OkHttpClient client = createOkHttpClient(limeCurlBuilder);
+        Request.Builder builder = createRequestBuilder(dataBasic.getxAccessToken());
 
-        FormBody.Builder formBodyBuilder = new FormBody.Builder();
-        formBodyBuilder.add(apiValues.getAPP_ID_KEY(), application_id);
-        FormBody formBody = formBodyBuilder.build();
-
-        Request.Builder builder = createRequestBuilder(x_access_token);
         try {
-            builder.url(LimeUri.getUriPing(scheme, api_root, endpoint));
+            builder.url(LimeUri.getUriSession(
+                    dataBasic.getScheme(),
+                    dataBasic.getApiRoot(),
+                    dataBasic.getEndpoint()));
         } catch (Exception e) {
             e.printStackTrace();
             if (listenerRequest != null) {
@@ -53,14 +63,18 @@ public class SessionDownload extends DownloadingBase {
         }
 
 
-        if (x_test_ip != null)
-            builder.addHeader(apiValues.getX_TEXT_IP_KEY(), x_test_ip);
+        if (dataBasic.getxTestIp() != null)
+            builder.addHeader(apiValues.getX_TEXT_IP_KEY(), dataBasic.getxTestIp());
 
-        if (use_cache) {
+        if (dataBasic.isUseCache()) {
             builder.cacheControl(new CacheControl.Builder().maxAge(tryGetMaxAge(), TimeUnit.SECONDS).build());
         } else {
             builder.cacheControl(new CacheControl.Builder().noCache().build());
         }
+
+        FormBody.Builder formBodyBuilder = new FormBody.Builder();
+        formBodyBuilder.add(apiValues.getAPP_ID_KEY(), dataBasic.getApplicationId());
+        FormBody formBody = formBodyBuilder.build();
         builder.post(formBody);
         final Request request = builder.build();
 
@@ -91,7 +105,11 @@ public class SessionDownload extends DownloadingBase {
             }
         });
         if (callBackUrlCurlRequestInterface != null)
-            callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriSession(scheme, api_root, endpoint));
+            callBackUrlCurlRequestInterface.callBackUrlRequest(
+                    LimeUri.getUriSession(
+                            dataBasic.getScheme(),
+                            dataBasic.getApiRoot(),
+                            dataBasic.getEndpoint()));
     }
 
     private ListenerRequest listenerRequest;

@@ -14,6 +14,8 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import tv.limehd.androidapimodule.Download.Data.Component;
+import tv.limehd.androidapimodule.Download.Data.DataForRequest;
 import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 import tv.limehd.androidapimodule.LimeApiClient;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
@@ -21,24 +23,35 @@ import tv.limehd.androidapimodule.LimeUri;
 
 public class PingDownloading extends DownloadingBase {
 
+    private Component.DataPing specificData;
+
     public PingDownloading() {
         super();
+    }
+
+    @Override
+    protected String getUriFromLimeUri() {
+        return null;
     }
 
     public PingDownloading(@NonNull Context context, @NonNull File cacheDir) {
         super(context, cacheDir);
     }
 
-    public void pingDownloadRequest(final String scheme, final String api_root, final String endpoint
-            , String application_id, final String x_access_token, final String x_test_ip, final boolean isUseCache) {
+    public void pingDownloadRequest(DataForRequest dataForRequest) {
+        dataBasic = dataForRequest.getComponent(Component.DataBasic.class);
+        specificData = dataForRequest.getComponent(Component.DataPing.class);
+
         LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
         tryConnectCacheInOkHttpClient(limeCurlBuilder);
         OkHttpClient client = createOkHttpClient(limeCurlBuilder);
-
-        Request.Builder builder = createRequestBuilder(x_access_token);
+        Request.Builder builder = createRequestBuilder(dataBasic.getxAccessToken());
 
         try {
-            builder.url(LimeUri.getUriPing(scheme, api_root, endpoint));
+            builder.url(LimeUri.getUriPing(
+                    dataBasic.getScheme(),
+                    dataBasic.getApiRoot(),
+                    dataBasic.getEndpoint()));
         } catch (Exception e) {
             e.printStackTrace();
             if (listenerRequest != null) {
@@ -47,9 +60,9 @@ public class PingDownloading extends DownloadingBase {
             return;
         }
 
-        if (x_test_ip != null)
-            builder.addHeader(apiValues.getX_TEXT_IP_KEY(), x_test_ip);
-        if (isUseCache) {
+        if (dataBasic.getxTestIp() != null)
+            builder.addHeader(apiValues.getX_TEXT_IP_KEY(), dataBasic.getxTestIp());
+        if (dataBasic.isUseCache()) {
             builder.cacheControl(new CacheControl.Builder().maxAge(tryGetMaxAge(), TimeUnit.SECONDS).build());
         } else {
             builder.cacheControl(new CacheControl.Builder().noCache().build());
@@ -83,7 +96,11 @@ public class PingDownloading extends DownloadingBase {
             }
         });
         if (callBackUrlCurlRequestInterface != null)
-            callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriPing(scheme, api_root, endpoint));
+            callBackUrlCurlRequestInterface.callBackUrlRequest(
+                    LimeUri.getUriPing(
+                            dataBasic.getScheme(),
+                            dataBasic.getApiRoot(),
+                            dataBasic.getEndpoint()));
     }
 
     private ListenerRequest listenerRequest;

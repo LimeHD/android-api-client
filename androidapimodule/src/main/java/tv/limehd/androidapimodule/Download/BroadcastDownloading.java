@@ -13,32 +13,51 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import tv.limehd.androidapimodule.Download.Data.Component;
+import tv.limehd.androidapimodule.Download.Data.DataForRequest;
 import tv.limehd.androidapimodule.LimeApiClient;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.LimeUri;
 
 public class BroadcastDownloading extends DownloadingBase {
 
+    private Component.DataBroadcast specificData;
+
     public BroadcastDownloading() {
         super();
+    }
+
+    @Override
+    protected String getUriFromLimeUri() {
+        return null;
+    }
+
+    private <T> T castObject(Class<T> clazz, Object object) {
+        return (T) object;
     }
 
     public BroadcastDownloading(@NonNull Context context) {
         super(context, null);
     }
 
-    public void loadingRequestBroadCast(final String scheme, final String api_root, final String endpoint
-            , final String channel_id, final String before_date, final String after_date, final String time_zone
-            , String application_id, final String x_access_token, final String locale, final String x_test_ip, final boolean use_cache) {
+    public void loadingRequestBroadCast(DataForRequest dataForRequest) {
+        dataBasic = dataForRequest.getComponent(Component.DataBasic.class);
+        specificData = dataForRequest.getComponent(Component.DataBroadcast.class);
+
         LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
         tryConnectCacheInOkHttpClient(limeCurlBuilder);
         OkHttpClient client = createOkHttpClient(limeCurlBuilder);
-        
-        Request.Builder builder = createRequestBuilder(x_access_token);
-
+        Request.Builder builder = createRequestBuilder(dataBasic.getxAccessToken());
         try {
-            builder.url(LimeUri.getUriBroadcast(scheme, api_root, endpoint, channel_id
-                    , before_date, after_date, time_zone, locale));
+            builder.url(LimeUri.getUriBroadcast(
+                    dataBasic.getScheme(),
+                    dataBasic.getApiRoot(),
+                    dataBasic.getEndpoint(),
+                    specificData.getChannelId(),
+                    specificData.getBeforeDate(),
+                    specificData.getAfterDate(),
+                    specificData.getTimeZone(),
+                    specificData.getLocale()));
         } catch (Exception e) {
             e.printStackTrace();
             if (callBackDownloadBroadCastInterface != null) {
@@ -46,9 +65,9 @@ public class BroadcastDownloading extends DownloadingBase {
             }
             return;
         }
-        if (x_test_ip != null)
-            builder.addHeader(apiValues.getX_TEXT_IP_KEY(), x_test_ip);
-        if (use_cache) {
+        if (dataBasic.getxTestIp() != null)
+            builder.addHeader(apiValues.getX_TEXT_IP_KEY(), dataBasic.getxTestIp());
+        if (dataBasic.isUseCache()) {
             builder.cacheControl(new CacheControl.Builder().maxAge(tryGetMaxAge(), TimeUnit.SECONDS).build());
         } else {
             builder.cacheControl(new CacheControl.Builder().noCache().build());
@@ -75,13 +94,22 @@ public class BroadcastDownloading extends DownloadingBase {
                 }
 
                 if (callBackDownloadBroadCastInterface != null)
-                    callBackDownloadBroadCastInterface.callBackDownloadedBroadCastSucces(response.body().string(), channel_id);
+                    callBackDownloadBroadCastInterface.callBackDownloadedBroadCastSucces(response.body().string(), specificData.getChannelId());
             }
         });
 
-        if (callBackUrlCurlRequestInterface != null)
-            callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriBroadcast(scheme, api_root, endpoint, channel_id
-                    , before_date, after_date, time_zone, locale));
+        if (callBackUrlCurlRequestInterface != null) {
+            callBackUrlCurlRequestInterface.callBackUrlRequest(
+                    LimeUri.getUriBroadcast(
+                            dataBasic.getScheme(),
+                            dataBasic.getApiRoot(),
+                            dataBasic.getEndpoint(),
+                            specificData.getChannelId(),
+                            specificData.getBeforeDate(),
+                            specificData.getAfterDate(),
+                            specificData.getTimeZone(),
+                            specificData.getLocale()));
+        }
     }
 
     public interface CallBackDownloadBroadCastInterface {

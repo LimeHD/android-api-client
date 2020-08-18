@@ -10,6 +10,7 @@ import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import tv.limehd.androidapimodule.Download.Data.Component;
 import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
 import tv.limehd.androidapimodule.LimeCacheSettings;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
@@ -23,6 +24,7 @@ public abstract class DownloadingBase {
     protected Context context;
     protected File cacheDir;
     protected CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface;
+    protected Component.DataBasic dataBasic;
 
     protected DownloadingBase(@NonNull Context context, File cacheDir) {
         this.context = context;
@@ -90,5 +92,5 @@ public abstract class DownloadingBase {
         }
     }
 
-
+    protected abstract String getUriFromLimeUri();
 }

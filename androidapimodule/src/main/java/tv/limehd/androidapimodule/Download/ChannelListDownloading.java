@@ -14,6 +14,8 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import tv.limehd.androidapimodule.Download.Data.Component;
+import tv.limehd.androidapimodule.Download.Data.DataForRequest;
 import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 import tv.limehd.androidapimodule.LimeApiClient;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
@@ -21,23 +23,38 @@ import tv.limehd.androidapimodule.LimeUri;
 
 public class ChannelListDownloading extends DownloadingBase {
 
+    private Component.DataChannelList specificData;
+
     public ChannelListDownloading() {
         super();
+    }
+
+    @Override
+    protected String getUriFromLimeUri() {
+        return null;
     }
 
     public ChannelListDownloading(@NonNull Context context, @NonNull File cacheDir) {
         super(context, cacheDir);
     }
 
-    public void loadingRequestChannelList(final String scheme, final String api_root, final String endpoint,
-                                          String application_id, final String x_access_token, final String channel_group_id, final String time_zone, final String locale, final String x_test_ip, final boolean use_cache) {
+    public void loadingRequestChannelList(DataForRequest dataForRequest) {
+        dataBasic = dataForRequest.getComponent(Component.DataBasic.class);
+        specificData = dataForRequest.getComponent(Component.DataChannelList.class);
+
         LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
         tryConnectCacheInOkHttpClient(limeCurlBuilder);
         OkHttpClient client = createOkHttpClient(limeCurlBuilder);
+        Request.Builder builder = createRequestBuilder(dataBasic.getxAccessToken());
 
-        Request.Builder builder = createRequestBuilder(x_access_token);
         try {
-            builder.url(LimeUri.getUriChannelList(scheme, api_root, endpoint, channel_group_id, time_zone, locale));
+            builder.url(LimeUri.getUriChannelList(
+                    dataBasic.getScheme(),
+                    dataBasic.getApiRoot(),
+                    dataBasic.getEndpoint(),
+                    specificData.getChannelGroupId(),
+                    specificData.getTimeZone(),
+                    specificData.getLocale()));
         } catch (Exception e) {
             e.printStackTrace();
             if (listenerRequest != null) {
@@ -46,9 +63,9 @@ public class ChannelListDownloading extends DownloadingBase {
             return;
         }
 
-        if (x_test_ip != null)
-            builder.addHeader(apiValues.getX_TEXT_IP_KEY(), x_test_ip);
-        if (use_cache) {
+        if (dataBasic.getxTestIp() != null)
+            builder.addHeader(apiValues.getX_TEXT_IP_KEY(), dataBasic.getxTestIp());
+        if (dataBasic.isUseCache()) {
             builder.cacheControl(new CacheControl.Builder().maxAge(tryGetMaxAge(), TimeUnit.SECONDS).build());
         } else {
             builder.cacheControl(new CacheControl.Builder().noCache().build());
@@ -80,7 +97,14 @@ public class ChannelListDownloading extends DownloadingBase {
         });
 
         if (callBackUrlCurlRequestInterface != null)
-            callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriChannelList(scheme, api_root, endpoint, channel_group_id, time_zone, locale));
+            callBackUrlCurlRequestInterface.callBackUrlRequest(
+                    LimeUri.getUriChannelList(
+                            dataBasic.getScheme(),
+                            dataBasic.getApiRoot(),
+                            dataBasic.getEndpoint(),
+                            specificData.getChannelGroupId(),
+                            specificData.getTimeZone(),
+                            specificData.getLocale()));
     }
 
     private ListenerRequest listenerRequest;

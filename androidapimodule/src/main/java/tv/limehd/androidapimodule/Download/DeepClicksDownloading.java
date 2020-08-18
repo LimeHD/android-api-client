@@ -15,6 +15,8 @@ import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import tv.limehd.androidapimodule.Download.Data.Component;
+import tv.limehd.androidapimodule.Download.Data.DataForRequest;
 import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 import tv.limehd.androidapimodule.LimeApiClient;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
@@ -22,26 +24,31 @@ import tv.limehd.androidapimodule.LimeUri;
 
 public class DeepClicksDownloading extends DownloadingBase {
 
+    private Component.DataDeepClick specificData;
+
     public DeepClicksDownloading(@NonNull Context context, @NonNull File cacheDir) {
         super(context, cacheDir);
     }
 
-    public void deepClicksSendRequest(final String scheme, final String api_root, final String endpoint,
-                                      final String application_id, final String x_access_token, final String x_test_ip, final boolean use_cache, final String query, final String path, final String device_id) {
+    @Override
+    protected String getUriFromLimeUri() {
+        return null;
+    }
+
+    public void deepClicksSendRequest(DataForRequest dataForRequest) {
+        dataBasic = dataForRequest.getComponent(Component.DataBasic.class);
+        specificData = dataForRequest.getComponent(Component.DataDeepClick.class);
 
         LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
         tryConnectCacheInOkHttpClient(limeCurlBuilder);
         OkHttpClient client = createOkHttpClient(limeCurlBuilder);
+        Request.Builder builder = createRequestBuilder(dataBasic.getxAccessToken());
 
-        FormBody.Builder formBodyBuilder = new FormBody.Builder();
-        formBodyBuilder.add(apiValues.getAPP_ID_KEY(), application_id);
-        formBodyBuilder.add(apiValues.getQUERY_KEY(), query);
-        formBodyBuilder.add(apiValues.getPATH_KEY(), path);
-        formBodyBuilder.add(apiValues.getDEVICE_ID_KEY(), device_id);
-        FormBody formBody = formBodyBuilder.build();
-        Request.Builder builder = createRequestBuilder(x_access_token);
         try {
-            builder.url(LimeUri.getUriPing(scheme, api_root, endpoint));
+            builder.url(LimeUri.getUriDeepClicks(
+                    dataBasic.getScheme(),
+                    dataBasic.getApiRoot(),
+                    dataBasic.getEndpoint()));
         } catch (Exception e) {
             e.printStackTrace();
             if (listenerRequest != null) {
@@ -50,13 +57,21 @@ public class DeepClicksDownloading extends DownloadingBase {
             return;
         }
 
-        if (x_test_ip != null)
-            builder.addHeader(apiValues.getX_TEXT_IP_KEY(), x_test_ip);
-        if (use_cache) {
+        if (dataBasic.getxTestIp() != null)
+            builder.addHeader(apiValues.getX_TEXT_IP_KEY(), dataBasic.getxTestIp());
+        if (dataBasic.isUseCache()) {
             builder.cacheControl(new CacheControl.Builder().maxAge(tryGetMaxAge(), TimeUnit.SECONDS).build());
         } else {
             builder.cacheControl(new CacheControl.Builder().noCache().build());
         }
+
+        FormBody.Builder formBodyBuilder = new FormBody.Builder();
+        formBodyBuilder.add(apiValues.getAPP_ID_KEY(), dataBasic.getApplicationId());
+        formBodyBuilder.add(apiValues.getQUERY_KEY(), specificData.getQuery());
+        formBodyBuilder.add(apiValues.getPATH_KEY(), specificData.getPath());
+        formBodyBuilder.add(apiValues.getDEVICE_ID_KEY(), specificData.getDeviceId());
+        FormBody formBody = formBodyBuilder.build();
+
         builder.post(formBody);
         Request request = builder.build();
         client.newCall(request).enqueue(new Callback() {
@@ -85,7 +100,11 @@ public class DeepClicksDownloading extends DownloadingBase {
             }
         });
         if (callBackUrlCurlRequestInterface != null)
-            callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriDeepClicks(scheme, api_root, endpoint));
+            callBackUrlCurlRequestInterface.callBackUrlRequest(
+                    LimeUri.getUriDeepClicks(
+                            dataBasic.getScheme(),
+                            dataBasic.getApiRoot(),
+                            dataBasic.getEndpoint()));
     }
 
     private ListenerRequest listenerRequest;
