@@ -13,6 +13,7 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
 import tv.limehd.androidapimodule.LimeApiClient;
 import tv.limehd.androidapimodule.LimeCacheSettings;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
@@ -44,8 +45,8 @@ public class BroadcastDownloading {
                 LimeCurlBuilder.Builder limeCurlBuilder = new LimeCurlBuilder().setLogCurlInterface(new LimeCurlBuilder.LogCurlInterface() {
                     @Override
                     public void logCurl(String message) {
-                        if (callBackRequestBroadCastInterface != null)
-                            callBackRequestBroadCastInterface.callBackCUrlRequestBroadCast(message);
+                        if (callBackUrlCurlRequestInterface != null)
+                            callBackUrlCurlRequestInterface.callBackCurlRequest(message);
                     }
                 });
                 OkHttpClient client = new OkHttpClient(limeCurlBuilder);
@@ -95,8 +96,8 @@ public class BroadcastDownloading {
                     }
                 });
 
-        if (callBackRequestBroadCastInterface != null)
-            callBackRequestBroadCastInterface.callBackUrlRequestBroadCast(LimeUri.getUriBroadcast(scheme, api_root, endpoint_broadcast, channel_id
+        if (callBackUrlCurlRequestInterface != null)
+            callBackUrlCurlRequestInterface.callBackUrlRequest(LimeUri.getUriBroadcast(scheme, api_root, endpoint_broadcast, channel_id
                     , before_date, after_date, time_zone, locale));
     }
 
@@ -129,20 +130,14 @@ public class BroadcastDownloading {
         void callBackDownloadedBroadCastError(String error_message);
     }
 
-    public interface CallBackRequestBroadCastInterface {
-        void callBackUrlRequestBroadCast(String request);
-
-        void callBackCUrlRequestBroadCast(String request);
-    }
-
     private CallBackDownloadBroadCastInterface callBackDownloadBroadCastInterface;
-    private CallBackRequestBroadCastInterface callBackRequestBroadCastInterface;
+    private CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface;
 
     public void setCallBackDownloadBroadCastInterface(CallBackDownloadBroadCastInterface callBackDownloadBroadCastInterface) {
         this.callBackDownloadBroadCastInterface = callBackDownloadBroadCastInterface;
     }
 
-    public void setCallBackUrlRequestBroadCastInterface(CallBackRequestBroadCastInterface callBackRequestBroadCastInterface) {
-        this.callBackRequestBroadCastInterface = callBackRequestBroadCastInterface;
+    public void setCallBackUrlRequestBroadCastInterface(CallBackUrlCurlRequestInterface callBackRequestBroadCastInterface) {
+        this.callBackUrlCurlRequestInterface = callBackRequestBroadCastInterface;
     }
 }
