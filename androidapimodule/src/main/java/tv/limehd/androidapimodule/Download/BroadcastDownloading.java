@@ -4,32 +4,58 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
-import okhttp3.CacheControl;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 import tv.limehd.androidapimodule.Download.Data.Component;
 import tv.limehd.androidapimodule.Download.Data.DataForRequest;
-import tv.limehd.androidapimodule.LimeApiClient;
-import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.LimeUri;
 
 public class BroadcastDownloading extends DownloadingBase {
 
-    private Component.DataBroadcast specificData;
+    private Component.DataBroadcast dataSpecific;
+    private CallBackDownloadBroadCastInterface callBackDownloadBroadCastInterface;
+
+    public void setCallBackDownloadBroadCastInterface(CallBackDownloadBroadCastInterface callBackDownloadBroadCastInterface) {
+        this.callBackDownloadBroadCastInterface = callBackDownloadBroadCastInterface;
+    }
 
     public BroadcastDownloading() {
         super();
     }
 
     @Override
+    protected void initDataSpecific(DataForRequest dataForRequest) {
+        dataSpecific = dataForRequest.getComponent(Component.DataBroadcast.class);
+    }
+
+    @Override
+    protected void sendCallBackError(String error) {
+        if (callBackDownloadBroadCastInterface != null) {
+            callBackDownloadBroadCastInterface.callBackDownloadedBroadCastError(error);
+        }
+    }
+
+    @Override
+    protected void sendCallBackSuccess(@NonNull String response) {
+        if (callBackDownloadBroadCastInterface != null && dataSpecific != null)
+            callBackDownloadBroadCastInterface.callBackDownloadedBroadCastSucces(response, dataSpecific.getChannelId());
+    }
+
+    @Override
     protected String getUriFromLimeUri() {
-        return null;
+        return LimeUri.getUriBroadcast(
+                dataBasic.getScheme(),
+                dataBasic.getApiRoot(),
+                dataBasic.getEndpoint(),
+                dataSpecific.getChannelId(),
+                dataSpecific.getBeforeDate(),
+                dataSpecific.getAfterDate(),
+                dataSpecific.getTimeZone(),
+                dataSpecific.getLocale());
+    }
+
+    @Override
+    protected Request.Builder connectFormBodyForPost(Request.Builder builder) {
+        return builder;
     }
 
     private <T> T castObject(Class<T> clazz, Object object) {
@@ -41,75 +67,7 @@ public class BroadcastDownloading extends DownloadingBase {
     }
 
     public void loadingRequestBroadCast(DataForRequest dataForRequest) {
-        dataBasic = dataForRequest.getComponent(Component.DataBasic.class);
-        specificData = dataForRequest.getComponent(Component.DataBroadcast.class);
-
-        LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
-        tryConnectCacheInOkHttpClient(limeCurlBuilder);
-        OkHttpClient client = createOkHttpClient(limeCurlBuilder);
-        Request.Builder builder = createRequestBuilder(dataBasic.getxAccessToken());
-        try {
-            builder.url(LimeUri.getUriBroadcast(
-                    dataBasic.getScheme(),
-                    dataBasic.getApiRoot(),
-                    dataBasic.getEndpoint(),
-                    specificData.getChannelId(),
-                    specificData.getBeforeDate(),
-                    specificData.getAfterDate(),
-                    specificData.getTimeZone(),
-                    specificData.getLocale()));
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (callBackDownloadBroadCastInterface != null) {
-                callBackDownloadBroadCastInterface.callBackDownloadedBroadCastError(e.getMessage());
-            }
-            return;
-        }
-        if (dataBasic.getxTestIp() != null)
-            builder.addHeader(apiValues.getX_TEXT_IP_KEY(), dataBasic.getxTestIp());
-        if (dataBasic.isUseCache()) {
-            builder.cacheControl(new CacheControl.Builder().maxAge(tryGetMaxAge(), TimeUnit.SECONDS).build());
-        } else {
-            builder.cacheControl(new CacheControl.Builder().noCache().build());
-        }
-        Request request = builder.build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                if (callBackDownloadBroadCastInterface != null)
-                    callBackDownloadBroadCastInterface.callBackDownloadedBroadCastError(e.getMessage());
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    if (callBackDownloadBroadCastInterface != null)
-                        callBackDownloadBroadCastInterface.callBackDownloadedBroadCastError(("Unexpected code " + response));
-                    throw new IOException("Unexpected code " + response);
-                }
-
-                if (isResponseFromNetwork(response)) {
-                    int maxAge = LimeApiClient.getMaxCacheFromCacheControl(response);
-                    trySaveMaxAge(maxAge);
-                }
-
-                if (callBackDownloadBroadCastInterface != null)
-                    callBackDownloadBroadCastInterface.callBackDownloadedBroadCastSucces(response.body().string(), specificData.getChannelId());
-            }
-        });
-
-        if (callBackUrlCurlRequestInterface != null) {
-            callBackUrlCurlRequestInterface.callBackUrlRequest(
-                    LimeUri.getUriBroadcast(
-                            dataBasic.getScheme(),
-                            dataBasic.getApiRoot(),
-                            dataBasic.getEndpoint(),
-                            specificData.getChannelId(),
-                            specificData.getBeforeDate(),
-                            specificData.getAfterDate(),
-                            specificData.getTimeZone(),
-                            specificData.getLocale()));
-        }
+        super.sendRequest(dataForRequest);
     }
 
     public interface CallBackDownloadBroadCastInterface {
@@ -117,10 +75,6 @@ public class BroadcastDownloading extends DownloadingBase {
 
         void callBackDownloadedBroadCastError(String error_message);
     }
-
-    private CallBackDownloadBroadCastInterface callBackDownloadBroadCastInterface;
-
-    public void setCallBackDownloadBroadCastInterface(CallBackDownloadBroadCastInterface callBackDownloadBroadCastInterface) {
-        this.callBackDownloadBroadCastInterface = callBackDownloadBroadCastInterface;
-    }
 }
+
+
