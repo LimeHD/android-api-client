@@ -74,7 +74,7 @@ public abstract class DownloadingBase<TComponent extends Component> {
 
         if (dataBasic.getxTestIp() != null)
             builder.addHeader(apiValues.getX_TEXT_IP_KEY(), dataBasic.getxTestIp());
-        tryConnectCache(builder);
+        tryConnectCacheInRequestBuilder(builder);
         builder = connectFormBodyForPost(builder);
         Request request = builder.build();
 
@@ -153,7 +153,7 @@ public abstract class DownloadingBase<TComponent extends Component> {
     }
 
 
-    private void tryConnectCache(Request.Builder builder) {
+    private void tryConnectCacheInRequestBuilder(Request.Builder builder) {
         if (dataBasic.isUseCache()) {
             builder.cacheControl(new CacheControl.Builder().maxAge(tryGetMaxAge(), TimeUnit.SECONDS).build());
         } else {

@@ -32,7 +32,7 @@ public class BroadcastDownloading extends DownloadingBase<Component.DataBroadcas
 
     @Override
     protected String getUriFromLimeUri(Component.DataBasic dataBasic, Component dataSpecific) {
-        return LimeUri.getUriBroadcast(dataBasic, (Component.DataBroadcast) dataSpecific);
+        return LimeUri.getUriBroadcast(dataBasic, dataSpecific);
     }
 
     @Override

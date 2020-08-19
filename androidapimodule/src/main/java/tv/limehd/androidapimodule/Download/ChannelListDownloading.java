@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import java.io.File;
 
 import okhttp3.Request;
-import tv.limehd.androidapimodule.Download.Data.ComplexResponse;
 import tv.limehd.androidapimodule.Download.Data.Component;
 import tv.limehd.androidapimodule.Download.Data.DataForRequest;
 import tv.limehd.androidapimodule.LimeUri;
@@ -27,14 +26,8 @@ public class ChannelListDownloading extends DownloadingBase<Component.DataChanne
     }
 
     @Override
-    protected void sendCallBackSuccess(@NonNull String response) {
-        if (listenerRequest != null)
-            listenerRequest.onSuccess(new ComplexResponse(response));
-    }
-
-    @Override
     protected String getUriFromLimeUri(Component.DataBasic dataBasic, Component dataSpecific) {
-        return LimeUri.getUriChannelList(dataBasic, (Component.DataChannelList) dataSpecific);
+        return LimeUri.getUriChannelList(dataBasic, dataSpecific);
     }
 
     @Override
