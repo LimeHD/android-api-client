@@ -53,22 +53,22 @@ public class ClientDownloading {
         dataForRequestChannelList.addComponent(new Component.DataBasic(scheme, api_root, endpoint_channels, application_id, x_access_token, x_test_ip, use_cache));
         dataForRequestChannelList.addComponent(new Component.DataChannelList(time_zone, locale, channel_group_id));
 
-        channelListDownloading.loadingRequestChannelList(dataForRequestChannelList);
+        channelListDownloading.sendRequestChannelList(dataForRequestChannelList);
     }
 
     public void downloadBroadCast(Context context, String scheme, String api_root, String endpoint_broadcast
             , String channel_id, String before_date, String after_date, String time_zone
             , String application_id, String x_access_token, String locale, String x_test_ip, boolean use_cache) {
         BroadcastDownloading broadcastDownloading = new BroadcastDownloading(context);
-        broadcastDownloading.setCallBackDownloadBroadCastInterface(new BroadcastDownloading.CallBackDownloadBroadCastInterface() {
+        broadcastDownloading.setListenerRequestBroadcast(new BroadcastDownloading.ListenerRequestBroadcast() {
             @Override
-            public void callBackDownloadedBroadCastSucces(String response, String channel_id) {
+            public void onSuccess(String response, String channel_id) {
                 if (callBackDownloadInterfaceBroadcast != null)
                     callBackDownloadInterfaceBroadcast.callBackDownloadedSuccess(response, channel_id);
             }
 
             @Override
-            public void callBackDownloadedBroadCastError(String error_message) {
+            public void onError(String error_message) {
                 if (callBackDownloadInterfaceBroadcast != null)
                     callBackDownloadInterfaceBroadcast.callBackDownloadedError(error_message);
             }
@@ -90,7 +90,7 @@ public class ClientDownloading {
         dataForRequestBroadcast.addComponent(new Component.DataBasic(scheme, api_root, endpoint_broadcast, application_id, x_access_token, x_test_ip, use_cache));
         dataForRequestBroadcast.addComponent(new Component.DataBroadcast(time_zone, locale, channel_id, before_date, after_date));
 
-        broadcastDownloading.loadingRequestBroadCast(dataForRequestBroadcast);
+        broadcastDownloading.sendRequestBroadCast(dataForRequestBroadcast);
     }
 
 
@@ -125,7 +125,7 @@ public class ClientDownloading {
         DataForRequest dataForRequestPing = new DataForRequest();
         dataForRequestPing.addComponent(new Component.DataBasic(scheme, api_root, endpoint_ping, application_id, x_access_token, x_test_ip, use_cache));
         dataForRequestPing.addComponent(new Component.DataPing());
-        pingDownloading.pingDownloadRequest(dataForRequestPing);
+        pingDownloading.sendRequestPing(dataForRequestPing);
     }
 
     public void downloadSession(Context context, File cacheDir, String scheme, String api_root, String endpoint_session
@@ -160,7 +160,7 @@ public class ClientDownloading {
         DataForRequest dataForRequestSession = new DataForRequest();
         dataForRequestSession.addComponent(new Component.DataBasic(scheme, api_root, endpoint_session, application_id, x_access_token, x_test_ip, use_cache));
         dataForRequestSession.addComponent(new Component.DataSession());
-        sessionDownload.sessionDownloadRequest(dataForRequestSession);
+        sessionDownload.sendRequestSession(dataForRequestSession);
     }
 
     public void sendingDeepClicks(Context context, File cacheDir, String scheme, String api_root, String endpoint_deepclicks,
@@ -195,7 +195,7 @@ public class ClientDownloading {
         DataForRequest dataForRequestDeepClicks = new DataForRequest();
         dataForRequestDeepClicks.addComponent(new Component.DataBasic(scheme, api_root, endpoint_deepclicks, application_id, x_access_token, x_test_ip, use_cache));
         dataForRequestDeepClicks.addComponent(new Component.DataDeepClick(query, path, device_id));
-        deepClicksDownloading.deepClicksSendRequest(dataForRequestDeepClicks);
+        deepClicksDownloading.sendRequestDeepClicks(dataForRequestDeepClicks);
     }
 
     public interface CallBackDownloadInterfaceBroadcast{

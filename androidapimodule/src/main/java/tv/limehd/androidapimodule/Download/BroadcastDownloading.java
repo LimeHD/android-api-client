@@ -12,14 +12,22 @@ import tv.limehd.androidapimodule.LimeUri;
 public class BroadcastDownloading extends DownloadingBase {
 
     private Component.DataBroadcast dataSpecific;
-    private CallBackDownloadBroadCastInterface callBackDownloadBroadCastInterface;
-
-    public void setCallBackDownloadBroadCastInterface(CallBackDownloadBroadCastInterface callBackDownloadBroadCastInterface) {
-        this.callBackDownloadBroadCastInterface = callBackDownloadBroadCastInterface;
-    }
+    private ListenerRequestBroadcast listenerRequestBroadcast;
 
     public BroadcastDownloading() {
         super();
+    }
+
+    public BroadcastDownloading(@NonNull Context context) {
+        super(context, null);
+    }
+
+    public void sendRequestBroadCast(DataForRequest dataForRequest) {
+        super.sendRequest(dataForRequest);
+    }
+
+    public void setListenerRequestBroadcast(ListenerRequestBroadcast listenerRequestBroadcast) {
+        this.listenerRequestBroadcast = listenerRequestBroadcast;
     }
 
     @Override
@@ -29,15 +37,15 @@ public class BroadcastDownloading extends DownloadingBase {
 
     @Override
     protected void sendCallBackError(String error) {
-        if (callBackDownloadBroadCastInterface != null) {
-            callBackDownloadBroadCastInterface.callBackDownloadedBroadCastError(error);
+        if (listenerRequestBroadcast != null) {
+            listenerRequestBroadcast.onError(error);
         }
     }
 
     @Override
     protected void sendCallBackSuccess(@NonNull String response) {
-        if (callBackDownloadBroadCastInterface != null && dataSpecific != null)
-            callBackDownloadBroadCastInterface.callBackDownloadedBroadCastSucces(response, dataSpecific.getChannelId());
+        if (listenerRequestBroadcast != null && dataSpecific != null)
+            listenerRequestBroadcast.onSuccess(response, dataSpecific.getChannelId());
     }
 
     @Override
@@ -58,22 +66,10 @@ public class BroadcastDownloading extends DownloadingBase {
         return builder;
     }
 
-    private <T> T castObject(Class<T> clazz, Object object) {
-        return (T) object;
-    }
+    public interface ListenerRequestBroadcast {
+        void onSuccess(String response, String channel_id);
 
-    public BroadcastDownloading(@NonNull Context context) {
-        super(context, null);
-    }
-
-    public void loadingRequestBroadCast(DataForRequest dataForRequest) {
-        super.sendRequest(dataForRequest);
-    }
-
-    public interface CallBackDownloadBroadCastInterface {
-        void callBackDownloadedBroadCastSucces(String response, String channel_id);
-
-        void callBackDownloadedBroadCastError(String error_message);
+        void onError(String error_message);
     }
 }
 

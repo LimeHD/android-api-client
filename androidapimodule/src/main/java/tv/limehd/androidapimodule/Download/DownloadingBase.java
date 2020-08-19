@@ -33,82 +33,18 @@ public abstract class DownloadingBase {
     protected CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface;
     protected Component.DataBasic dataBasic;
 
+    protected DownloadingBase() {
+        initialization();
+    }
+
     protected DownloadingBase(@NonNull Context context, File cacheDir) {
         this.context = context;
         this.cacheDir = cacheDir;
         initialization();
     }
 
-    protected DownloadingBase() {
-        initialization();
-    }
-
     public void setCallBackUrlCurlRequestInterface(CallBackUrlCurlRequestInterface callBackRequestBroadCastInterface) {
         this.callBackUrlCurlRequestInterface = callBackRequestBroadCastInterface;
-    }
-
-    private void initialization() {
-        apiValues = new ApiValues();
-    }
-
-    protected boolean isResponseFromNetwork(Response response) {
-        return response.networkResponse() != null;
-    }
-
-    protected int tryGetMaxAge() {
-        if (context != null) {
-            return LimeCacheSettings.getMaxAge(context, this.getClass());
-        } else {
-            return 0;
-        }
-    }
-
-    protected boolean trySaveMaxAge(int maxAge) {
-        if (context != null) {
-            LimeCacheSettings.setMaxAge(context, this.getClass(), maxAge);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    protected LimeCurlBuilder.Builder createLimeCurlBuilder() {
-        return new LimeCurlBuilder().setLogCurlInterface(new LimeCurlBuilder.LogCurlInterface() {
-            @Override
-            public void logCurl(String message) {
-                if (callBackUrlCurlRequestInterface != null)
-                    callBackUrlCurlRequestInterface.callBackCurlRequest(message);
-            }
-        });
-    }
-
-    protected Request.Builder createRequestBuilder(final String x_access_token) {
-        return new Request.Builder()
-                .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE())
-                .addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token);
-    }
-
-    protected <T extends OkHttpClient.Builder> OkHttpClient createOkHttpClient(@NonNull T builder) {
-        return new OkHttpClient(builder);
-    }
-
-    protected void tryConnectCacheInOkHttpClient(@NonNull OkHttpClient.Builder okHttpClientBuilder) {
-        if (cacheDir != null) {
-            Cache cache = new Cache(cacheDir, convertMegaByteToByte(2));
-            okHttpClientBuilder.cache(cache);
-        }
-    }
-
-    protected abstract void sendCallBackError(@NonNull String error);
-
-    protected abstract void sendCallBackSuccess(@NonNull String response);
-
-    protected abstract String getUriFromLimeUri();
-
-    protected abstract void initDataSpecific(DataForRequest dataForRequest);
-
-    protected void initDataBasic(DataForRequest dataForRequest) {
-        dataBasic = dataForRequest.getComponent(Component.DataBasic.class);
     }
 
     protected void sendRequest(DataForRequest dataForRequest) {
@@ -145,7 +81,6 @@ public abstract class DownloadingBase {
                     sendCallBackError(("Unexpected code " + response));
                     throw new IOException("Unexpected code " + response);
                 }
-
                 if (isResponseFromNetwork(response)) {
                     int maxAge = LimeApiClient.getMaxCacheFromCacheControl(response);
                     trySaveMaxAge(maxAge);
@@ -153,20 +88,63 @@ public abstract class DownloadingBase {
                 sendCallBackSuccess(response.body().string());
             }
         });
-
         sendCallBackUrlRequest(getUriFromLimeUri());
     }
 
-    protected void sendCallBackUrlRequest(String request) {
-        if (callBackUrlCurlRequestInterface != null) {
-            callBackUrlCurlRequestInterface.callBackUrlRequest(request);
+    private void initialization() {
+        apiValues = new ApiValues();
+    }
+
+    private boolean isResponseFromNetwork(Response response) {
+        return response.networkResponse() != null;
+    }
+
+    private int tryGetMaxAge() {
+        if (context != null) {
+            return LimeCacheSettings.getMaxAge(context, this.getClass());
+        } else {
+            return 0;
         }
     }
 
-    protected void sendCallBackCurlRequest(String request) {
-        if (callBackUrlCurlRequestInterface != null) {
-            callBackUrlCurlRequestInterface.callBackCurlRequest(request);
+    private boolean trySaveMaxAge(int maxAge) {
+        if (context != null) {
+            LimeCacheSettings.setMaxAge(context, this.getClass(), maxAge);
+            return true;
+        } else {
+            return false;
         }
+    }
+
+    private LimeCurlBuilder.Builder createLimeCurlBuilder() {
+        return new LimeCurlBuilder().setLogCurlInterface(new LimeCurlBuilder.LogCurlInterface() {
+            @Override
+            public void logCurl(String message) {
+                if (callBackUrlCurlRequestInterface != null)
+                    callBackUrlCurlRequestInterface.callBackCurlRequest(message);
+            }
+        });
+    }
+
+    private Request.Builder createRequestBuilder(final String x_access_token) {
+        return new Request.Builder()
+                .addHeader(apiValues.getACCEPT_KEY(), apiValues.getACCEPT_VALUE())
+                .addHeader(apiValues.getX_ACCESS_TOKEN_KEY(), x_access_token);
+    }
+
+    private <T extends OkHttpClient.Builder> OkHttpClient createOkHttpClient(@NonNull T builder) {
+        return new OkHttpClient(builder);
+    }
+
+    private void tryConnectCacheInOkHttpClient(@NonNull OkHttpClient.Builder okHttpClientBuilder) {
+        if (cacheDir != null) {
+            Cache cache = new Cache(cacheDir, convertMegaByteToByte(2));
+            okHttpClientBuilder.cache(cache);
+        }
+    }
+
+    private void initDataBasic(DataForRequest dataForRequest) {
+        dataBasic = dataForRequest.getComponent(Component.DataBasic.class);
     }
 
     private void tryConnectCache(Request.Builder builder) {
@@ -177,5 +155,27 @@ public abstract class DownloadingBase {
         }
     }
 
+    private void sendCallBackUrlRequest(String request) {
+        if (callBackUrlCurlRequestInterface != null) {
+            callBackUrlCurlRequestInterface.callBackUrlRequest(request);
+        }
+    }
+
+    private void sendCallBackCurlRequest(String request) {
+        if (callBackUrlCurlRequestInterface != null) {
+            callBackUrlCurlRequestInterface.callBackCurlRequest(request);
+        }
+    }
+
+    protected abstract void initDataSpecific(DataForRequest dataForRequest);
+
+    protected abstract String getUriFromLimeUri();
+
     protected abstract Request.Builder connectFormBodyForPost(Request.Builder builder);
+
+    protected abstract void sendCallBackError(@NonNull String error);
+
+    protected abstract void sendCallBackSuccess(@NonNull String response);
+
+
 }

@@ -18,24 +18,16 @@ public class DeepClicksDownloading extends DownloadingBase {
     private Component.DataDeepClick dataSpecific;
     private ListenerRequest listenerRequest;
 
-    public void setListenerRequest(ListenerRequest listenerRequest) {
-        this.listenerRequest = listenerRequest;
-    }
-
     public DeepClicksDownloading(@NonNull Context context, @NonNull File cacheDir) {
         super(context, cacheDir);
     }
 
-    @Override
-    protected void sendCallBackError(@NonNull String error) {
-        if (listenerRequest != null)
-            listenerRequest.onError(error);
+    public void sendRequestDeepClicks(DataForRequest dataForRequest) {
+        super.sendRequest(dataForRequest);
     }
 
-    @Override
-    protected void sendCallBackSuccess(@NonNull String response) {
-        if (listenerRequest != null)
-            listenerRequest.onSuccess(response);
+    public void setListenerRequest(ListenerRequest listenerRequest) {
+        this.listenerRequest = listenerRequest;
     }
 
     @Override
@@ -52,6 +44,18 @@ public class DeepClicksDownloading extends DownloadingBase {
     }
 
     @Override
+    protected void sendCallBackError(@NonNull String error) {
+        if (listenerRequest != null)
+            listenerRequest.onError(error);
+    }
+
+    @Override
+    protected void sendCallBackSuccess(@NonNull String response) {
+        if (listenerRequest != null)
+            listenerRequest.onSuccess(response);
+    }
+
+    @Override
     protected Request.Builder connectFormBodyForPost(Request.Builder builder) {
         FormBody.Builder formBodyBuilder = new FormBody.Builder();
         formBodyBuilder.add(apiValues.getAPP_ID_KEY(), dataBasic.getApplicationId());
@@ -61,10 +65,4 @@ public class DeepClicksDownloading extends DownloadingBase {
         FormBody formBody = formBodyBuilder.build();
         return builder.post(formBody);
     }
-
-    public void deepClicksSendRequest(DataForRequest dataForRequest) {
-        super.sendRequest(dataForRequest);
-    }
-
-
 }

@@ -17,24 +17,20 @@ public class PingDownloading extends DownloadingBase {
     private Component.DataPing dataSpecific;
     private ListenerRequest listenerRequest;
 
-    public void setListenerRequest(ListenerRequest listenerRequest) {
-        this.listenerRequest = listenerRequest;
-    }
-
     public PingDownloading() {
         super();
     }
 
-    @Override
-    protected void sendCallBackError(@NonNull String error) {
-        if (listenerRequest != null) {
-            listenerRequest.onError(error);
-        }
+    public PingDownloading(@NonNull Context context, @NonNull File cacheDir) {
+        super(context, cacheDir);
     }
 
-    @Override
-    protected void sendCallBackSuccess(@NonNull String response) {
+    public void sendRequestPing(DataForRequest dataForRequest) {
+        super.sendRequest(dataForRequest);
+    }
 
+    public void setListenerRequest(ListenerRequest listenerRequest) {
+        this.listenerRequest = listenerRequest;
     }
 
     @Override
@@ -51,15 +47,21 @@ public class PingDownloading extends DownloadingBase {
     }
 
     @Override
+    protected void sendCallBackError(@NonNull String error) {
+        if (listenerRequest != null) {
+            listenerRequest.onError(error);
+        }
+    }
+
+    @Override
+    protected void sendCallBackSuccess(@NonNull String response) {
+        if (listenerRequest != null) {
+            listenerRequest.onSuccess(response);
+        }
+    }
+
+    @Override
     protected Request.Builder connectFormBodyForPost(Request.Builder builder) {
         return builder;
-    }
-
-    public PingDownloading(@NonNull Context context, @NonNull File cacheDir) {
-        super(context, cacheDir);
-    }
-
-    public void pingDownloadRequest(DataForRequest dataForRequest) {
-        super.sendRequest(dataForRequest);
     }
 }

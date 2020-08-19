@@ -18,24 +18,20 @@ public class SessionDownload extends DownloadingBase {
     private Component.DataSession dataSpecific;
     private ListenerRequest listenerRequest;
 
-    public void setListenerRequest(ListenerRequest listenerRequest) {
-        this.listenerRequest = listenerRequest;
-    }
-
     public SessionDownload() {
         super();
     }
 
-    @Override
-    protected void sendCallBackError(@NonNull String error) {
-        if (listenerRequest != null)
-            listenerRequest.onError(error);
+    public SessionDownload(@NonNull Context context, @NonNull File cacheDir) {
+        super(context, cacheDir);
     }
 
-    @Override
-    protected void sendCallBackSuccess(@NonNull String response) {
-        if (listenerRequest != null)
-            listenerRequest.onSuccess(response);
+    public void sendRequestSession(DataForRequest dataForRequest) {
+        super.sendRequest(dataForRequest);
+    }
+
+    public void setListenerRequest(ListenerRequest listenerRequest) {
+        this.listenerRequest = listenerRequest;
     }
 
     @Override
@@ -52,19 +48,23 @@ public class SessionDownload extends DownloadingBase {
     }
 
     @Override
+    protected void sendCallBackError(@NonNull String error) {
+        if (listenerRequest != null)
+            listenerRequest.onError(error);
+    }
+
+    @Override
+    protected void sendCallBackSuccess(@NonNull String response) {
+        if (listenerRequest != null)
+            listenerRequest.onSuccess(response);
+    }
+
+    @Override
     protected Request.Builder connectFormBodyForPost(Request.Builder builder) {
         FormBody.Builder formBodyBuilder = new FormBody.Builder();
         formBodyBuilder.add(apiValues.getAPP_ID_KEY(), dataBasic.getApplicationId());
         FormBody formBody = formBodyBuilder.build();
         builder.post(formBody);
         return builder;
-    }
-
-    public SessionDownload(@NonNull Context context, @NonNull File cacheDir) {
-        super(context, cacheDir);
-    }
-
-    public void sessionDownloadRequest(DataForRequest dataForRequest) {
-        super.sendRequest(dataForRequest);
     }
 }

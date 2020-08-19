@@ -17,12 +17,25 @@ public class ChannelListDownloading extends DownloadingBase {
     private Component.DataChannelList dataSpecific;
     private ListenerRequest listenerRequest;
 
+    public ChannelListDownloading() {
+        super();
+    }
+
+    public ChannelListDownloading(@NonNull Context context, @NonNull File cacheDir) {
+        super(context, cacheDir);
+    }
+
+    public void sendRequestChannelList(DataForRequest dataForRequest) {
+        super.sendRequest(dataForRequest);
+    }
+
     public void setListenerRequest(ListenerRequest listenerRequest) {
         this.listenerRequest = listenerRequest;
     }
 
-    public ChannelListDownloading() {
-        super();
+    @Override
+    protected void initDataSpecific(DataForRequest dataForRequest) {
+        dataSpecific = dataForRequest.getComponent(Component.DataChannelList.class);
     }
 
     @Override
@@ -49,20 +62,7 @@ public class ChannelListDownloading extends DownloadingBase {
     }
 
     @Override
-    protected void initDataSpecific(DataForRequest dataForRequest) {
-        dataSpecific = dataForRequest.getComponent(Component.DataChannelList.class);
-    }
-
-    @Override
     protected Request.Builder connectFormBodyForPost(Request.Builder builder) {
         return builder;
-    }
-
-    public ChannelListDownloading(@NonNull Context context, @NonNull File cacheDir) {
-        super(context, cacheDir);
-    }
-
-    public void loadingRequestChannelList(DataForRequest dataForRequest) {
-        super.sendRequest(dataForRequest);
     }
 }
