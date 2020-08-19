@@ -6,6 +6,7 @@ import java.io.File;
 
 import tv.limehd.androidapimodule.Download.BroadcastDownloading;
 import tv.limehd.androidapimodule.Download.ChannelListDownloading;
+import tv.limehd.androidapimodule.Download.Data.ComplexResponse;
 import tv.limehd.androidapimodule.Download.Data.Component;
 import tv.limehd.androidapimodule.Download.Data.DataForRequest;
 import tv.limehd.androidapimodule.Download.DeepClicksDownloading;
@@ -24,9 +25,9 @@ public class ClientDownloading {
         ChannelListDownloading channelListDownloading = new ChannelListDownloading(context, cacheDir);
         channelListDownloading.setListenerRequest(new ListenerRequest() {
             @Override
-            public void onSuccess(String response) {
+            public void onSuccess(ComplexResponse response) {
                 if (callBackDownloadInterface != null)
-                    callBackDownloadInterface.callBackDownloadedSuccess(response);
+                    callBackDownloadInterface.callBackDownloadedSuccess(response.getTextBodyResponse());
             }
 
             @Override
@@ -60,11 +61,11 @@ public class ClientDownloading {
             , String channel_id, String before_date, String after_date, String time_zone
             , String application_id, String x_access_token, String locale, String x_test_ip, boolean use_cache) {
         BroadcastDownloading broadcastDownloading = new BroadcastDownloading(context);
-        broadcastDownloading.setListenerRequestBroadcast(new BroadcastDownloading.ListenerRequestBroadcast() {
+        broadcastDownloading.setListenerRequest(new ListenerRequest() {
             @Override
-            public void onSuccess(String response, String channel_id) {
+            public void onSuccess(ComplexResponse response) {
                 if (callBackDownloadInterfaceBroadcast != null)
-                    callBackDownloadInterfaceBroadcast.callBackDownloadedSuccess(response, channel_id);
+                    callBackDownloadInterfaceBroadcast.callBackDownloadedSuccess(response.getTextBodyResponse(), response.getChannelId());
             }
 
             @Override
@@ -98,9 +99,9 @@ public class ClientDownloading {
         PingDownloading pingDownloading = new PingDownloading(context, cacheDir);
         pingDownloading.setListenerRequest(new ListenerRequest() {
             @Override
-            public void onSuccess(String response) {
+            public void onSuccess(ComplexResponse response) {
                 if (callBackDownloadInterface != null)
-                    callBackDownloadInterface.callBackDownloadedSuccess(response);
+                    callBackDownloadInterface.callBackDownloadedSuccess(response.getTextBodyResponse());
             }
 
             @Override
@@ -133,9 +134,9 @@ public class ClientDownloading {
         SessionDownload sessionDownload = new SessionDownload(context, cacheDir);
         sessionDownload.setListenerRequest(new ListenerRequest() {
             @Override
-            public void onSuccess(String response) {
+            public void onSuccess(ComplexResponse response) {
                 if (callBackDownloadInterface != null)
-                    callBackDownloadInterface.callBackDownloadedSuccess(response);
+                    callBackDownloadInterface.callBackDownloadedSuccess(response.getTextBodyResponse());
             }
 
             @Override
@@ -168,9 +169,9 @@ public class ClientDownloading {
         DeepClicksDownloading deepClicksDownloading = new DeepClicksDownloading(context, cacheDir);
         deepClicksDownloading.setListenerRequest(new ListenerRequest() {
             @Override
-            public void onSuccess(String response) {
+            public void onSuccess(ComplexResponse response) {
                 if (callBackDownloadInterface != null)
-                    callBackDownloadInterface.callBackDownloadedSuccess(response);
+                    callBackDownloadInterface.callBackDownloadedSuccess(response.getTextBodyResponse());
             }
 
             @Override

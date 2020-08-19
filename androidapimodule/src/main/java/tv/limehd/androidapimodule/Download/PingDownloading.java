@@ -7,15 +7,14 @@ import androidx.annotation.NonNull;
 import java.io.File;
 
 import okhttp3.Request;
+import tv.limehd.androidapimodule.Download.Data.ComplexResponse;
 import tv.limehd.androidapimodule.Download.Data.Component;
 import tv.limehd.androidapimodule.Download.Data.DataForRequest;
-import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 import tv.limehd.androidapimodule.LimeUri;
 
 public class PingDownloading extends DownloadingBase {
 
     private Component.DataPing dataSpecific;
-    private ListenerRequest listenerRequest;
 
     public PingDownloading() {
         super();
@@ -27,10 +26,6 @@ public class PingDownloading extends DownloadingBase {
 
     public void sendRequestPing(DataForRequest dataForRequest) {
         super.sendRequest(dataForRequest);
-    }
-
-    public void setListenerRequest(ListenerRequest listenerRequest) {
-        this.listenerRequest = listenerRequest;
     }
 
     @Override
@@ -54,7 +49,7 @@ public class PingDownloading extends DownloadingBase {
     @Override
     protected void sendCallBackSuccess(@NonNull String response) {
         if (listenerRequest != null) {
-            listenerRequest.onSuccess(response);
+            listenerRequest.onSuccess(new ComplexResponse(response));
         }
     }
 

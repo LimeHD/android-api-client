@@ -18,6 +18,7 @@ import okhttp3.Response;
 import tv.limehd.androidapimodule.Download.Data.Component;
 import tv.limehd.androidapimodule.Download.Data.DataForRequest;
 import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
+import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 import tv.limehd.androidapimodule.LimeApiClient;
 import tv.limehd.androidapimodule.LimeCacheSettings;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
@@ -32,7 +33,9 @@ public abstract class DownloadingBase {
     protected File cacheDir;
     protected CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface;
     protected Component.DataBasic dataBasic;
+    protected ListenerRequest listenerRequest;
     private Component dataSpecific;
+
 
     protected DownloadingBase() {
         initialization();
@@ -46,6 +49,10 @@ public abstract class DownloadingBase {
 
     public void setCallBackUrlCurlRequestInterface(CallBackUrlCurlRequestInterface callBackRequestBroadCastInterface) {
         this.callBackUrlCurlRequestInterface = callBackRequestBroadCastInterface;
+    }
+
+    public void setListenerRequest(ListenerRequest listenerRequest) {
+        this.listenerRequest = listenerRequest;
     }
 
     protected void sendRequest(DataForRequest dataForRequest) {

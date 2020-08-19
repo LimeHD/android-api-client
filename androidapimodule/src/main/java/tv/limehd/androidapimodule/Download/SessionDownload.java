@@ -8,15 +8,14 @@ import java.io.File;
 
 import okhttp3.FormBody;
 import okhttp3.Request;
+import tv.limehd.androidapimodule.Download.Data.ComplexResponse;
 import tv.limehd.androidapimodule.Download.Data.Component;
 import tv.limehd.androidapimodule.Download.Data.DataForRequest;
-import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 import tv.limehd.androidapimodule.LimeUri;
 
 public class SessionDownload extends DownloadingBase {
 
     private Component.DataSession dataSpecific;
-    private ListenerRequest listenerRequest;
 
     public SessionDownload() {
         super();
@@ -28,10 +27,6 @@ public class SessionDownload extends DownloadingBase {
 
     public void sendRequestSession(DataForRequest dataForRequest) {
         super.sendRequest(dataForRequest);
-    }
-
-    public void setListenerRequest(ListenerRequest listenerRequest) {
-        this.listenerRequest = listenerRequest;
     }
 
     @Override
@@ -54,7 +49,7 @@ public class SessionDownload extends DownloadingBase {
     @Override
     protected void sendCallBackSuccess(@NonNull String response) {
         if (listenerRequest != null)
-            listenerRequest.onSuccess(response);
+            listenerRequest.onSuccess(new ComplexResponse(response));
     }
 
     @Override

@@ -8,15 +8,14 @@ import java.io.File;
 
 import okhttp3.FormBody;
 import okhttp3.Request;
+import tv.limehd.androidapimodule.Download.Data.ComplexResponse;
 import tv.limehd.androidapimodule.Download.Data.Component;
 import tv.limehd.androidapimodule.Download.Data.DataForRequest;
-import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 import tv.limehd.androidapimodule.LimeUri;
 
 public class DeepClicksDownloading extends DownloadingBase {
 
     private Component.DataDeepClick dataSpecific;
-    private ListenerRequest listenerRequest;
 
     public DeepClicksDownloading(@NonNull Context context, @NonNull File cacheDir) {
         super(context, cacheDir);
@@ -24,10 +23,6 @@ public class DeepClicksDownloading extends DownloadingBase {
 
     public void sendRequestDeepClicks(DataForRequest dataForRequest) {
         super.sendRequest(dataForRequest);
-    }
-
-    public void setListenerRequest(ListenerRequest listenerRequest) {
-        this.listenerRequest = listenerRequest;
     }
 
     @Override
@@ -50,7 +45,7 @@ public class DeepClicksDownloading extends DownloadingBase {
     @Override
     protected void sendCallBackSuccess(@NonNull String response) {
         if (listenerRequest != null)
-            listenerRequest.onSuccess(response);
+            listenerRequest.onSuccess(new ComplexResponse(response));
     }
 
     @Override

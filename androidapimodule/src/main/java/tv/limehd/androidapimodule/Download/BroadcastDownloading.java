@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import okhttp3.Request;
+import tv.limehd.androidapimodule.Download.Data.ComplexResponse;
 import tv.limehd.androidapimodule.Download.Data.Component;
 import tv.limehd.androidapimodule.Download.Data.DataForRequest;
 import tv.limehd.androidapimodule.LimeUri;
@@ -12,7 +13,6 @@ import tv.limehd.androidapimodule.LimeUri;
 public class BroadcastDownloading extends DownloadingBase {
 
     private Component.DataBroadcast dataSpecific;
-    private ListenerRequestBroadcast listenerRequestBroadcast;
 
     public BroadcastDownloading() {
         super();
@@ -26,10 +26,6 @@ public class BroadcastDownloading extends DownloadingBase {
         super.sendRequest(dataForRequest);
     }
 
-    public void setListenerRequestBroadcast(ListenerRequestBroadcast listenerRequestBroadcast) {
-        this.listenerRequestBroadcast = listenerRequestBroadcast;
-    }
-
     @Override
     protected Component initDataSpecific(DataForRequest dataForRequest) {
         dataSpecific = dataForRequest.getComponent(Component.DataBroadcast.class);
@@ -38,15 +34,15 @@ public class BroadcastDownloading extends DownloadingBase {
 
     @Override
     protected void sendCallBackError(String error) {
-        if (listenerRequestBroadcast != null) {
-            listenerRequestBroadcast.onError(error);
+        if (listenerRequest != null) {
+            listenerRequest.onError(error);
         }
     }
 
     @Override
     protected void sendCallBackSuccess(@NonNull String response) {
-        if (listenerRequestBroadcast != null && dataSpecific != null)
-            listenerRequestBroadcast.onSuccess(response, dataSpecific.getChannelId());
+        if (listenerRequest != null && dataSpecific != null)
+            listenerRequest.onSuccess(new ComplexResponse(response).setChannelId(dataSpecific.getChannelId()));
     }
 
     @Override
@@ -57,12 +53,6 @@ public class BroadcastDownloading extends DownloadingBase {
     @Override
     protected Request.Builder connectFormBodyForPost(Request.Builder builder) {
         return builder;
-    }
-
-    public interface ListenerRequestBroadcast {
-        void onSuccess(String response, String channel_id);
-
-        void onError(String error_message);
     }
 }
 

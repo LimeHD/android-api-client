@@ -20,10 +20,4 @@ public class DataForRequest {
             components.put(component.getClass(), component);
         }
     }
-
 }
-
-
-
-
-
