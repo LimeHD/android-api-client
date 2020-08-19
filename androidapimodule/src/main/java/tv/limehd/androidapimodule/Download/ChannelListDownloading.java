@@ -12,9 +12,7 @@ import tv.limehd.androidapimodule.Download.Data.Component;
 import tv.limehd.androidapimodule.Download.Data.DataForRequest;
 import tv.limehd.androidapimodule.LimeUri;
 
-public class ChannelListDownloading extends DownloadingBase {
-
-    private Component.DataChannelList dataSpecific;
+public class ChannelListDownloading extends DownloadingBase<Component.DataChannelList> {
 
     public ChannelListDownloading() {
         super();
@@ -25,13 +23,7 @@ public class ChannelListDownloading extends DownloadingBase {
     }
 
     public void sendRequestChannelList(DataForRequest dataForRequest) {
-        super.sendRequest(dataForRequest);
-    }
-
-    @Override
-    protected Component initDataSpecific(DataForRequest dataForRequest) {
-        dataSpecific = dataForRequest.getComponent(Component.DataChannelList.class);
-        return dataSpecific;
+        super.sendRequest(dataForRequest, Component.DataChannelList.class);
     }
 
     @Override

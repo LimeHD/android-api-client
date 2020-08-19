@@ -8,14 +8,11 @@ import java.io.File;
 
 import okhttp3.FormBody;
 import okhttp3.Request;
-import tv.limehd.androidapimodule.Download.Data.ComplexResponse;
 import tv.limehd.androidapimodule.Download.Data.Component;
 import tv.limehd.androidapimodule.Download.Data.DataForRequest;
 import tv.limehd.androidapimodule.LimeUri;
 
-public class SessionDownload extends DownloadingBase {
-
-    private Component.DataSession dataSpecific;
+public class SessionDownload extends DownloadingBase<Component.DataSession> {
 
     public SessionDownload() {
         super();
@@ -26,7 +23,7 @@ public class SessionDownload extends DownloadingBase {
     }
 
     public void sendRequestSession(DataForRequest dataForRequest) {
-        super.sendRequest(dataForRequest);
+        super.sendRequest(dataForRequest, Component.DataSession.class);
     }
 
     @Override
@@ -35,21 +32,9 @@ public class SessionDownload extends DownloadingBase {
     }
 
     @Override
-    protected Component initDataSpecific(DataForRequest dataForRequest) {
-        dataSpecific = dataForRequest.getComponent(Component.DataSession.class);
-        return dataSpecific;
-    }
-
-    @Override
-    protected void sendCallBackSuccess(@NonNull String response) {
-        if (listenerRequest != null)
-            listenerRequest.onSuccess(new ComplexResponse(response));
-    }
-
-    @Override
     protected Request.Builder connectFormBodyForPost(Request.Builder builder) {
         FormBody.Builder formBodyBuilder = new FormBody.Builder();
-        formBodyBuilder.add(apiValues.getAPP_ID_KEY(), dataBasic.getApplicationId());
+        formBodyBuilder.add(apiValues.getAPP_ID_KEY(), getDataBasic().getApplicationId());
         FormBody formBody = formBodyBuilder.build();
         builder.post(formBody);
         return builder;

@@ -15,6 +15,7 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import tv.limehd.androidapimodule.Download.Data.ComplexResponse;
 import tv.limehd.androidapimodule.Download.Data.Component;
 import tv.limehd.androidapimodule.Download.Data.DataForRequest;
 import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
@@ -26,7 +27,7 @@ import tv.limehd.androidapimodule.Values.ApiValues;
 
 import static tv.limehd.androidapimodule.LimeApiClient.convertMegaByteToByte;
 
-public abstract class DownloadingBase {
+public abstract class DownloadingBase<TComponent extends Component> {
 
     protected ApiValues apiValues;
     protected Context context;
@@ -34,8 +35,8 @@ public abstract class DownloadingBase {
     protected CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface;
     protected Component.DataBasic dataBasic;
     protected ListenerRequest listenerRequest;
-    private Component dataSpecific;
-
+    private TComponent dataSpecific;
+    private Class<? extends Component> typeDataSpecific;
 
     protected DownloadingBase() {
         initialization();
@@ -55,10 +56,10 @@ public abstract class DownloadingBase {
         this.listenerRequest = listenerRequest;
     }
 
-    protected void sendRequest(DataForRequest dataForRequest) {
-        initDataBasic(dataForRequest);
+    protected void sendRequest(DataForRequest dataForRequest, Class<? extends Component> typeDataSpecific) {
+        this.typeDataSpecific = typeDataSpecific;
+        dataBasic = initDataBasic(dataForRequest);
         dataSpecific = initDataSpecific(dataForRequest);
-
         LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
         tryConnectCacheInOkHttpClient(limeCurlBuilder);
         OkHttpClient client = createOkHttpClient(limeCurlBuilder);
@@ -151,9 +152,6 @@ public abstract class DownloadingBase {
         }
     }
 
-    private void initDataBasic(DataForRequest dataForRequest) {
-        dataBasic = dataForRequest.getComponent(Component.DataBasic.class);
-    }
 
     private void tryConnectCache(Request.Builder builder) {
         if (dataBasic.isUseCache()) {
@@ -175,19 +173,36 @@ public abstract class DownloadingBase {
         }
     }
 
+    private Component.DataBasic initDataBasic(DataForRequest dataForRequest) {
+        return dataForRequest.getComponent(Component.DataBasic.class);
+    }
+
     protected void sendCallBackError(@NonNull String error) {
         if (listenerRequest != null) {
             listenerRequest.onError(error);
         }
     }
 
-    protected abstract Component initDataSpecific(DataForRequest dataForRequest);
+    protected void sendCallBackSuccess(@NonNull String response) {
+        if (listenerRequest != null)
+            listenerRequest.onSuccess(new ComplexResponse(response));
+    }
+
+    protected TComponent getDataSpecific() {
+        return dataSpecific;
+    }
+
+    protected Component.DataBasic getDataBasic() {
+        return dataBasic;
+    }
+
+    protected TComponent initDataSpecific(DataForRequest dataForRequest) {
+        return dataForRequest.getComponent(typeDataSpecific);
+    }
 
     protected abstract String getUriFromLimeUri(Component.DataBasic dataBasic, Component dataSpecific);
 
     protected abstract Request.Builder connectFormBodyForPost(Request.Builder builder);
-
-    protected abstract void sendCallBackSuccess(@NonNull String response);
 
 
 }
