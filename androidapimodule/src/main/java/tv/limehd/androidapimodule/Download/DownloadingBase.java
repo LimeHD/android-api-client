@@ -32,6 +32,7 @@ public abstract class DownloadingBase {
     protected File cacheDir;
     protected CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface;
     protected Component.DataBasic dataBasic;
+    private Component dataSpecific;
 
     protected DownloadingBase() {
         initialization();
@@ -49,14 +50,14 @@ public abstract class DownloadingBase {
 
     protected void sendRequest(DataForRequest dataForRequest) {
         initDataBasic(dataForRequest);
-        initDataSpecific(dataForRequest);
+        dataSpecific = initDataSpecific(dataForRequest);
 
         LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
         tryConnectCacheInOkHttpClient(limeCurlBuilder);
         OkHttpClient client = createOkHttpClient(limeCurlBuilder);
         Request.Builder builder = createRequestBuilder(dataBasic.getxAccessToken());
         try {
-            builder.url(getUriFromLimeUri());
+            builder.url(getUriFromLimeUri(dataBasic, dataSpecific));
         } catch (Exception e) {
             e.printStackTrace();
             sendCallBackError(e.getMessage());
@@ -88,7 +89,7 @@ public abstract class DownloadingBase {
                 sendCallBackSuccess(response.body().string());
             }
         });
-        sendCallBackUrlRequest(getUriFromLimeUri());
+        sendCallBackUrlRequest(getUriFromLimeUri(dataBasic, dataSpecific));
     }
 
     private void initialization() {
@@ -167,9 +168,9 @@ public abstract class DownloadingBase {
         }
     }
 
-    protected abstract void initDataSpecific(DataForRequest dataForRequest);
+    protected abstract Component initDataSpecific(DataForRequest dataForRequest);
 
-    protected abstract String getUriFromLimeUri();
+    protected abstract String getUriFromLimeUri(Component.DataBasic dataBasic, Component dataSpecific);
 
     protected abstract Request.Builder connectFormBodyForPost(Request.Builder builder);
 

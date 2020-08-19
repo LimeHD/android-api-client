@@ -31,16 +31,14 @@ public class DeepClicksDownloading extends DownloadingBase {
     }
 
     @Override
-    protected String getUriFromLimeUri() {
-        return LimeUri.getUriDeepClicks(
-                dataBasic.getScheme(),
-                dataBasic.getApiRoot(),
-                dataBasic.getEndpoint());
+    protected String getUriFromLimeUri(Component.DataBasic dataBasic, Component dataSpecific) {
+        return LimeUri.getUriDeepClicks(dataBasic, dataSpecific);
     }
 
     @Override
-    protected void initDataSpecific(DataForRequest dataForRequest) {
+    protected Component initDataSpecific(DataForRequest dataForRequest) {
         dataSpecific = dataForRequest.getComponent(Component.DataDeepClick.class);
+        return dataSpecific;
     }
 
     @Override

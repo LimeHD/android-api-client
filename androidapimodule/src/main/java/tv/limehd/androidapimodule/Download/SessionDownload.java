@@ -35,16 +35,14 @@ public class SessionDownload extends DownloadingBase {
     }
 
     @Override
-    protected String getUriFromLimeUri() {
-        return LimeUri.getUriSession(
-                dataBasic.getScheme(),
-                dataBasic.getApiRoot(),
-                dataBasic.getEndpoint());
+    protected String getUriFromLimeUri(Component.DataBasic dataBasic, Component dataSpecific) {
+        return LimeUri.getUriSession(dataBasic, dataSpecific);
     }
 
     @Override
-    protected void initDataSpecific(DataForRequest dataForRequest) {
+    protected Component initDataSpecific(DataForRequest dataForRequest) {
         dataSpecific = dataForRequest.getComponent(Component.DataSession.class);
+        return dataSpecific;
     }
 
     @Override

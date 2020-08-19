@@ -31,8 +31,9 @@ public class BroadcastDownloading extends DownloadingBase {
     }
 
     @Override
-    protected void initDataSpecific(DataForRequest dataForRequest) {
+    protected Component initDataSpecific(DataForRequest dataForRequest) {
         dataSpecific = dataForRequest.getComponent(Component.DataBroadcast.class);
+        return dataSpecific;
     }
 
     @Override
@@ -49,16 +50,8 @@ public class BroadcastDownloading extends DownloadingBase {
     }
 
     @Override
-    protected String getUriFromLimeUri() {
-        return LimeUri.getUriBroadcast(
-                dataBasic.getScheme(),
-                dataBasic.getApiRoot(),
-                dataBasic.getEndpoint(),
-                dataSpecific.getChannelId(),
-                dataSpecific.getBeforeDate(),
-                dataSpecific.getAfterDate(),
-                dataSpecific.getTimeZone(),
-                dataSpecific.getLocale());
+    protected String getUriFromLimeUri(Component.DataBasic dataBasic, Component dataSpecific) {
+        return LimeUri.getUriBroadcast(dataBasic, (Component.DataBroadcast) dataSpecific);
     }
 
     @Override

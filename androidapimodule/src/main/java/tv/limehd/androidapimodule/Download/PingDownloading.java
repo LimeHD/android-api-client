@@ -34,16 +34,14 @@ public class PingDownloading extends DownloadingBase {
     }
 
     @Override
-    protected String getUriFromLimeUri() {
-        return LimeUri.getUriPing(
-                dataBasic.getScheme(),
-                dataBasic.getApiRoot(),
-                dataBasic.getEndpoint());
+    protected String getUriFromLimeUri(Component.DataBasic dataBasic, Component dataSpecific) {
+        return LimeUri.getUriPing(dataBasic, dataSpecific);
     }
 
     @Override
-    protected void initDataSpecific(DataForRequest dataForRequest) {
+    protected Component initDataSpecific(DataForRequest dataForRequest) {
         dataSpecific = dataForRequest.getComponent(Component.DataPing.class);
+        return dataSpecific;
     }
 
     @Override

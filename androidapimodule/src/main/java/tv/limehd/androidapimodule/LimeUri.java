@@ -2,6 +2,10 @@ package tv.limehd.androidapimodule;
 
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
+
+import tv.limehd.androidapimodule.Download.Data.Component;
+
 public class LimeUri {
 
 
@@ -15,6 +19,7 @@ public class LimeUri {
 
     private static String STREAM_URL = "${stream_id}";
 
+    @Deprecated
     public static String getUriChannelList(String scheme, String api_root, String endpoint_channels, String channel_group_id, String time_zone, String locale) {
         return new Uri.Builder()
                 .scheme(scheme)
@@ -28,6 +33,21 @@ public class LimeUri {
                 .toString();
     }
 
+    public static String getUriChannelList(@NonNull Component.DataBasic dataBasic, @NonNull Component dataSpecific) {
+        Component.DataChannelList dataChannelList = (Component.DataChannelList) dataSpecific;
+        return new Uri.Builder()
+                .scheme(dataBasic.getScheme())
+                .authority(dataBasic.getApiRoot())
+                .appendEncodedPath(dataBasic.getEndpoint())
+                .appendQueryParameter(LOCALE, dataChannelList.getLocale())
+                .appendQueryParameter(TIME_ZONE, dataChannelList.getTimeZone())
+                .appendEncodedPath(dataChannelList.getChannelGroupId())
+                .appendQueryParameter(TIME_ZONE_PICKER, "previous")
+                .build()
+                .toString();
+    }
+
+    @Deprecated
     public static String getUriBroadcast(String scheme, String api_root, String endpoint_broadcast
             , String channel_id, String before_date, String after_date, String time_zone, String locale) {
         return new Uri.Builder().scheme(scheme)
@@ -42,6 +62,23 @@ public class LimeUri {
                 .toString();
     }
 
+    public static String getUriBroadcast(@NonNull Component.DataBasic dataBasic, @NonNull Component dataSpecific) {
+        Component.DataBroadcast dataBroadcast = (Component.DataBroadcast) dataSpecific;
+        return new Uri.Builder()
+                .scheme(dataBasic.getScheme())
+                .authority(dataBasic.getApiRoot())
+                .appendEncodedPath(dataBasic.getEndpoint())
+                .appendQueryParameter(CHANNEL_ID, dataBroadcast.getChannelId())
+                .appendQueryParameter(TIME_ZONE, dataBroadcast.getTimeZone())
+                .appendQueryParameter(START_AT, dataBroadcast.getBeforeDate())
+                .appendQueryParameter(LOCALE, dataBroadcast.getLocale())
+                .appendQueryParameter(FINISH_AT, dataBroadcast.getAfterDate())
+                .build()
+                .toString();
+
+    }
+
+    @Deprecated
     public static String getUriSession(String scheme, String api_root, String endpoint_session) {
         return new Uri.Builder()
                 .scheme(scheme)
@@ -51,6 +88,17 @@ public class LimeUri {
                 .toString();
     }
 
+    public static String getUriSession(@NonNull Component.DataBasic dataBasic, @NonNull Component dataSpecific) {
+        Component.DataSession dataSession = (Component.DataSession) dataSpecific;
+        return new Uri.Builder()
+                .scheme(dataBasic.getScheme())
+                .authority(dataBasic.getApiRoot())
+                .appendEncodedPath(dataBasic.getEndpoint())
+                .build()
+                .toString();
+    }
+
+    @Deprecated
     public static String getUriPing(String scheme, String api_root, String endpoint_ping) {
         return new Uri.Builder()
                 .scheme(scheme)
@@ -60,11 +108,32 @@ public class LimeUri {
                 .toString();
     }
 
+    public static String getUriPing(@NonNull Component.DataBasic dataBasic, @NonNull Component dataSpecific) {
+        Component.DataPing dataPing = (Component.DataPing) dataSpecific;
+        return new Uri.Builder()
+                .scheme(dataBasic.getScheme())
+                .authority(dataBasic.getApiRoot())
+                .appendEncodedPath(dataBasic.getEndpoint())
+                .build()
+                .toString();
+    }
+
+    @Deprecated
     public static String getUriDeepClicks(String scheme, String api_root, String endpoint_deepclicks){
         return new Uri.Builder()
                 .scheme(scheme)
                 .authority(api_root)
                 .appendEncodedPath(endpoint_deepclicks)
+                .build()
+                .toString();
+    }
+
+    public static String getUriDeepClicks(@NonNull Component.DataBasic dataBasic, @NonNull Component dataSpecific){
+        Component.DataDeepClick dataDeepClick = (Component.DataDeepClick) dataSpecific;
+        return new Uri.Builder()
+                .scheme(dataBasic.getScheme())
+                .authority(dataBasic.getApiRoot())
+                .appendEncodedPath(dataBasic.getApiRoot())
                 .build()
                 .toString();
     }
