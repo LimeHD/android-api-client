@@ -1,10 +1,7 @@
 package tv.limehd.androidapimodule.Download;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -15,13 +12,13 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import tv.limehd.androidapimodule.Download.Data.ComplexResponse;
 import tv.limehd.androidapimodule.Download.Data.Component;
 import tv.limehd.androidapimodule.Download.Data.DataForRequest;
 import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
 import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 import tv.limehd.androidapimodule.LimeApiClient;
-import tv.limehd.androidapimodule.LimeCacheSettings;
 import tv.limehd.androidapimodule.LimeCurlBuilder;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
@@ -29,23 +26,15 @@ import static tv.limehd.androidapimodule.LimeApiClient.convertMegaByteToByte;
 
 public abstract class DownloadingBase<TComponent extends Component> {
 
-    protected ApiValues apiValues;
-    protected Context context;
-    protected File cacheDir;
-    protected CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface;
-    protected Component.DataBasic dataBasic;
-    protected ListenerRequest listenerRequest;
+    private ApiValues apiValues;
+    private CallBackUrlCurlRequestInterface callBackUrlCurlRequestInterface;
+    private Component.DataBasic dataBasic;
+    private ListenerRequest listenerRequest;
     private TComponent dataSpecific;
-    private Class<? extends Component> typeDataSpecific;
+    private Component.DataCache dataCache;
 
     protected DownloadingBase() {
-        initialization();
-    }
-
-    protected DownloadingBase(@NonNull Context context, File cacheDir) {
-        this.context = context;
-        this.cacheDir = cacheDir;
-        initialization();
+        apiValues = new ApiValues();
     }
 
     public void setCallBackUrlCurlRequestInterface(CallBackUrlCurlRequestInterface callBackRequestBroadCastInterface) {
@@ -56,19 +45,31 @@ public abstract class DownloadingBase<TComponent extends Component> {
         this.listenerRequest = listenerRequest;
     }
 
+    public boolean isUseCache() {
+        if (dataCache == null) return false;
+        else
+            return dataCache.isUseCache() && dataCache.getCacheDir() != null && dataCache.getContext() != null;
+    }
+
+    public ListenerRequest getListenerRequest() {
+        return listenerRequest;
+    }
+
+    public ApiValues getApiValues() {
+        return apiValues;
+    }
+
     protected void sendRequest(DataForRequest dataForRequest, Class<? extends Component> typeDataSpecific) {
-        this.typeDataSpecific = typeDataSpecific;
-        dataBasic = initDataBasic(dataForRequest);
-        dataSpecific = initDataSpecific(dataForRequest);
-        LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
-        tryConnectCacheInOkHttpClient(limeCurlBuilder);
-        OkHttpClient client = createOkHttpClient(limeCurlBuilder);
+        dataBasic = dataForRequest.getComponent(Component.DataBasic.class);
+        dataCache = dataForRequest.getComponent(Component.DataCache.class);
+        dataSpecific = dataForRequest.getComponent(typeDataSpecific);
+
         Request.Builder builder = createRequestBuilder(dataBasic.getxAccessToken());
         try {
             builder.url(getUriFromLimeUri(dataBasic, dataSpecific));
         } catch (Exception e) {
             e.printStackTrace();
-            sendCallBackError(e.getMessage());
+            sendCallBackError(getMessageExceptionFrom(e));
             return;
         }
 
@@ -78,10 +79,14 @@ public abstract class DownloadingBase<TComponent extends Component> {
         builder = connectFormBodyForPost(builder);
         Request request = builder.build();
 
+
+        LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
+        tryConnectCacheInOkHttpClient(limeCurlBuilder);
+        OkHttpClient client = createOkHttpClient(limeCurlBuilder);
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                sendCallBackError(e.getMessage());
+                sendCallBackError(getMessageExceptionFrom(e));
             }
 
             @Override
@@ -91,38 +96,32 @@ public abstract class DownloadingBase<TComponent extends Component> {
                     throw new IOException("Unexpected code " + response);
                 }
                 if (isResponseFromNetwork(response)) {
-                    int maxAge = LimeApiClient.getMaxCacheFromCacheControl(response);
-                    trySaveMaxAge(maxAge);
+                    if (isUseCache()) {
+                        dataCache.saveMaxAgeCache(LimeApiClient.getMaxCacheFromCacheControl(response), DownloadingBase.this.getClass());
+                    }
                 }
-                sendCallBackSuccess(response.body().string());
+                sendCallBackSuccess(getBodyTextFromResponse(response));
             }
         });
         sendCallBackUrlRequest(getUriFromLimeUri(dataBasic, dataSpecific));
     }
 
-    private void initialization() {
-        apiValues = new ApiValues();
+    private String getMessageExceptionFrom(@NonNull Exception e) {
+        if (e.getMessage() != null)
+            return e.getMessage();
+        return "Exception: not Message";
+    }
+
+    private String getBodyTextFromResponse(Response response) throws IOException {
+        ResponseBody responseBody = response.body();
+        if(responseBody != null) {
+            return responseBody.string();
+        }
+        else return "";
     }
 
     private boolean isResponseFromNetwork(Response response) {
         return response.networkResponse() != null;
-    }
-
-    private int tryGetMaxAge() {
-        if (context != null) {
-            return LimeCacheSettings.getMaxAge(context, this.getClass());
-        } else {
-            return 0;
-        }
-    }
-
-    private boolean trySaveMaxAge(int maxAge) {
-        if (context != null) {
-            LimeCacheSettings.setMaxAge(context, this.getClass(), maxAge);
-            return true;
-        } else {
-            return false;
-        }
     }
 
     private LimeCurlBuilder.Builder createLimeCurlBuilder() {
@@ -145,17 +144,16 @@ public abstract class DownloadingBase<TComponent extends Component> {
         return new OkHttpClient(builder);
     }
 
-    private void tryConnectCacheInOkHttpClient(@NonNull OkHttpClient.Builder okHttpClientBuilder) {
-        if (cacheDir != null) {
-            Cache cache = new Cache(cacheDir, convertMegaByteToByte(2));
+    private void tryConnectCacheInOkHttpClient(@NonNull LimeCurlBuilder.Builder okHttpClientBuilder) {
+        if (isUseCache()) {
+            Cache cache = new Cache(dataCache.getCacheDir(), convertMegaByteToByte(2));
             okHttpClientBuilder.cache(cache);
         }
     }
 
-
     private void tryConnectCacheInRequestBuilder(Request.Builder builder) {
-        if (dataBasic.isUseCache()) {
-            builder.cacheControl(new CacheControl.Builder().maxAge(tryGetMaxAge(), TimeUnit.SECONDS).build());
+        if (isUseCache()) {
+            builder.cacheControl(new CacheControl.Builder().maxAge(dataCache.getMaxAgeCache(this.getClass()), TimeUnit.SECONDS).build());
         } else {
             builder.cacheControl(new CacheControl.Builder().noCache().build());
         }
@@ -171,10 +169,6 @@ public abstract class DownloadingBase<TComponent extends Component> {
         if (callBackUrlCurlRequestInterface != null) {
             callBackUrlCurlRequestInterface.callBackCurlRequest(request);
         }
-    }
-
-    private Component.DataBasic initDataBasic(DataForRequest dataForRequest) {
-        return dataForRequest.getComponent(Component.DataBasic.class);
     }
 
     protected void sendCallBackError(@NonNull String error) {
@@ -194,10 +188,6 @@ public abstract class DownloadingBase<TComponent extends Component> {
 
     protected Component.DataBasic getDataBasic() {
         return dataBasic;
-    }
-
-    protected TComponent initDataSpecific(DataForRequest dataForRequest) {
-        return dataForRequest.getComponent(typeDataSpecific);
     }
 
     protected abstract String getUriFromLimeUri(Component.DataBasic dataBasic, Component dataSpecific);

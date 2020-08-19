@@ -1,11 +1,5 @@
 package tv.limehd.androidapimodule.Download;
 
-import android.content.Context;
-
-import androidx.annotation.NonNull;
-
-import java.io.File;
-
 import okhttp3.Request;
 import tv.limehd.androidapimodule.Download.Data.Component;
 import tv.limehd.androidapimodule.Download.Data.DataForRequest;
@@ -15,10 +9,6 @@ public class PingDownloading extends DownloadingBase<Component.DataPing> {
 
     public PingDownloading() {
         super();
-    }
-
-    public PingDownloading(@NonNull Context context, @NonNull File cacheDir) {
-        super(context, cacheDir);
     }
 
     public void sendRequestPing(DataForRequest dataForRequest) {

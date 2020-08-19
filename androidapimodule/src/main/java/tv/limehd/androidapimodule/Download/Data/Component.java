@@ -1,5 +1,12 @@
 package tv.limehd.androidapimodule.Download.Data;
 
+import android.content.Context;
+
+import java.io.File;
+
+import tv.limehd.androidapimodule.Download.DownloadingBase;
+import tv.limehd.androidapimodule.LimeCacheSettings;
+
 public class Component {
 
     public static class DataBasic extends Component {
@@ -10,7 +17,6 @@ public class Component {
         private String applicationId;
         private String xAccessToken;
         private String xTestIp;
-        private boolean isUseCache;
 
         public DataBasic(
                 final String scheme,
@@ -18,8 +24,7 @@ public class Component {
                 final String endpoint,
                 final String applicationId,
                 final String xAccessToken,
-                final String xTestIp,
-                final boolean isUseCache
+                final String xTestIp
         ) {
             this.scheme = scheme;
             this.apiRoot = apiRoot;
@@ -27,7 +32,6 @@ public class Component {
             this.applicationId = applicationId;
             this.xAccessToken = xAccessToken;
             this.xTestIp = xTestIp;
-            this.isUseCache = isUseCache;
         }
 
         public String getScheme() {
@@ -54,8 +58,38 @@ public class Component {
             return xTestIp;
         }
 
+    }
+
+    public static class DataCache extends Component {
+
+        private Context context;
+        private boolean isUseCache;
+        private File cacheDir;
+
+        public DataCache(Context context, boolean useCache, File cacheDir) {
+            this.context = context;
+            this.isUseCache = useCache;
+            this.cacheDir = cacheDir;
+        }
+
+        public Context getContext() {
+            return context;
+        }
+
+        public File getCacheDir() {
+            return cacheDir;
+        }
+
         public boolean isUseCache() {
             return isUseCache;
+        }
+
+        public int getMaxAgeCache(Class <? extends DownloadingBase> typeDownloading) {
+            return LimeCacheSettings.getMaxAge(getContext(), typeDownloading);
+        }
+
+        public void saveMaxAgeCache(int maxAge, Class <? extends DownloadingBase> typeDownloading) {
+            LimeCacheSettings.setMaxAge(getContext(), typeDownloading, maxAge);
         }
     }
 
