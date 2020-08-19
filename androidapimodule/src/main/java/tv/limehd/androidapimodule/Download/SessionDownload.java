@@ -41,12 +41,6 @@ public class SessionDownload extends DownloadingBase {
     }
 
     @Override
-    protected void sendCallBackError(@NonNull String error) {
-        if (listenerRequest != null)
-            listenerRequest.onError(error);
-    }
-
-    @Override
     protected void sendCallBackSuccess(@NonNull String response) {
         if (listenerRequest != null)
             listenerRequest.onSuccess(new ComplexResponse(response));

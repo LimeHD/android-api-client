@@ -175,13 +175,17 @@ public abstract class DownloadingBase {
         }
     }
 
+    protected void sendCallBackError(@NonNull String error) {
+        if (listenerRequest != null) {
+            listenerRequest.onError(error);
+        }
+    }
+
     protected abstract Component initDataSpecific(DataForRequest dataForRequest);
 
     protected abstract String getUriFromLimeUri(Component.DataBasic dataBasic, Component dataSpecific);
 
     protected abstract Request.Builder connectFormBodyForPost(Request.Builder builder);
-
-    protected abstract void sendCallBackError(@NonNull String error);
 
     protected abstract void sendCallBackSuccess(@NonNull String response);
 

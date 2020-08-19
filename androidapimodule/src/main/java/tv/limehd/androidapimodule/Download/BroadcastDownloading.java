@@ -33,13 +33,6 @@ public class BroadcastDownloading extends DownloadingBase {
     }
 
     @Override
-    protected void sendCallBackError(String error) {
-        if (listenerRequest != null) {
-            listenerRequest.onError(error);
-        }
-    }
-
-    @Override
     protected void sendCallBackSuccess(@NonNull String response) {
         if (listenerRequest != null && dataSpecific != null)
             listenerRequest.onSuccess(new ComplexResponse(response).setChannelId(dataSpecific.getChannelId()));
