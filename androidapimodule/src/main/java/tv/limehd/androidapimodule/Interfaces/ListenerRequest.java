@@ -1,7 +1,9 @@
 package tv.limehd.androidapimodule.Interfaces;
 
+import tv.limehd.androidapimodule.Download.Data.ComplexResponse;
+
 public interface ListenerRequest {
-    void onSuccess(String response);
+    void onSuccess(ComplexResponse response);
 
     void onError(String error);
 }
