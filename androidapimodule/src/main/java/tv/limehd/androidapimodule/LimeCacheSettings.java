@@ -3,29 +3,23 @@ package tv.limehd.androidapimodule;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
+
 public class LimeCacheSettings {
 
 
     private static String DOWNLOADING_CACHE = "DOWNLOADING_CACHE";
 
-    public static String DOWNLOADER_PING = "DOWNLOADER_PING";
-    public static String DOWNLOADER_SESSION = "DOWNLOADER_SESSION";
-    public static String DOWNLOADER_CHANNEL_LIST = "DOWNLOADER_CHANNEL_LIST";
-    public static String DOWNLOADER_BROADCAST = "DOWNLOADER_BROADCAST";
-    public static String SENDER_DEEPCLICKS = "SENDER_DEEPCLICKS";
-
-    public static int getMaxAge(Context context, String key) {
+    public static int getMaxAge(@NonNull Context context, @NonNull Class type) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(DOWNLOADING_CACHE, Context.MODE_PRIVATE);
-        return sharedPreferences.getInt(key, 0);
+        return sharedPreferences.getInt(type.getName(), 0);
     }
 
-    public static void setMaxAge(Context context, String key, int maxAge) {
+    public static void setMaxAge(@NonNull Context context, @NonNull Class type, int maxAge) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(DOWNLOADING_CACHE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(key, maxAge);
+        editor.putInt(type.getName(), maxAge);
         editor.apply();
         editor.commit();
     }
-
-
 }
