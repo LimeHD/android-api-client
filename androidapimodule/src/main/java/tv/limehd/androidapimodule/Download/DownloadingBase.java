@@ -16,6 +16,7 @@ import okhttp3.ResponseBody;
 import tv.limehd.androidapimodule.Download.Data.ComplexResponse;
 import tv.limehd.androidapimodule.Download.Data.Component;
 import tv.limehd.androidapimodule.Download.Data.DataForRequest;
+import tv.limehd.androidapimodule.Download.Modules.ControllerTrust;
 import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
 import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 import tv.limehd.androidapimodule.LimeApiClient;
@@ -82,7 +83,9 @@ public abstract class DownloadingBase<TComponent extends Component> {
 
         LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
         tryConnectCacheInOkHttpClient(limeCurlBuilder);
+        limeCurlBuilder = new ControllerTrust(dataForRequest).connectSSLSocket(limeCurlBuilder);
         OkHttpClient client = createOkHttpClient(limeCurlBuilder);
+
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
