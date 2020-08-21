@@ -17,6 +17,7 @@ public class Component {
         private String applicationId;
         private String xAccessToken;
         private String xTestIp;
+        private boolean isUseSSL = false;
 
         public DataBasic(
                 final String scheme,
@@ -58,6 +59,9 @@ public class Component {
             return xTestIp;
         }
 
+        public boolean isUseSSL() {
+            return isUseSSL;
+        }
     }
 
     public static class DataCache extends Component {
