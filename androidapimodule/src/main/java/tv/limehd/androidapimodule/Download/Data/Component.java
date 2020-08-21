@@ -25,7 +25,8 @@ public class Component {
                 final String endpoint,
                 final String applicationId,
                 final String xAccessToken,
-                final String xTestIp
+                final String xTestIp,
+                final boolean isUseSSL
         ) {
             this.scheme = scheme;
             this.apiRoot = apiRoot;
@@ -33,6 +34,7 @@ public class Component {
             this.applicationId = applicationId;
             this.xAccessToken = xAccessToken;
             this.xTestIp = xTestIp;
+            this.isUseSSL = isUseSSL;
         }
 
         public String getScheme() {
