@@ -19,6 +19,7 @@ import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 
 public class ClientDownloading {
 
+    private final boolean isUseSSL = false;
     public ClientDownloading() {
     }
 
@@ -63,7 +64,7 @@ public class ClientDownloading {
             , String x_access_token, String channel_group_id, String time_zone, String locale, String x_test_ip, boolean use_cache) {
         ChannelListDownloading channelListDownloading = createDownloadingChannelList();
         DataForRequest dataForRequestChannelList = new DataForRequest();
-        dataForRequestChannelList.addComponent(new Component.DataBasic(scheme, api_root, endpoint_channels, application_id, x_access_token, x_test_ip));
+        dataForRequestChannelList.addComponent(new Component.DataBasic(scheme, api_root, endpoint_channels, application_id, x_access_token, x_test_ip, isUseSSL));
         dataForRequestChannelList.addComponent(new Component.DataChannelList(time_zone, locale, channel_group_id));
         dataForRequestChannelList.addComponent(new Component.DataCache(context, use_cache, cacheDir));
         channelListDownloading.sendRequestChannelList(dataForRequestChannelList);
@@ -112,7 +113,7 @@ public class ClientDownloading {
 
         BroadcastDownloading broadcastDownloading = createDownloadingBroadCast();
         DataForRequest dataForRequestBroadcast = new DataForRequest();
-        dataForRequestBroadcast.addComponent(new Component.DataBasic(scheme, api_root, endpoint_broadcast, application_id, x_access_token, x_test_ip));
+        dataForRequestBroadcast.addComponent(new Component.DataBasic(scheme, api_root, endpoint_broadcast, application_id, x_access_token, x_test_ip, isUseSSL));
         dataForRequestBroadcast.addComponent(new Component.DataBroadcast(time_zone, locale, channel_id, before_date, after_date));
         dataForRequestBroadcast.addComponent(new Component.DataCache(context, use_cache, null));
         broadcastDownloading.sendRequestBroadCast(dataForRequestBroadcast);
@@ -158,7 +159,7 @@ public class ClientDownloading {
     public void downloadPing(Context context, File cacheDir, String scheme, String api_root, String endpoint_ping, String application_id, String x_access_token, String x_test_ip, boolean use_cache) {
         PingDownloading pingDownloading = createDownloadingPing();
         DataForRequest dataForRequestPing = new DataForRequest();
-        dataForRequestPing.addComponent(new Component.DataBasic(scheme, api_root, endpoint_ping, application_id, x_access_token, x_test_ip));
+        dataForRequestPing.addComponent(new Component.DataBasic(scheme, api_root, endpoint_ping, application_id, x_access_token, x_test_ip, isUseSSL));
         dataForRequestPing.addComponent(new Component.DataPing());
         dataForRequestPing.addComponent(new Component.DataCache(context, use_cache, cacheDir));
         pingDownloading.sendRequestPing(dataForRequestPing);
@@ -205,7 +206,7 @@ public class ClientDownloading {
             , String application_id, String x_access_token, String x_test_ip, boolean use_cache) {
         SessionDownload sessionDownload = createDownloadSession();
         DataForRequest dataForRequestSession = new DataForRequest();
-        dataForRequestSession.addComponent(new Component.DataBasic(scheme, api_root, endpoint_session, application_id, x_access_token, x_test_ip));
+        dataForRequestSession.addComponent(new Component.DataBasic(scheme, api_root, endpoint_session, application_id, x_access_token, x_test_ip, isUseSSL));
         dataForRequestSession.addComponent(new Component.DataSession());
         dataForRequestSession.addComponent(new Component.DataCache(context, use_cache, cacheDir));
         sessionDownload.sendRequestSession(dataForRequestSession);
@@ -252,7 +253,7 @@ public class ClientDownloading {
                                   String application_id, String x_access_token, String x_test_ip, boolean use_cache, String query, String path, String device_id) {
         DeepClicksDownloading deepClicksDownloading = createDownloadingDeepClicks();
         DataForRequest dataForRequestDeepClicks = new DataForRequest();
-        dataForRequestDeepClicks.addComponent(new Component.DataBasic(scheme, api_root, endpoint_deepclicks, application_id, x_access_token, x_test_ip));
+        dataForRequestDeepClicks.addComponent(new Component.DataBasic(scheme, api_root, endpoint_deepclicks, application_id, x_access_token, x_test_ip, isUseSSL));
         dataForRequestDeepClicks.addComponent(new Component.DataDeepClick(query, path, device_id));
         dataForRequestDeepClicks.addComponent(new Component.DataCache(context, use_cache, cacheDir));
         deepClicksDownloading.sendRequestDeepClicks(dataForRequestDeepClicks);
