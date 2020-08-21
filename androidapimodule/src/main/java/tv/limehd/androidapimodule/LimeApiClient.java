@@ -30,11 +30,6 @@ public class LimeApiClient {
 
     private Component.DataBasic dataBasic;
     private Component.DataCache dataCache;
-    private Component.DataChannelList dataChannelList;
-    private Component.DataSession dataSession;
-    private Component.DataPing dataPing;
-    private Component.DataBroadcast dataBroadcast;
-    private Component.DataDeepClick dataDeepClick;
 
     @Deprecated
     public LimeApiClient(Context context, String deviceId, String api_root, String scheme, String application_id, String x_access_token, String locale, File cacheDir, boolean use_cache) {
