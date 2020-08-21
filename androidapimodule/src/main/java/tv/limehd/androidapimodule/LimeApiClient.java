@@ -3,10 +3,14 @@ package tv.limehd.androidapimodule;
 import android.content.Context;
 import android.provider.Settings;
 
+import androidx.annotation.NonNull;
+
 import java.io.File;
 
 import okhttp3.Response;
 import tv.limehd.androidapimodule.Download.Client.ClientDownloading;
+import tv.limehd.androidapimodule.Download.Data.Component;
+import tv.limehd.androidapimodule.Download.Data.DataForRequest;
 import tv.limehd.androidapimodule.Values.ApiValues;
 
 public class LimeApiClient {
@@ -24,18 +28,39 @@ public class LimeApiClient {
     private static final int defaultMaxAge = 600;
     private Context context;
 
+    private Component.DataBasic dataBasic;
+    private Component.DataCache dataCache;
+    private Component.DataChannelList dataChannelList;
+    private Component.DataSession dataSession;
+    private Component.DataPing dataPing;
+    private Component.DataBroadcast dataBroadcast;
+    private Component.DataDeepClick dataDeepClick;
+
+    @Deprecated
     public LimeApiClient(Context context, String deviceId, String api_root, String scheme, String application_id, String x_access_token, String locale, File cacheDir, boolean use_cache) {
         initialization(context, deviceId,api_root, scheme, application_id, x_access_token, locale, cacheDir, use_cache);
     }
 
+    @Deprecated
     public LimeApiClient(Context context, String deviceId, String api_root, String scheme, String application_id, String x_access_token, String locale, File cacheDir) {
         initialization(context, deviceId,api_root, scheme, application_id, x_access_token, locale, cacheDir, true);
     }
 
+    @Deprecated
     public LimeApiClient(String api_root, String deviceId, String scheme, String application_id, String x_access_token, String locale){
         initialization(null, deviceId, api_root, scheme, application_id, x_access_token, locale, null, false);
     }
 
+    public LimeApiClient(Component.DataCache dataCache, Component.DataBasic dataBasic) {
+        initialization(dataCache, dataBasic);
+    }
+
+    private void initialization(Component.DataCache dataCache, Component.DataBasic dataBasic) {
+        this.dataBasic = dataBasic;
+        this.dataCache = dataCache;
+    }
+
+    @Deprecated
     private void initialization(Context context, String deviceId, String api_root, String scheme, String application_id, String x_access_token, String locale, File cacheDir, boolean use_cache) {
         apiValues = new ApiValues();
         this.api_root = api_root;
@@ -50,6 +75,7 @@ public class LimeApiClient {
         this.deviceId = deviceId;
     }
 
+    @Deprecated
     public void updateLimeApiClientData(String api_root, String scheme, String application_id, String x_access_token, String locale) {
         this.api_root = api_root;
         this.scheme = scheme;
@@ -58,6 +84,8 @@ public class LimeApiClient {
         this.locale = locale;
         x_test_ip = null;
     }
+
+    @Deprecated
     public void updateLimeApiClientData(String api_root, String device_id, String scheme, String application_id, String x_access_token, String locale) {
         updateLimeApiClientData(api_root, scheme, application_id, x_access_token, locale);
         this.deviceId = device_id;
@@ -86,6 +114,7 @@ public class LimeApiClient {
     /*Download channel List*/
     //region Download channel List
 
+    @Deprecated
     public void downloadChannelList(String channel_group_id, String time_zone) {
         if (api_root != null) {
             ClientDownloading clientDownloading = initializeDownloadChannelList();
@@ -93,10 +122,24 @@ public class LimeApiClient {
         }
     }
 
+    @Deprecated
     public void downloadChannelList(String channel_group_id, String time_zone, boolean use_cache) {
         if (api_root != null) {
             ClientDownloading clientDownloading = initializeDownloadChannelList();
             downloadChannelList(clientDownloading, channel_group_id, time_zone, use_cache);
+        }
+    }
+
+    public void downloadChannelList(@NonNull Component.DataChannelList dataChannelList) {
+        if(dataBasic != null && dataBasic.getApiRoot() != null) {
+            ClientDownloading clientDownloading = initializeDownloadChannelList();
+
+            DataForRequest dataForRequest = new DataForRequest();
+            dataForRequest.addComponent(dataBasic);
+            dataForRequest.addComponent(dataCache);
+            dataForRequest.addComponent(dataChannelList);
+
+            clientDownloading.downloadChannelList(dataForRequest);
         }
     }
 
@@ -131,6 +174,7 @@ public class LimeApiClient {
         return clientDownloading;
     }
 
+    @Deprecated
     private void downloadChannelList(ClientDownloading clientDownloading, String channel_group_id, String time_zone, boolean use_cache) {
         clientDownloading.downloadChannelList(context, cacheDir, scheme, api_root, apiValues.getURL_CHANNELS_BY_GROUP(), application_id, x_access_token, channel_group_id, time_zone, locale, x_test_ip,  use_cache);
     }
@@ -151,6 +195,7 @@ public class LimeApiClient {
     /*Download broadcast*/
     //region DownloadBroadcast
 
+    @Deprecated
     public void downloadBroadcast(String channel_id, String before_date, String after_date, String time_zone) {
         if (api_root != null) {
             ClientDownloading clientDownloading = initializeDownloadBroadcast();
@@ -158,10 +203,24 @@ public class LimeApiClient {
         }
     }
 
+    @Deprecated
     public void downloadBroadcast(String channel_id, String before_date, String after_date, String time_zone, boolean use_cache) {
         if (api_root != null) {
             ClientDownloading clientDownloading = initializeDownloadBroadcast();
             downloadBroadcast(clientDownloading, channel_id, before_date, after_date, time_zone, use_cache);
+        }
+    }
+
+    public void downloadBroadcast(@NonNull Component.DataBroadcast dataBroadcast) {
+        if(dataBasic != null && dataBasic.getApiRoot() != null) {
+            ClientDownloading clientDownloading = initializeDownloadBroadcast();
+
+            DataForRequest dataForRequest = new DataForRequest();
+            dataForRequest.addComponent(dataCache);
+            dataForRequest.addComponent(dataBasic);
+            dataForRequest.addComponent(dataBroadcast);
+
+            clientDownloading.downloadBroadCast(dataForRequest);
         }
     }
 
@@ -196,6 +255,7 @@ public class LimeApiClient {
         return clientDownloading;
     }
 
+    @Deprecated
     private void downloadBroadcast(ClientDownloading clientDownloading, String channel_id, String before_date, String after_date, String time_zone, boolean use_cache) {
         clientDownloading.downloadBroadCast(context, scheme, api_root, apiValues.getURL_BROADCAST_PATH(), channel_id, before_date, after_date, time_zone, application_id
                 , x_access_token, locale, x_test_ip, use_cache);
@@ -216,6 +276,7 @@ public class LimeApiClient {
 
     //region Download ping
 
+    @Deprecated
     public void downloadPing() {
         if (api_root != null) {
             ClientDownloading clientDownloading = initializeDownloadPing();
@@ -223,10 +284,24 @@ public class LimeApiClient {
         }
     }
 
+    @Deprecated
     public void downloadPing(boolean use_cache) {
         if (api_root != null) {
             ClientDownloading clientDownloading = initializeDownloadPing();
             downloadPing(clientDownloading, use_cache);
+        }
+    }
+
+    public void downloadPing(@NonNull Component.DataPing dataPing) {
+        if(dataBasic != null && dataBasic.getApiRoot() != null) {
+            ClientDownloading clientDownloading = initializeDownloadPing();
+
+            DataForRequest dataForRequest = new DataForRequest();
+            dataForRequest.addComponent(dataCache);
+            dataForRequest.addComponent(dataBasic);
+            dataForRequest.addComponent(dataPing);
+
+            clientDownloading.downloadPing(dataForRequest);
         }
     }
 
@@ -261,6 +336,7 @@ public class LimeApiClient {
         return clientDownloading;
     }
 
+    @NonNull
     private void downloadPing(ClientDownloading clientDownloading, boolean use_cache) {
         clientDownloading.downloadPing(context, cacheDir, scheme, api_root, apiValues.getURL_PING_PATH(), application_id, x_access_token, x_test_ip, use_cache);
     }
@@ -280,6 +356,7 @@ public class LimeApiClient {
 
     //region Download session
 
+    @Deprecated
     public void downloadSession() {
         if (api_root != null) {
             ClientDownloading clientDownloading = initializeDownloadSession();
@@ -287,10 +364,24 @@ public class LimeApiClient {
         }
     }
 
+    @Deprecated
     public void downloadSession(boolean use_cache) {
         if (api_root != null) {
             ClientDownloading clientDownloading = initializeDownloadSession();
             downloadSession(clientDownloading, use_cache);
+        }
+    }
+
+    private void downloadSession(@NonNull Component.DataSession dataSession) {
+        if(dataBasic != null && dataBasic.getApiRoot() != null) {
+            ClientDownloading clientDownloading = initializeDownloadSession();
+
+            DataForRequest dataForRequest = new DataForRequest();
+            dataForRequest.addComponent(dataBasic);
+            dataForRequest.addComponent(dataCache);
+            dataForRequest.addComponent(dataSession);
+
+            clientDownloading.downloadSession(dataForRequest);
         }
     }
 
@@ -325,6 +416,7 @@ public class LimeApiClient {
         return clientDownloading;
     }
 
+    @Deprecated
     private void downloadSession(ClientDownloading clientDownloading, boolean use_cache) {
         clientDownloading.downloadSession(context, cacheDir, scheme, api_root, apiValues.getURL_SESSION_PATH(), application_id, x_access_token, x_test_ip,  use_cache);
     }
@@ -342,8 +434,9 @@ public class LimeApiClient {
     }
     //endregion
 
-    //region Sending deepclicks
+    //region Download deepclicks
 
+    @Deprecated
     public void downloadDeepClicks(String query, String path){
         if(api_root!=null){
             ClientDownloading clientDownloading = initializeSendingDeepClicks();
@@ -351,10 +444,24 @@ public class LimeApiClient {
         }
     }
 
+    @Deprecated
     public void downloadDeepClicks(String query, String path, boolean use_cache){
         if(api_root!=null){
             ClientDownloading clientDownloading = initializeSendingDeepClicks();
             downloadDeepClicks(clientDownloading, use_cache, query, path);
+        }
+    }
+
+    private void downloadDeepClicks(@NonNull Component.DataDeepClick dataDeepClick) {
+        if(dataBasic != null && dataBasic.getApiRoot() != null) {
+            ClientDownloading clientDownloading = initializeSendingDeepClicks();
+
+            DataForRequest dataForRequest = new DataForRequest();
+            dataForRequest.addComponent(dataBasic);
+            dataForRequest.addComponent(dataCache);
+            dataForRequest.addComponent(dataDeepClick);
+
+            clientDownloading.downloadDeepClicks(dataForRequest);
         }
     }
 
@@ -389,6 +496,7 @@ public class LimeApiClient {
         return clientDownloading;
     }
 
+    @Deprecated
     private void downloadDeepClicks(ClientDownloading clientDownloading, boolean use_cache, String query, String path){
         clientDownloading.sendingDeepClicks(context, cacheDir, scheme, api_root, apiValues.getURL_DEEPCLICKS(), application_id, x_access_token, x_test_ip, use_cache, query, path, deviceId);
     }
