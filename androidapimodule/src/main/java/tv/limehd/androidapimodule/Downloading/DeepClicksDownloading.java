@@ -1,9 +1,10 @@
-package tv.limehd.androidapimodule.Download;
+package tv.limehd.androidapimodule.Downloading;
 
 import okhttp3.FormBody;
 import okhttp3.Request;
 import tv.limehd.androidapimodule.Download.Data.Component;
 import tv.limehd.androidapimodule.Download.Data.DataForRequest;
+import tv.limehd.androidapimodule.Download.DownloadingBase;
 import tv.limehd.androidapimodule.LimeUri;
 
 public class DeepClicksDownloading extends DownloadingBase<Component.DataDeepClick> {

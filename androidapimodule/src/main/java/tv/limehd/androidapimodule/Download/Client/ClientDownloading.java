@@ -6,14 +6,14 @@ import androidx.annotation.NonNull;
 
 import java.io.File;
 
-import tv.limehd.androidapimodule.Download.BroadcastDownloading;
-import tv.limehd.androidapimodule.Download.ChannelListDownloading;
+import tv.limehd.androidapimodule.Downloading.BroadcastDownloading;
+import tv.limehd.androidapimodule.Downloading.ChannelListDownloading;
 import tv.limehd.androidapimodule.Download.Data.ComplexResponse;
 import tv.limehd.androidapimodule.Download.Data.Component;
 import tv.limehd.androidapimodule.Download.Data.DataForRequest;
-import tv.limehd.androidapimodule.Download.DeepClicksDownloading;
-import tv.limehd.androidapimodule.Download.PingDownloading;
-import tv.limehd.androidapimodule.Download.SessionDownload;
+import tv.limehd.androidapimodule.Downloading.DeepClicksDownloading;
+import tv.limehd.androidapimodule.Downloading.PingDownloading;
+import tv.limehd.androidapimodule.Downloading.SessionDownloading;
 import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
 import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 
@@ -165,9 +165,9 @@ public class ClientDownloading {
         pingDownloading.sendRequestPing(dataForRequestPing);
     }
 
-    private SessionDownload createDownloadSession() {
-        SessionDownload sessionDownload = new SessionDownload();
-        sessionDownload.setListenerRequest(new ListenerRequest() {
+    private SessionDownloading createDownloadSession() {
+        SessionDownloading sessionDownloading = new SessionDownloading();
+        sessionDownloading.setListenerRequest(new ListenerRequest() {
             @Override
             public void onSuccess(ComplexResponse response) {
                 if (callBackDownloadInterface != null)
@@ -180,7 +180,7 @@ public class ClientDownloading {
                     callBackDownloadInterface.callBackDownloadedError(error);
             }
         });
-        sessionDownload.setCallBackUrlCurlRequestInterface(new CallBackUrlCurlRequestInterface() {
+        sessionDownloading.setCallBackUrlCurlRequestInterface(new CallBackUrlCurlRequestInterface() {
             @Override
             public void callBackUrlRequest(String request) {
                 if (callBackRequestInterface != null)
@@ -193,23 +193,23 @@ public class ClientDownloading {
                     callBackRequestInterface.callBackCurlRequest(request);
             }
         });
-        return sessionDownload;
+        return sessionDownloading;
     }
 
     public void downloadSession(DataForRequest dataForRequestSession) {
-        SessionDownload sessionDownload = createDownloadSession();
-        sessionDownload.sendRequestSession(dataForRequestSession);
+        SessionDownloading sessionDownloading = createDownloadSession();
+        sessionDownloading.sendRequestSession(dataForRequestSession);
     }
 
     @Deprecated
     public void downloadSession(Context context, File cacheDir, String scheme, String api_root, String endpoint_session
             , String application_id, String x_access_token, String x_test_ip, boolean use_cache) {
-        SessionDownload sessionDownload = createDownloadSession();
+        SessionDownloading sessionDownloading = createDownloadSession();
         DataForRequest dataForRequestSession = new DataForRequest();
         dataForRequestSession.addComponent(new Component.DataBasic(scheme, api_root, endpoint_session, application_id, x_access_token, x_test_ip, isUseSSL));
         dataForRequestSession.addComponent(new Component.DataSession());
         dataForRequestSession.addComponent(new Component.DataCache(context, use_cache, cacheDir));
-        sessionDownload.sendRequestSession(dataForRequestSession);
+        sessionDownloading.sendRequestSession(dataForRequestSession);
     }
 
     private DeepClicksDownloading createDownloadingDeepClicks() {
