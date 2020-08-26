@@ -1,0 +1,3 @@
+[submodule "Ok2Curl"]
+	path = Ok2Curl
+	url = https://github.com/LimeHD/Ok2Curl.git
