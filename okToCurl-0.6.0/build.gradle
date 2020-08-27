@@ -1,0 +1,2 @@
+configurations.maybeCreate("default")
+artifacts.add("default", file('okToCurl-0.6.0.jar'))

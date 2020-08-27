@@ -9,6 +9,7 @@ import okhttp3.Cache;
 import okhttp3.CacheControl;
 import okhttp3.Call;
 import okhttp3.Callback;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -143,7 +144,7 @@ public abstract class DownloadingBase<TComponent extends Component> {
     }
 
     private <T extends OkHttpClient.Builder> OkHttpClient createOkHttpClient(@NonNull T builder) {
-        return new OkHttpClient(builder);
+        return builder.build();
     }
 
     private void tryConnectCacheInOkHttpClient(@NonNull LimeCurlBuilder.Builder okHttpClientBuilder) {
