@@ -1,4 +1,4 @@
-package tv.limehd.androidapimodule.Download;
+package tv.limehd.androidapimodule.Downloading;
 
 import androidx.annotation.NonNull;
 
@@ -6,6 +6,7 @@ import okhttp3.Request;
 import tv.limehd.androidapimodule.Download.Data.ComplexResponse;
 import tv.limehd.androidapimodule.Download.Data.Component;
 import tv.limehd.androidapimodule.Download.Data.DataForRequest;
+import tv.limehd.androidapimodule.Download.DownloadingBase;
 import tv.limehd.androidapimodule.LimeUri;
 
 public class BroadcastDownloading extends DownloadingBase<Component.DataBroadcast> {
