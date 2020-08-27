@@ -1,4 +1,2 @@
-include ':okToCurl'
 include ':demo', ':androidapimodule'
-project(':okToCurl').projectDir = new File(rootDir, 'Ok2Curl/ok2curl/')
 rootProject.name='Android Api Client'

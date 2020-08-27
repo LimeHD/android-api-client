@@ -10,7 +10,6 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/Ok2Curl/ok2curl" />
             <option value="$PROJECT_DIR$/androidapimodule" />
             <option value="$PROJECT_DIR$/demo" />
           </set>
