@@ -9,6 +9,7 @@ import okhttp3.Cache;
 import okhttp3.CacheControl;
 import okhttp3.Call;
 import okhttp3.Callback;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -16,6 +17,7 @@ import okhttp3.ResponseBody;
 import tv.limehd.androidapimodule.Download.Data.ComplexResponse;
 import tv.limehd.androidapimodule.Download.Data.Component;
 import tv.limehd.androidapimodule.Download.Data.DataForRequest;
+import tv.limehd.androidapimodule.Download.Modules.ControllerSSLSocket;
 import tv.limehd.androidapimodule.Interfaces.CallBackUrlCurlRequestInterface;
 import tv.limehd.androidapimodule.Interfaces.ListenerRequest;
 import tv.limehd.androidapimodule.LimeApiClient;
@@ -82,6 +84,7 @@ public abstract class DownloadingBase<TComponent extends Component> {
 
         LimeCurlBuilder.Builder limeCurlBuilder = createLimeCurlBuilder();
         tryConnectCacheInOkHttpClient(limeCurlBuilder);
+        limeCurlBuilder = new ControllerSSLSocket(dataForRequest).connectSSLSocket(limeCurlBuilder);
         OkHttpClient client = createOkHttpClient(limeCurlBuilder);
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -141,7 +144,7 @@ public abstract class DownloadingBase<TComponent extends Component> {
     }
 
     private <T extends OkHttpClient.Builder> OkHttpClient createOkHttpClient(@NonNull T builder) {
-        return new OkHttpClient(builder);
+        return builder.build();
     }
 
     private void tryConnectCacheInOkHttpClient(@NonNull LimeCurlBuilder.Builder okHttpClientBuilder) {
